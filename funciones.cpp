@@ -108,7 +108,7 @@ iDiferenciaSimetrica;
 res = vacio();
 ItConj(campo) it = CrearIt(campos(r2));
 while(HaySiguiente(i)){
-	if(!(Pertenece?(Campos(r1), Siguiente(i)))){
+	if(!(Pertenece(Campos(r1), Siguiente(i)))){
 		Agregar(res, Siguiente(i));
 	}
 	Avanzar(it);

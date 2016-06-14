@@ -89,39 +89,51 @@ Registro Registro::CopiarCampos(const Conj<String> cc, const Registro r2) const{
 	}
 }
 
-// Esta mal diseñada, recorre el registro r1 en vez de cc
+// Esta mal diseñada, recorre el registro r1 en vez de cc 
 bool Registro::CoincideAlguno(const Conj<String> cc, const Registro r2) const{
 	bool b = false;
 	typename Conj<String>::const_Iterador it1 = cc.CrearIt();
 	while(it1.HaySiguiente() && !b){
-		if(Obtener(it1.Siguiente()) == r2.Obtener(it1.Siguiente()) ){
+		/*if(Obtener(it1.Siguiente()) == r2.Obtener(it1.Siguiente()) ){		// PROBLEMA AQUI
 			b = true;
-		}
+		}*/
 		it1.Avanzar();
 	}
 	return b;
 }
 
 // Esta mal diseñada, recorre el registro r1 en vez de cc
-/*
 bool Registro::CoincidenTodos(const Conj<String> cc, const Registro r2) const{
 	
 	bool b = true;
 	typename Conj<String>::const_Iterador it1 = cc.CrearIt();
 	while(it1.HaySiguiente() && b){
-		if(!(Obtener(it1.Siguiente()) == r2.Obtener(it1.Siguiente()))){
+		/*if(!(Obtener(it1.Siguiente()) == r2.Obtener(it1.Siguiente()))){		// PROBLEMA AQUI
 			b = false;
-		}
+		}*/
 		it1.Avanzar();
 	}
 	return b;
 }
-*/
-/*
-		bool EnTodos(const String c, const Conj<Registro>);
-		Registro CombinarTodos(const String c, const Conj<Registro>) const;
-		Conj<String> DiferenciaSimetrica(const Registro r2) const;
-*/
+
+// bool EnTodos(const String c, const Conj<Registro>){} NO ESTA DISEÑADA
+
+// Registro CombinarTodos(const String c, const Conj<Registro>) const{}      OTRA MAS QUE NO ESTA DISEÑADA
+		
+
+Conj<String> Registro::DiferenciaSimetrica(const Registro r2) const{
+	Conj<String> res;
+	typename Conj<String>::Iterador it = r2.Campos().CrearIt();
+	Conj<String> c1;
+	c1 = Campos();
+	while(it.HaySiguiente()){
+		if(!(c1.Pertenece(it.Siguiente()))){
+			res.AgregarRapido(it.Siguiente());
+		}
+		it.Avanzar();
+	}
+}
+
 };
 
 #endif
