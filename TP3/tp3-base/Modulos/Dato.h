@@ -2,11 +2,13 @@
 #define MODULOS_DATO_H_INCLUDED
 
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <cassert>
 #include "ModulosBasicos.h"
 
 using namespace aed2;
+using namespace std;
 
 namespace modulos {
 
@@ -15,6 +17,7 @@ class Dato {
 			// Dato();
 			 Dato(String s);
 			 Dato(Nat n);
+			 Dato (const Dato&);
 			 bool EsNat() const;
 			 bool EsString() const;
 			 bool MismoTipo(const Dato otro) const;
@@ -23,6 +26,8 @@ class Dato {
 			 Dato Max(const Conj<Dato> cd);
 			 Dato Min(const Conj<Dato> cd);
 			 bool MenorOIgual(const Dato otro) const;
+			 ostream& mostrarDato(ostream&) const;
+			 
 			 
 		private:
 			bool tipo;
@@ -34,6 +39,12 @@ class Dato {
 	Dato::Dato(String s): tipo(false) , nat(0) , str(s) {} 
 
 	Dato::Dato(Nat n): tipo(true) , nat(n) , str(" ") {} 
+	
+	Dato::Dato(const Dato& otro){
+		tipo = otro.tipo;
+		nat = otro.nat;
+		str = otro.str;
+	}
 	
 	bool Dato::EsNat() const {
 		return tipo;
@@ -97,6 +108,20 @@ class Dato {
  	return res;
 	}
 
+	ostream& operator<<(ostream& os, const Dato& d){
+		return d.mostrarDato(os);
+	}
+
+	ostream& Dato::mostrarDato(ostream& os) const
+	{
+		if (tipo) {
+			os << nat;
+		} else{
+			os << str;
+		}
+
+	return os;
+	}
 
 };
 
