@@ -403,6 +403,6 @@ std::ostream& operator<<(std::ostream& os, const Conj<T>& c)
   return Mostrar(os, c, '{', '}');
 }
 
-}
+};
 
 #endif	//AED2_CONJ_H_INCLUDED
