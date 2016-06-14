@@ -182,8 +182,61 @@ mt.modificaciones++;
 
 iBorrarRegistro:
 
-
-
+t.modificaciones++;
+itDicc(campo, dato) j = Crearit(crit);
+campo c = SiguienteClave(j);
+dato d = SiguienteSignificado(j);
+if(Nat?(d) = tipoCampo(c, t) ){
+	if(t.indicesUsados.Nat && t.indiceN.campo == c){
+		it = Buscar(t.indiceN.regpordato, d);
+	}
+	if(SiguienteClave(it) == d){
+		if(t.indicesUsados.String){
+			s = obtener(t.indiceS.campo, Siguiente(SiguienteSignificado(it).reg));
+		}
+		itl = CrearIt(SiguienteSignificado(it));
+		EliminarSiguiente(Siguiente(itl).reg);
+		if(t.indicesUsados.String){
+			EliminarSiguiente(Siguiente(itl).compadre);
+			if(Pertenece?(claves(t), indiceS.campo) || Longitud(Obtener(indiceS.regpordato, s)) == 1){
+				Borrar(indiceS.regpordato, s);
+			}
+		}
+		Borrar(indiceN.regpordato, d);
+		if(mt.indiceN.maximo == d){
+			mt.indiceN.maximo = Maximo(mt.indiceN.regpordat);
+		}
+		if(mt.indiceN.minimo == d){
+			mt.indiceN.minimo = Minimo(mt.indiceN.regpordato);
+		}
+	}
+}else{
+	if(t.indicesUsados.String && t.indiceS.campo == c){
+		it = Buscar(t.indiceS.regpordat, d);
+		if(SiguienteClave(it) == d){
+			if(t.indicesUsados.Nat){
+				n = Obtener(t.indiceN.campo, Siguiente(SiguienteSignificado(it).reg));
+			}
+			itl = CrearIt(SiguienteSignificado(it));
+			EliminarSiguiente(Siguiente(itl).reg);
+			if(t.indicesUsados.Nat){
+				EliminarSiguiente(Siguiente(itl.compadre));
+				if(Pertenece?(claves(t), indiceN.campo) || Longitud(Obtener(indiceN.regpordato, n)) == 1){
+					Borrar(mt.indiceN.regpordato, n);
+				}
+			}
+			Borrar(indiceS.regpordato, d);
+			if(mt.indiceS.maximo == d){
+				mt.indiceS.maximo = Maximo(mt.indiceS.regpordato);
+			}
+			if(mt.indiceS.minimo == d){
+				mt.indiceS.minimo = Minimo(mt.indiceS.regpordato);
+			}
+		}
+	}else{
+		BuscaryBorrar(crit, mt);
+	}
+}
 
 
 

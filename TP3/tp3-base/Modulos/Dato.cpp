@@ -9,9 +9,9 @@ using namespace std;
 int main(){
 
 	Dato n (30);
-	Dato s ("C'thun");
+	Dato s ("a");
 	Dato n2 (10);
-	Dato s2 ("Antonidas");
+	Dato s2 ("b");
 	
 
 	cout << s.MenorOIgual(s2) << endl;
