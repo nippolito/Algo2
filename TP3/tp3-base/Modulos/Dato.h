@@ -15,6 +15,7 @@ namespace modulos {
 class Dato {
 		public:
 			// Dato();
+			 ~Dato();
 			 Dato(String s);
 			 Dato(Nat n);
 			 Dato (const Dato&);
@@ -23,10 +24,13 @@ class Dato {
 			 bool MismoTipo(const Dato otro) const;
 			 modulos::Nat ValorNat() const;
 			 modulos::String ValorStr() const;
-			 Dato Max(const Conj<Dato> cd);
-			 Dato Min(const Conj<Dato> cd);
+			 Dato MaxDato(const Conj<Dato> cd);
+			 Dato MinDato(const Conj<Dato> cd);
 			 bool MenorOIgual(const Dato otro) const;
 			 ostream& mostrarDato(ostream&) const;
+			 bool operator==(const Dato&) const;
+			 bool operator!=(const Dato&) const;
+
 			 
 			 
 		private:
@@ -46,6 +50,9 @@ class Dato {
 		str = otro.str;
 	}
 	
+	Dato::~Dato(){} // Las clases que tienen miembros estaticos (cosas sin punteros) la funcion ~Dato destruye la tupla automaticamente
+
+
 	bool Dato::EsNat() const {
 		return tipo;
 	}
@@ -84,7 +91,7 @@ class Dato {
 	}
 
 
- 	Dato Dato::Max(const Conj<Dato> cd){
+ 	Dato Dato::MaxDato(const Conj<Dato> cd){
  		typename Conj<Dato>::const_Iterador i = cd.CrearIt();
 		Dato res = i.Siguiente();
 		while(i.HaySiguiente()){
@@ -96,7 +103,7 @@ class Dato {
  	return res;
 	}
 
-	Dato Dato::Min(const Conj<Dato> cd){
+	Dato Dato::MinDato(const Conj<Dato> cd){
  		typename Conj<Dato>::const_Iterador i = cd.CrearIt();
 		Dato res = i.Siguiente();
 		while(i.HaySiguiente()){
@@ -122,6 +129,29 @@ class Dato {
 
 	return os;
 	}
+
+
+	 bool Dato::operator==(const Dato& otro) const
+	 {
+	 	bool res = false;
+	 	
+	 	if (tipo != otro.tipo){return res;}
+	 	
+	 	if (tipo)
+	 	{
+	 		res = (nat == otro.nat);
+	 	}
+	 	else
+	 	{
+	 		res = (str == otro.str);
+	 	}
+	 	return res;
+	 }
+
+	 bool Dato::operator!=(const Dato& otro) const 
+	 {
+	 	return !(operator==(otro));
+	 }
 
 };
 

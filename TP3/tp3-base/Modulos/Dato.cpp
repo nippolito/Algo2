@@ -5,7 +5,6 @@
 using namespace modulos;
 using namespace std;
 
-
 int main(){
 
 	Dato n1 (30);
@@ -21,5 +20,15 @@ int main(){
 	Dato s5 ("Grommash");
 	Dato s6 ("Durotan");
 
+	Conj<Dato> c;
+	c.Agregar(s1);
+	c.Agregar(s2);
+	c.Agregar(s3);
+	c.Agregar(s4);
+	c.Agregar(s5);
+	c.Agregar(s6);
+
+  
+	
 	return 0;
 }
