@@ -135,10 +135,7 @@ int main(){
 	cout << r.DameDic() << endl;
 	cout << r.DameDic().Significado("General") << endl;
 	cout << r.Obtener("General") << endl;
-<<<<<<< HEAD
-=======
-	
->>>>>>> a2ba2345277441c0ad9d63d1d05b7524307d2621
+
 	Conj<String> cs(r.Campos());
 	cout << cs << endl;
 	
