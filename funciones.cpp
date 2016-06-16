@@ -553,14 +553,14 @@ iEliminarConUnHijo:
 puntero(nodoAB(K, S)) temp = i.siguiente;
 if(i.siguiente->der != NULL){
 	(temp->izq).padre = i.anterior;
-	if(i.anterior->der = i.siguiente){
+	if(i.anterior->der == i.siguiente){
 		i.anterior->der = temp->izq;
 	}else{
 		i.anterior->izq = temp->izq;
 	}
 	i.siguiente = temp->izq;
 }else{
-	if(i.anterior->der = i.siguiente){
+	if(i.anterior->der == i.siguiente){
 		i.anterior->der = temp->der;
 	}else{
 		i.anterior->izq = temp->der;
@@ -576,7 +576,7 @@ if(i.siguiente->der != NULL && i.siguiente->izq != NULL){
 	EiminarHoja(i);
 }else{
 	if(i.anterior != NULL){
-		if((i.siguiente->der = NULL && i.siguiente->izq != NULL) || (i.siguiente->der != NULL && i.siguiente->izq = NULL)){
+		if((i.siguiente->der == NULL && i.siguiente->izq != NULL) || (i.siguiente->der != NULL && i.siguiente->izq == NULL)){
 			EliminarConUnHijo(i);
 		}else{
 			puntero(nodoAB(K, S)) temp = i.siguiente;
@@ -586,7 +586,7 @@ if(i.siguiente->der != NULL && i.siguiente->izq != NULL){
 			}
 			temp->clave = rec->clave;
 			temp->significado = rec->significado;
-			if(red->der = NULL){
+			if(red->der == NULL){
 				EliminarHoja(Buscar(*i.abb, rec->clave));
 			}else{
 				EliminarConUnHijo(Buscar(*i.abb, rec->clave));
@@ -651,3 +651,157 @@ if(EsVacia?(i.recorrido)){
 	i.anterior = i.siguiente->padre;
 	Desapilar(i.recorrido);
 }
+
+
+
+DICCTRIE
+
+
+
+iMinimo:
+
+ItStr(S) i = CrearIt(p);
+while(!ApuntaAHoja(i)){
+	Avanzar(i);
+}
+res = i.clave;
+
+
+
+iMaximo:
+
+puntero(nodo(S)) a = p;
+res = Vacia();
+while(p != NULL){
+	int k = 255;
+	while(j > 0 && a->caracteres[j] == NULL){
+		j--;
+	}
+	AgregarAtras(res, ord^-1(j));  //ord^-1 WTF
+	a = a->caracteres[j];
+}
+
+
+
+
+iEliminarSiguiente:
+
+i.siguiente->significado = NULL;
+while(ApuntaAHoja(i) && i.siguiente->significado == NULL && i.anterior != NULL){
+	int j = ord(Ultimo(i.clave));
+	i.anterior[j] = NULL;
+	i.siguiente = i.anterior;
+	i.anterior = i.anterior->padre;
+}
+if(EsVacia?(i.recorrido)){
+	i.anterior = i.siguiente;
+	i.siguiente = NULL;
+}else{
+	i.siguiente = Tope(i.recorrido).sig;
+	i.clave = Tope(i.recorrido).clave;
+	i.anterior = i.siguiente->padre;
+	Desapilar(i.recorrido);
+}
+
+
+
+
+
+
+iApuntaAHoja:
+
+res = true;
+int j = 255;
+while(j > 0 && res){
+	res = (i.siguiente->recorrido[j] == NULL);
+	j--;
+}
+
+
+
+iAgregarComoSiguiente:
+
+puntero(S) p = &s;
+if(c == i.clave){
+	i.siguiente->significado = p;
+}else{
+	int j = 0;
+	while(c[j] != Ultimo(i.clave)){
+		j--;
+	}
+	arreglo(puntero(nodo(S))) a[256];
+	nodo(S) n = < NULL, a, i.anterior >;
+	i.anterior->caracteres[j] = &n;
+	i.siguiente = n;
+	j++;
+	while(j < Longitud(c)){
+	arreglo(puntero(nodo(S))) b[256];
+	nodo(S) n = < NULL, b, i.anterior >;
+	i.anterior->caracteres[j] = &n;
+	i.anterior = i.siguiente;
+	i.siguiente = n;
+	j++;
+	}
+	i.clave = Copiar(c);
+	i.siguiente->significado = p;
+}
+
+
+
+
+
+iAvanzar:
+
+if(i.busca){
+	iter it = i;
+	while(it.anterior != NULL){
+		it.siguiente = it.anterior;
+		it.anterior = it.anterior->padre;
+	}
+	while(it.clave != i.clave){
+		int j = 256;
+		while(j >= 0){
+			if(i.siguiente->caracteres[j] != NULL){
+				string nuevaclave = Copiar(i.clave);
+				Apilar(i.recorrido, < i.siguiente->caracteres[j], Agregar(nuevaclave, ord^-1(j)) >);   //ord^-1 WTF
+			}
+		}
+		it.siguiente = Tope(it.recorrido).sig;
+		it.clave = Copiar(Tope(it.recorrido).clave);
+		it.anterior = it.siguiente->padre;
+		Desapilar(it.recorrido);
+	}
+	i = it;
+	i.busca = false;
+}
+j = 256;
+while(j >= 0){
+	if(i.siguiente->caracteres[j] != NULL){
+		string nuevaclave = Copiar(i.clave);
+		Apilar(i.recorrido, < i.siguiente->caracteres[j], Agregar(nuevaclave, ord^-1(j)) >);	//ord^-1 WTF
+	}
+}
+if(EsVacia?(i.recorrido)){
+	i.anterior = i.siguiente;
+	i.siguiente = NULL;
+}else{
+	while(Tope(i.recorrido).sig->significado == NULL && !EsVacia?(i.recorrido)){
+		Desapilar(i.recorrido);
+	}
+	if(EsVacia?(i.recorrido)){
+		i.anterior = i.siguiente;
+		i.siguiente = NULL;
+	}else{
+		i.siguiente = Tope(i.recorrido);
+		i.anterior = i.siguiente->padre;
+		Desapilar(i.recorrido);
+	}
+}
+
+
+
+
+
+
+
+
