@@ -239,7 +239,7 @@ S& Dicc<K,S>::Significado(const K& clave)
   #ifdef DEBUG
   assert( Definido(clave) );
   #endif
-  
+
   return Buscar(clave).SiguienteSignificado();
 }
 
@@ -589,6 +589,6 @@ bool operator == (const Dicc<K,S>& d1, const Dicc<K,S>& d2)
   return retval;
 }
 
-
+}
 
 #endif	//AED2_DICC_H_
