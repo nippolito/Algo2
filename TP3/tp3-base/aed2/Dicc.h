@@ -239,7 +239,7 @@ S& Dicc<K,S>::Significado(const K& clave)
   #ifdef DEBUG
   assert( Definido(clave) );
   #endif
-
+  
   return Buscar(clave).SiguienteSignificado();
 }
 
