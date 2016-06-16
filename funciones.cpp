@@ -470,5 +470,184 @@ while(it.HaySiguiente()){
 
 
 
+ABB:
 
 
+iDefinir:
+
+if(esVacio?(p)){
+	t = < NULL, c, s, NULL, NULL >;
+}else{
+	AgregarComoSiguiente(Buscar(p,n), n, s);
+}
+
+
+
+iMinimo:
+
+puntero(nodoAB(K, S)) a = p;
+while(a->izq != NULL){
+	a = a->izq;
+}
+res = a->clave;
+
+
+iMaximo:
+
+puntero(nodoAB(K, S)) a = p;
+while(a->der != NULL){
+	a = a->der;
+}
+res = a->clave;
+
+
+
+
+iBuscar:
+
+res = CrearIt(p);
+res.busca = true;
+while(HaySiguiente(res) && SiguienteClave(res) != c){
+	res.anterior = res.siguiente;
+	if(SiguienteClave(res) < c){
+		res.siguiente = res.siguiente->der;
+	}else{
+		res.siguiente = res.siguiente->izq;
+	}
+}
+
+
+
+
+
+iEliminarHoja:
+
+if(!esVacia?(i.recorrido)){
+	i.siguiente = Tope(i.recorrido);
+	i.anterior = i.siguiente->padre;
+	Desapilar(i.recorrido);
+}
+
+
+
+iEliminarRaiz:
+
+if(i.sigiente->der != NULL && i.siguiente->izq != NULL){
+	(i.siguiente->izq).padre = i.siguiente->der;
+	(i.siguiente->der)->izq = i.sigiente->izq;
+	i.siguiente = i.siguiente->der;
+}else{
+	if(i.siguiente->der != NULL){
+		i.siguiente = i.siguiente->der;
+	}else{
+		i.siguiente = i.siguiente->izq;
+	}
+}
+
+
+
+
+
+iEliminarConUnHijo:
+
+puntero(nodoAB(K, S)) temp = i.siguiente;
+if(i.siguiente->der != NULL){
+	(temp->izq).padre = i.anterior;
+	if(i.anterior->der = i.siguiente){
+		i.anterior->der = temp->izq;
+	}else{
+		i.anterior->izq = temp->izq;
+	}
+	i.siguiente = temp->izq;
+}else{
+	if(i.anterior->der = i.siguiente){
+		i.anterior->der = temp->der;
+	}else{
+		i.anterior->izq = temp->der;
+	}
+	i.siguiente = temp->der;
+}
+temp = NULL;
+
+
+EliminarSiguiente:
+
+if(i.siguiente->der != NULL && i.siguiente->izq != NULL){
+	EiminarHoja(i);
+}else{
+	if(i.anterior != NULL){
+		if((i.siguiente->der = NULL && i.siguiente->izq != NULL) || (i.siguiente->der != NULL && i.siguiente->izq = NULL)){
+			EliminarConUnHijo(i);
+		}else{
+			puntero(nodoAB(K, S)) temp = i.siguiente;
+			puntero(nodoAB(K, S)) rec = temp->der;
+			while(rec.izq != NULL){
+				rec = rec->izq;
+			}
+			temp->clave = rec->clave;
+			temp->significado = rec->significado;
+			if(red->der = NULL){
+				EliminarHoja(Buscar(*i.abb, rec->clave));
+			}else{
+				EliminarConUnHijo(Buscar(*i.abb, rec->clave));
+			}
+			temp = NULL;
+		} 
+	}else{
+		EliminarRaiz(i);
+	}
+}
+
+
+
+
+iAgregarComoSiguiente:
+
+nodoAB(K, S) n = < i.anteror, c, s, NULL, NULL >;
+if(i.anterior->clave > c){
+	i.anterior->der = &n;
+}else{
+	i.anterior->izq = &n;
+}
+i.siguiente = &n;
+
+
+
+
+
+iAvanzar:
+
+if(i.busca){
+	iter it = i;
+	while(it.anterior != NULL){
+		it.siguiente = it.anterior;
+		it.anteror = it.anterior->padre;
+	}
+	while(it.siguiente->clave != i.siguiente->clave){
+		if(it.siguiente->der != NULL){
+			Apilar(it.recorrido, it.siguiente->der);
+		}
+		if(it.siguiente->izq != NULL){
+			Apilar(it.recorrido, it.siguiente->izq);
+		}
+		it.siguiente = Tope(it.recorrido);
+		it.anterior = it.siguiente->padre;
+		Desapilar(it.recorrido);
+	}
+	i = it;
+	i.busca = false;
+}
+if(i.siguiente->der != NULL){
+	Apilar(i.recorrido, i.siguiente->der);
+}
+if(i.siguiente->izq != NULL){
+	Apilar(i.recorrido, i.siguiente->izq);
+}
+if(EsVacia?(i.recorrido)){
+	i.anterior = i.siguiente;
+	i.siguiente = NULL;
+}else{
+	i.siguiente = Tope(i.recorrido);
+	i.anterior = i.siguiente->padre;
+	Desapilar(i.recorrido);
+}
