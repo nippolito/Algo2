@@ -589,6 +589,6 @@ bool operator == (const Dicc<K,S>& d1, const Dicc<K,S>& d2)
   return retval;
 }
 
-}
+
 
 #endif	//AED2_DICC_H_
