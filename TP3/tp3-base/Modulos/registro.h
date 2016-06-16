@@ -5,7 +5,7 @@
 #include <string>
 #include <cassert>
 #include "ModulosBasicos.h"
-#include "Dato.h"
+#include "Dato.cpp"
 
 using namespace aed2;
 

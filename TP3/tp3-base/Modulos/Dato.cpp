@@ -117,7 +117,7 @@ using namespace aed2;
 	 {
 	 	return !(operator==(otro));
 	 }
-
+/*
 int main(){
 
 	Dato n1 (30);
@@ -156,4 +156,4 @@ int main(){
   
 	
 	return 0;
-}
+}*/
