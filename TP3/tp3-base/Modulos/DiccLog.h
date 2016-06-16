@@ -60,10 +60,11 @@ class DiccLog{
         void EliminarSiguiente();
 
         // FUNCIONES PRIVADAS, ¿QUE HACEMOS?
+        DiccLog<K,S> Arbol();  // <-- Hubo que agregarla porque flasheamos con la estructura
         void EliminarHoja();
-        void EliminarRaiz();
+        void EliminarRaiz();      // FALTAN LOS DELETE EN TODOS LOS ELIMINAR
         void EliminarConUnHijo();
-        void AgregarComoSiguiente(K clave, S sig);      
+        void AgregarComoSiguiente(K clave, S sig);
 
       private:	
       		nodoAB* siguiente;
@@ -80,7 +81,7 @@ class DiccLog{
           }*/
     };
 
-   	class const_ItLog
+   	class const_ItLog   // <------- ¿HAY QUE HACER ESTA MIERDA?
     {
     	public:
 
@@ -216,22 +217,140 @@ void DiccLog<K,S>::ItLog::Avanzar(){
 }
 
 
+template<class K ,class S>
+void DiccLog<K,S>::ItLog::AgregarComoSiguiente(K clave, S sig){
+  nodoAB n(clave,sig);
+  n.padre = anterior;
+  if(anterior->clave > clave){
+    anterior->der = &n;
+  }else{
+    anterior->izq = &n;
+  }
+  siguiente = &n;
+}
 
 
-//aca van las funciones de dicclog
+template<class K ,class S>
+void DiccLog<K,S>::ItLog::EliminarSiguiente(){
+  if(siguiente->der != NULL && siguiente->izq != NULL){
+    EliminarHoja();
+  }else{
+    if(anterior != NULL){
+      if((siguiente->der == NULL && siguiente->izq != NULL) || (siguiente->der != NULL && siguiente->izq == NULL)){
+        EliminarConUnHijo();
+      }else{
+        nodoAB* temp = siguiente;
+        nodoAB* rec = temp->der;
+        while(rec.izq != NULL){
+          rec = rec->izq;
+        }
+        temp->clave = rec->clave;
+        temp->significado = rec->significado;
+        DiccLog<K,S> odin = Arbol();
+        if(rec->der == NULL){
+          odin.Buscar(rec->clave).EliminarHoja();
+        }else{
+          odin.Buscar(rec->clave).EliminarConUnHijo();
+        }
+        temp = NULL;
+      } 
+    }else{
+      EliminarRaiz();
+    }
+  }
+}
+
+
+
+template<class K ,class S>
+void DiccLog<K,S>::ItLog::EliminarHoja(){
+  if(!recorrido.EsVacia()){
+    siguiente = recorrido.Tope();
+    anterior = siguiente->padre;
+    recorrido.Desapilar();
+  }
+}
+
+
+
+
+template<class K ,class S>
+void DiccLog<K,S>::ItLog::EliminarRaiz(){
+  if(siguiente->der != NULL && siguiente->izq != NULL){
+    (siguiente->izq).padre = siguiente->der;
+    (siguiente->der)->izq = siguiente->izq;
+    siguiente = siguiente->der;
+  }else{
+    if(siguiente->der != NULL){
+      siguiente = siguiente->der;
+    }else{
+      siguiente = siguiente->izq;
+    }
+  }
+}
+
+
+template<class K ,class S>
+void DiccLog<K,S>::ItLog::EliminarConUnHijo(){
+  nodoAB* temp = siguiente;
+  if(siguiente->der != NULL){
+    (temp->izq).padre = anterior;
+    if(anterior->der == siguiente){
+      anterior->der = temp->izq;
+    }else{
+      anterior->izq = temp->izq;
+    }
+    siguiente = temp->izq;
+  }else{
+    if(anterior->der == siguiente){
+      anterior->der = temp->der;
+    }else{
+      anterior->izq = temp->der;
+    }
+    siguiente = temp->der;
+  }
+  temp = NULL;
+}
+
+
+template<class K ,class S>
+DiccLog<K,S> DiccLog<K,S>::ItLog::Arbol(){
+  nodoAB* p;
+  if (siguiente=NULL){
+    p = anterior;
+  }else{
+    p = siguiente;
+  }
+  while (p->padre!=NULL){
+    p = p->padre;
+  }
+  DiccLog<K,S> res;
+  res.raiz = p;
+  return res;
+}
+
+
+// ------------>>  Aca van las funciones de Dicclog  <<-----------------
+
 
 template<class K ,class S>
 DiccLog<K,S>::DiccLog(): raiz(NULL){}
 
 template<class K ,class S>
 DiccLog<K,S>::DiccLog(const DiccLog<K,S>& otro){
-  
-
+  typename DiccLog<K,S>::ItLog it = otro.CrearIt();
+  while(it.HaySiguiente()){
+    Definir(it.SiguienteClave(),it.SiguienteSignificado());
+    it.Avanzar();
+  }
 }
 
 template<class K ,class S>
 DiccLog<K,S>::~DiccLog(){
-
+  typename DiccLog<K,S>::ItLog it = CrearIt();
+  while(it.siguiente!=NULL){
+    it.EliminarSiguiente();
+  }
 }
 
 
@@ -266,9 +385,54 @@ typename DiccLog<K,S>::ItLog DiccLog<K,S>::Buscar(const K& c){
   }
 }
 
+template<class K ,class S>
+DiccLog<K,S>& DiccLog<K,S>::operator=(const DiccLog<K,S>& otro){
+  typename DiccLog<K,S>::ItLog res(otro);
+  return res;
+}
 
 
 
+template<class K ,class S>
+bool DiccLog<K,S>::EsVacio(){
+  return raiz==NULL;
+}
+
+
+template<class K ,class S>
+bool DiccLog<K,S>::Definido(const K& clave) const{
+  return Buscar(clave).HaySiguiente();
+}
+
+template<class K ,class S>
+const S& DiccLog<K,S>::Obtener(const K& clave) const{
+  return Buscar(clave).SiguienteSignificado();
+}
+
+template<class K ,class S>
+void DiccLog<K,S>::Borrar(const K& clave){
+  Buscar(clave).EliminarSiguiente();
+}
+
+
+template<class K ,class S>
+const K DiccLog<K,S>::Maximo(){
+  nodoAB* p = raiz;
+  while(p->der!=NULL){
+    p = p->der;
+  }
+  return p->clave;
+}
+
+
+template<class K ,class S>
+const K DiccLog<K,S>::Minimo(){
+  nodoAB* p = raiz;
+  while(p->izq!=NULL){
+    p = p->izq;
+  }
+  return p->clave;
+}
 
 
 };
