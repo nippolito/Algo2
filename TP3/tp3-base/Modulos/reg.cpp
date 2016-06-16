@@ -32,7 +32,6 @@ Conj<String> Registro::Campos() const{
 	Conj<String> res;
 	typename Dicc<String,Dato>::const_Iterador it = dic.CrearIt();
 	while (it.HaySiguiente()){
-		cerr << it.SiguienteClave() << endl;
 		res.AgregarRapido(it.SiguienteClave());
 		it.Avanzar();
 	}
@@ -49,7 +48,6 @@ Registro Registro::AgregarCampos(const Registro r2) const{
 
 Registro Registro::CopiarCampos(const Conj<String> cc, const Registro r2) const{
 	Conj<String>::const_Iterador it = cc.CrearIt();
-	
 	Registro res(*this);
 	while(it.HaySiguiente()){
 		if (Def(it.Siguiente())){
@@ -57,7 +55,9 @@ Registro Registro::CopiarCampos(const Conj<String> cc, const Registro r2) const{
 		}else{
 			res.Definir(it.Siguiente(), r2.Obtener(it.Siguiente()));
 		}
+		it.Avanzar();
 	}
+	return res;
 }
 
 // Esta mal diseñada, recorre el registro r1 en vez de cc 
@@ -96,23 +96,25 @@ bool EnTodos(const String c, const Conj<Registro>){}
 Registro CombinarTodos(const String c, const Conj<Registro>) const{}
 		
 */
+
 Conj<String> Registro::DiferenciaSimetrica(const Registro r2) const{
 	Conj<String> res;
-	typename Conj<String>::Iterador it = r2.Campos().CrearIt();
-	Conj<String> c1;
-	c1 = Campos();
+	Conj<String> c2(r2.Campos());
+	typename Conj<String>::Iterador it = c2.CrearIt();
+	Conj<String> c1(Campos());
 	while(it.HaySiguiente()){
 		if(!(c1.Pertenece(it.Siguiente()))){
 			res.AgregarRapido(it.Siguiente());
 		}
 		it.Avanzar();
 	}
+	return res;
 }
 
 Dicc<String,Dato> Registro::DameDic(){
 	return dic;
 }
-
+/*
 int main(){
 	
 	Dato d1("Peron");
@@ -133,18 +135,28 @@ int main(){
 	cout << r.DameDic() << endl;
 	cout << r.DameDic().Significado("General") << endl;
 	cout << r.Obtener("General") << endl;
+<<<<<<< HEAD
+=======
+	
+>>>>>>> a2ba2345277441c0ad9d63d1d05b7524307d2621
 	Conj<String> cs(r.Campos());
 	cout << cs << endl;
 	
 	Registro r2;
 	r2.Definir("General", d1);
-	r2.DefinirLento("Traicion", d4);
+	r2.DefinirLento("Traicion", d1);
 	
 	Conj<String> c(r2.Campos());
 
 	cout << r.CoincidenTodos(c,r2) << endl;
-	Registro ft = r.CopiarCampos(c,r2);
-	cout << ft.DameDic() << endl;
+	Registro ft (r.CopiarCampos(c,r2));
+	//cout << ft.DameDic() << endl;
+	Registro R = r.AgregarCampos(r2);
+	cout << r.DiferenciaSimetrica(r2) << endl;
+	cout << r2.DiferenciaSimetrica(r) << endl;
+	cout << R.DameDic() << endl;
+	Registro R2 = r2.AgregarCampos(r);
+	cout << R2.DameDic() << endl;
 	
 	return 0;
-}
+}*/
