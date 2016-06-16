@@ -114,6 +114,7 @@ Dicc<String,Dato> Registro::DameDic(){
 }
 
 int main(){
+	
 	Dato d1("Peron");
 	Dato d2("Evita");
 	Dato d3("Campora");
@@ -125,13 +126,13 @@ int main(){
 	r.Definir("Descamisados", d2);
 	r.DefinirLento("Traicion", d4);
 	r.DefinirLento("Bisco", d5);
-	/*
+	
 	cout << d5 << endl;
 	cout << d1 << endl;
 	cout << r.Def("General") << endl;
 	cout << r.DameDic() << endl;
 	cout << r.DameDic().Significado("General") << endl;
-	cout << r.Obtener("General") << endl;*/
+	cout << r.Obtener("General") << endl;
 	Conj<String> cs(r.Campos());
 	cout << cs << endl;
 	

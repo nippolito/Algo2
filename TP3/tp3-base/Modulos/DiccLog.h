@@ -22,11 +22,13 @@ class DiccLog{
 
 		DiccLog();
 		DiccLog(const DiccLog<K,S>& otro);
+    ~DiccLog();
 		DiccLog<K,S>& operator=(const DiccLog<K,S>& otro);
 
 		Iterador Definir(const K& clave, const S& significado);
 
-		bool Definido(const K& clave) const;
+		bool EsVacio();
+    bool Definido(const K& clave) const;
 		const S& Obtener(const K& clave) const;
 		void Borrar(const K& clave);
 		const K Maximo();
@@ -37,28 +39,16 @@ class DiccLog{
     
     Iterador Buscar(const K&);
     const_Iterador Buscar(const K&) const;
-/*
-     class Iterador
 
-	    Iterador Buscar(const K&);
-    	const_Iterador Buscar(const K&) const;
-
-   /* class Iterador
->>>>>>> 7a9941078c408a94721fadd2ab878be376aa2c21
+    class Iterador
     {
       public:
 
         Iterador();
 
-<<<<<<< HEAD
-        Iterador(const typename Dicc<K,S>::Iterador& otro);
-
-        Iterador& operator = (const typename Dicc<K,S>::Iterador& otro);
-=======
         Iterador(const typename Dicc<K, S>::Iterador& otro);
 
         Iterador& operator = (const typename Dicc<K, S>::Iterador& otro);
->>>>>>> 7a9941078c408a94721fadd2ab878be376aa2c21
 
         bool operator == (const typename Dicc<K,S>::Iterador&) const;
 
@@ -73,19 +63,15 @@ class DiccLog{
       		nodoAB* siguiente;
       		nodoAB* anterior;
       		Lista<nodoAB*> recorrido;
-<<<<<<< HEAD
       		bool busca;
 
       		friend typename DiccLog<K,S>::Iterador DiccLog<K,S>::CrearIt();
        	 	friend class DiccLog<K,S>::const_Iterador;
-=======
-      		bool busca
 
-      		friend typename DiccLog<K,S>::Iterador DiccLog<K,S>::CrearIt();
-       	 	friend class DiccLog<K, S>::const_Iterador;
->>>>>>> 7a9941078c408a94721fadd2ab878be376aa2c21
-
-       
+        /*  friend ostream& operator<<(ostream& os, const typename DiccLog<K,S>::Iterador& it){
+          os<<"it";
+          return os;
+          }*/
     };
 
    	class const_Iterador
@@ -96,15 +82,9 @@ class DiccLog{
 
         	const_Iterador(const typename Dicc<K,S>::Iterador& otro);
 
-<<<<<<< HEAD
-	        const_Iterador(const typename Dicc<K,S>::const_Iterador& otro);
-
-    	    const_Iterador& operator = (const typename Dicc<K,S>::const_Iterador& otro);
-=======
-	        const_Iterador(const typename Dicc<K, S>::const_Iterador& otro);
+          const_Iterador(const typename Dicc<K, S>::const_Iterador& otro);
 
     	    const_Iterador& operator = (const typename Dicc<K, S>::const_Iterador& otro);
->>>>>>> 7a9941078c408a94721fadd2ab878be376aa2c21
 
         	bool operator==(const typename Dicc<K,S>::const_Iterador&) const;
 
@@ -117,43 +97,71 @@ class DiccLog{
 
        		nodoAB* siguiente;
       		nodoAB* anterior;
-      		Lista<nodoAB*> recorrido;
+      		Lista<nodoAB*> recorrido; //asegurar que la lista funcione como una pila (insertar por adelante y sacar por adelante)
       		bool busca;
 
       		friend typename DiccLog<K,S>::const_Iterador DiccLog<K,S>::CrearIt() const;
-   
+          
+         /* friend ostream& operator<<(ostream& os, const typename DiccLog<K,S>::Iterador& it){
+          os<<"it";
+          return os;
+          }*/
 
     };
 
-<<<<<<< HEAD
+    struct nodoAB { 
+      nodoAB* padre;
+      nodoAB* izq;
+      nodoAB* der;
+      K clave;
+      S significado; 
+
+      nodoAB( K k, const S& s) : padre(NULL) , izq(NULL) , der(NULL), clave(k), significado(s){}
+      friend ostream& operator<<(ostream& os, const DiccLog<K,S>::nodoAB& n) {
+        return os << n.clave << ":" << n.significado;
+      }
+
+      };
 
     
     private:
-/*
-   		struct nodoAB {
-   		 
-      	nodoAB* padre;
-=======
-*/
-    
-    private:
-
-   		struct nodoAB {
-   			nodoAB* padre;
-   			nodoAB* izq;
-   			nodoAB* der;
-   			K clave;
-   			S significado; 
-
-        nodoAB( K k, const S& s) : clave(k), significado(s){}
-        friend ostream& operator<<(ostream& os, const DiccLog<K,S>::nodoAB& n) {
-          return os << n.clave << ":" << n.significado;
-        }
-
-   		};
 		
+    nodoAB* puntero;
 
 	};	
+
+template<class K, class S>
+ostream& operator << (ostream &os, const DiccLog<K,S>& d);
+
+template<class K, class S>
+bool operator == (const DiccLog<K,S>& d1, const DiccLog<K,S>& d2);
+
+//aca van las funciones de dicclog
+
+template<class K ,class S>
+DiccLog<K,S>::DiccLog(){};
+
+template<class K ,class S>
+DiccLog<K,S>::DiccLog(const DiccLog<K,S>& otro){
+  
+
+}
+
+template<class K ,class S>
+DiccLog<K,S>::~DiccLog(){
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 };
 
