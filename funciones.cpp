@@ -803,5 +803,150 @@ if(EsVacia?(i.recorrido)){
 
 
 
+BASE DE DATOS
+
+
+iTablas:
+
+res = Vacio();
+ItDiccString() i = a.TporNombre.CrearIt();
+while(i.HaySiguiente()){
+	Agregar(res, i.SiguienteClave());
+}
+
+
+
+iNuevaBD:
+
+res.tabla = Vacio();
+res.TporNombre = Vacio();
+res.nombres = Vacio();
+res.tablaMax = Vacio().CrearIt();
+res.joins = Vacio();
+res.LosJoins = Vacia();
+
+
+
+iAgregarTabla:
+
+AgregarRapido(a.tablas, mt);
+ItConj(tabla) i = a.tablas.CrearIt();
+while(i.HaySiguiente() && i.Siguiente != mt){
+	i.Avanzar();
+}
+Definir(a.TporNombre, nombre(mt), i);
+AgregarRapido(a.nombres, nombre(mt));
+if(a.tablas == vacio()){
+	a.TablaMax = i;
+}else{
+	if(CantidadAccesos(nombre(mt), a) > CantidadAccesos(nombre(a.TablaMax.Siguiente()), a)){
+		a.TablaMax = i;
+	}
+}
+
+
+
+iInsertarEntrada:
+
+ItDiccString() i = Buscar(a.TporNombre, t);
+AgregarRegistro(i.Siguiente(), r);
+if(CantidadAccesos(Obtener(a.TporNombre, t).Siguiente(), a) > CantidadAccesos(a.TablaMax.Siguiente(), a)){
+	a.TablaMax = Obtener(a.TporNombre, t);
+}
+if(Definido?(a.joins, t)){
+	ItDiccString() it = Obtener(a.TporNombre, t).CrearIt();
+	while(it.HaySiguiente()){
+		AgregarAdelante(it.SiguienteSignificado().cambios, < t, r >);
+		if(iHayJoin(it.SiguienteClave(), t, a)){
+			AgregarAdelante(Obtener(Obtener(a.joins, it.SiguienteClave()), t).cambios, < t, r >);
+		}
+		it.Avanzar();
+	}
+}
+
+
+
+
+
+iBorrar:
+
+ItDiccString() i = Buscar(a.TporNombre, t);
+BorrarRegistro(i.SiguienteSignificado(), r);
+if(CantidadAccesos(Significado(a.TporNombre, t).Siguiente(), a) > CantidadAccesos(a.tablaMax.Siguiente(), a)){
+	a.TablaMax = Obtener(a.TporNombre, t);
+}
+if(Definido?(a.joins, t)){
+	ItDiccString() it = CrearIt(Obtener(a.joins, t));
+	while(it.HaySiguiente()){
+		AgregarAdelante(it.SiguienteSignificado().cambios, < t, r >);
+		if(iHayJoin(it.SiguienteClave(), t, a)){
+			AgregarAdelante(Obtener(Obtener(a.joins, it.SiguienteClave(), t).cambios), < t, r >);
+		}
+		it.Avanzar();
+	}
+}
+
+
+
+
+
+iGenerarVistaJoin:
+
+conj(registro) rs = combinarRegistros(ca, t1, t2);
+ItReg() it = rs.CrearIt();
+nt = NuevaTabla("nuevat", Agregar(Vacio(), it.campos()));
+Indexar(ca, nt);
+while(it.HaySiguiente()){
+	AgregarRegistro(it.Siguiente, nt);
+}
+AgregarAdelante(nt, a.LosJoins);
+ItDiccString() it2 = a.LosJoins.CrearIt();
+res = Registros(it2.Siguiente()).CrearIt();
+if(!Definido?(a.joins, t1)){
+	diccString(join) d = Definir(Vacio(); t2, < ca, <>, it2 >);
+	Definir(a.joins, t1, d);
+}else{
+	Definir(Significado(a.joins, t1), t2, < ca, <>, it2 >);
+}
+
+
+
+
+iVistaJoin:
+
+tab = Obtener(Obtener(a.Joins, t1), t2).Siguiente().verJoin;
+ItLista() itC = Obtener(Obtener(a.Joins, t1), t2).cambios.CrearItUlt();
+registro crit = Vacio();
+string ca = CampoJoin(t1, t2, a);
+while(itC.HayAnterior()){
+	dato d = Obtener(ca, itC.Anterior().regmod);
+	Definir(ca, d, crit);
+	if(Esta(itC.Anterior().regmod, itC.Anterior().tabmod)){
+		if(itC.Anterior().tabmod == t1){
+			if(!EsVacio?(Buscar(crit, t2, a))){
+				itB2 = Buscar(crit, t2, a).CrearIt();
+				registro reg1 = AgregarCampos(itC.Anterior().regmod, itB2.Siguiente());
+				AgregarRegistro(reg1, tab);
+			}
+		}else{
+			if(!EsVacio(Buscar(crit, t1, a))){
+				itB1 = Buscar(crit, t1, a).CrearIt();
+				registro reg2 = AgregarCampos(itC.Anterior().regmod, itB1.Siguiente());
+			}
+			AgregarRegistro(reg2, tab);
+		}
+	}else{
+		if(!EsVacio?(BuscarT(crit, tab))){
+			Borrar(tab, crit);
+		}
+	}
+	itC.Retroceder();
+}
+res = Registros(tab).CrearIt();
+
+
+
+
+
 
 
