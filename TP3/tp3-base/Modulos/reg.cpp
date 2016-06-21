@@ -114,6 +114,12 @@ Conj<String> Registro::DiferenciaSimetrica(const Registro r2) const{
 Dicc<String,Dato> Registro::DameDic(){
 	return dic;
 }
+
+ostream& Registro::mostrarRegistro(ostream& os) const{
+	os << dic;
+}
+
+
 /*
 int main(){
 	
