@@ -6,6 +6,7 @@
 #include <string>
 #include <ostream>
 #include "pila.h"
+#include <cassert>
 
 using namespace aed2;
 using namespace std;
@@ -36,10 +37,10 @@ class DiccLog{
 		const K Minimo();
 		
 		ItLog CrearIt();
-    const_ItLog CrearIt() const;
+  //  const_ItLog CrearIt() const;
     
     ItLog Buscar(const K&);
-    const_ItLog Buscar(const K&) const;
+   // const_ItLog Buscar(const K&) const;
 
     class ItLog
     {
@@ -48,6 +49,8 @@ class DiccLog{
         ItLog();
 
         ItLog(const typename DiccLog<K, S>::ItLog& otro);
+
+        ItLog(nodoAB* sig, nodoAB* ant, bool b);
 
         ItLog& operator = (const typename DiccLog<K, S>::ItLog& otro);
 
@@ -62,7 +65,7 @@ class DiccLog{
         // FUNCIONES PRIVADAS, ¿QUE HACEMOS?
         DiccLog<K,S> Arbol();  // <-- Hubo que agregarla porque flasheamos con la estructura
         void EliminarHoja();
-        void EliminarRaiz();      // FALTAN LOS DELETE EN TODOS LOS ELIMINAR
+        void EliminarRaiz();
         void EliminarConUnHijo();
         void AgregarComoSiguiente(K clave, S sig);
 
@@ -72,16 +75,18 @@ class DiccLog{
       		Pila<nodoAB*> recorrido;
       		bool busca;
 
-      		friend typename DiccLog<K,S>::ItLog DiccLog<K,S>::CrearIt();
-       	 	friend class DiccLog<K,S>::const_ItLog;
+          ItLog(DiccLog<K,S>* d);
 
-        /*  friend ostream& operator<<(ostream& os, const typename DiccLog<K,S>::ItLog& it){
+      		friend typename DiccLog<K,S>::ItLog DiccLog<K,S>::CrearIt();
+       	 	//friend class DiccLog<K,S>::const_ItLog;
+
+          friend ostream& operator<<(ostream& os, const typename DiccLog<K,S>::ItLog& it){
           os<<"it";
           return os;
-          }*/
+          }
     };
 
-   	class const_ItLog   // <------- ¿HAY QUE HACER ESTA MIERDA?
+  /* 	class const_ItLog   // <------- ¿HAY QUE HACER ESTA MIERDA? NOOOO, justificar que nuestro iterador no modificable es igual al modificable sólo que con algunas funciones restringidas.
     {
     	public:
 
@@ -109,12 +114,12 @@ class DiccLog{
 
       		friend typename DiccLog<K,S>::const_ItLog DiccLog<K,S>::CrearIt() const;
           
-         /* friend ostream& operator<<(ostream& os, const typename DiccLog<K,S>::ItLog& it){
+          friend ostream& operator<<(ostream& os, const typename DiccLog<K,S>::ItLog& it){
           os<<"it";
           return os;
-          }*/
+          }
 
-    };
+    }; */
 
     struct nodoAB { 
       nodoAB* padre;
@@ -150,6 +155,10 @@ DiccLog<K,S>::ItLog::ItLog(): siguiente(NULL), anterior(NULL), busca(false){}
 
 template<class K ,class S>
 DiccLog<K,S>::ItLog::ItLog(const typename DiccLog<K, S>::ItLog& otro): siguiente(otro.siguiente), anterior(otro.anterior), recorrido(otro.recorrido), busca(otro.busca){}
+
+template<class K ,class S>
+DiccLog<K,S>::ItLog::ItLog(nodoAB* sig, nodoAB* ant, bool b): siguiente(sig) , anterior(ant), busca(b) {}
+
 
 template<class K ,class S>
 typename DiccLog<K,S>::ItLog& DiccLog<K,S>::ItLog::operator = (const typename DiccLog<K, S>::ItLog& otro){
@@ -219,7 +228,7 @@ void DiccLog<K,S>::ItLog::Avanzar(){
 
 template<class K ,class S>
 void DiccLog<K,S>::ItLog::AgregarComoSiguiente(K clave, S sig){
-  nodoAB n(clave,sig);
+  nodoAB* n(clave, sig);
   n.padre = anterior;
   if(anterior->clave > clave){
     anterior->der = &n;
@@ -264,6 +273,13 @@ void DiccLog<K,S>::ItLog::EliminarSiguiente(){
 
 template<class K ,class S>
 void DiccLog<K,S>::ItLog::EliminarHoja(){
+  if(siguiente->padre->izq = siguiente){
+    siguiente->padre->izq = NULL;
+    delete siguiente;
+  }else{
+    siguiente->padre->der = NULL;
+    delete siguiente;
+  }
   if(!recorrido.EsVacia()){
     siguiente = recorrido.Tope();
     anterior = siguiente->padre;
@@ -279,11 +295,14 @@ void DiccLog<K,S>::ItLog::EliminarRaiz(){
   if(siguiente->der != NULL && siguiente->izq != NULL){
     (siguiente->izq).padre = siguiente->der;
     (siguiente->der)->izq = siguiente->izq;
+    delete siguiente;
     siguiente = siguiente->der;
   }else{
     if(siguiente->der != NULL){
+      delete siguiente;
       siguiente = siguiente->der;
     }else{
+      delete siguiente;
       siguiente = siguiente->izq;
     }
   }
@@ -293,30 +312,32 @@ void DiccLog<K,S>::ItLog::EliminarRaiz(){
 template<class K ,class S>
 void DiccLog<K,S>::ItLog::EliminarConUnHijo(){
   nodoAB* temp = siguiente;
-  if(siguiente->der != NULL){
+  if(siguiente->der == NULL){
     (temp->izq).padre = anterior;
     if(anterior->der == siguiente){
       anterior->der = temp->izq;
     }else{
       anterior->izq = temp->izq;
     }
+    delete siguiente;
     siguiente = temp->izq;
   }else{
+    (temp->der).padre = anterior;
     if(anterior->der == siguiente){
       anterior->der = temp->der;
     }else{
       anterior->izq = temp->der;
     }
+    delete siguiente;
     siguiente = temp->der;
   }
-  temp = NULL;
 }
 
 
 template<class K ,class S>
 DiccLog<K,S> DiccLog<K,S>::ItLog::Arbol(){
   nodoAB* p;
-  if (siguiente=NULL){
+  if(siguiente == NULL){
     p = anterior;
   }else{
     p = siguiente;
@@ -348,7 +369,7 @@ DiccLog<K,S>::DiccLog(const DiccLog<K,S>& otro){
 template<class K ,class S>
 DiccLog<K,S>::~DiccLog(){
   typename DiccLog<K,S>::ItLog it = CrearIt();
-  while(it.siguiente!=NULL){
+  while(it.HaySiguiente()){
     it.EliminarSiguiente();
   }
 }
@@ -366,6 +387,7 @@ void DiccLog<K,S>::Definir(const K& clave, const S& sig){
 
 template<class K ,class S>
 typename DiccLog<K,S>::ItLog DiccLog<K,S>::CrearIt(){
+  return ItLog(this);
   typename DiccLog<K,S>::ItLog res;
   res.siguiente = this;
 }
@@ -411,6 +433,7 @@ const S& DiccLog<K,S>::Obtener(const K& clave) const{
 
 template<class K ,class S>
 void DiccLog<K,S>::Borrar(const K& clave){
+  assert(Definido(clave));
   Buscar(clave).EliminarSiguiente();
 }
 
