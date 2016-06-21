@@ -16,7 +16,7 @@ namespace modulos{
 		public:
 
 			Pila();
-			Pila(Pila& otro);
+			Pila(const Pila& otro);
 			~Pila();
 
 
@@ -33,7 +33,7 @@ template <typename T>
 Pila<T>::Pila(){}
 
 template <typename T>
-Pila<T>::Pila(Pila& otro): list(otro.list){}
+Pila<T>::Pila(const Pila& otro): list(otro.list){}
 
 template <typename T>
 Pila<T>::~Pila(){

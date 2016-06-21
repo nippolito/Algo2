@@ -30,13 +30,13 @@ class DiccLog{
 		void Definir(const K& clave, const S& significado);
 
 		bool EsVacio();
-    bool Definido(const K& clave) const;
-		const S& Obtener(const K& clave) const;
+    bool Definido(const K& clave);   //le sacamos el CONST
+		S& Obtener(const K& clave);
 		void Borrar(const K& clave);
 		const K Maximo();
 		const K Minimo();
 		
-		ItLog CrearIt();
+		ItLog CrearIt() const;
   //  const_ItLog CrearIt() const;
     
     ItLog Buscar(const K&);
@@ -56,7 +56,7 @@ class DiccLog{
 
         bool operator == (const typename DiccLog<K,S>::ItLog& otro) const;
 
-        bool HaySiguiente() const;
+        bool HaySiguiente();    //le sacamos el CONST
         const K& SiguienteClave() const;
         S& SiguienteSignificado();
         void Avanzar();
@@ -77,12 +77,11 @@ class DiccLog{
 
           ItLog(DiccLog<K,S>* d);
 
-      		friend typename DiccLog<K,S>::ItLog DiccLog<K,S>::CrearIt();
+      		friend typename DiccLog<K,S>::ItLog DiccLog<K,S>::CrearIt() const;
        	 	//friend class DiccLog<K,S>::const_ItLog;
 
           friend ostream& operator<<(ostream& os, const typename DiccLog<K,S>::ItLog& it){
-          os<<"it";
-          return os;
+            return os << (it->siguiente).clave << ":" << (it->siguiente).significado << endl;
           }
     };
 
@@ -162,8 +161,9 @@ DiccLog<K,S>::ItLog::ItLog(nodoAB* sig, nodoAB* ant, bool b): siguiente(sig) , a
 
 template<class K ,class S>
 typename DiccLog<K,S>::ItLog& DiccLog<K,S>::ItLog::operator = (const typename DiccLog<K, S>::ItLog& otro){
-  DiccLog<K,S>::ItLog res(otro);
-  return res;
+  typename DiccLog<K,S>::ItLog* res = new ItLog(otro);
+  //nodoAB* n = new nodoAB(clave,sig);
+  return *res;
 }
 
 template<class K ,class S>
@@ -172,8 +172,8 @@ bool DiccLog<K,S>::ItLog::operator == (const typename DiccLog<K, S>::ItLog& otro
 }
 
 template<class K ,class S>
-bool DiccLog<K,S>::ItLog::HaySiguiente() const{
-  return siguiente!=NULL;
+bool DiccLog<K,S>::ItLog::HaySiguiente(){
+  return siguiente != NULL;
 }
 
 template<class K ,class S>
@@ -193,7 +193,7 @@ void DiccLog<K,S>::ItLog::Avanzar(){
     typename DiccLog<K,S>::ItLog it(*this);
     while(it.anterior != NULL){
       it.siguiente = it.anterior;
-      it.anteror = it.anterior->padre;
+      it.anterior = it.anterior->padre;
     }
     while(it.siguiente->clave != siguiente->clave){
       if(it.siguiente->der != NULL){
@@ -228,14 +228,17 @@ void DiccLog<K,S>::ItLog::Avanzar(){
 
 template<class K ,class S>
 void DiccLog<K,S>::ItLog::AgregarComoSiguiente(K clave, S sig){
-  nodoAB* n(clave, sig);
-  n.padre = anterior;
+  nodoAB* n = new nodoAB(clave,sig);
+  cerr << "crea el nodo" << endl;
+  n->padre = anterior;
+  cerr << anterior << endl;
+  cerr << "casi entra al if" << endl;
   if(anterior->clave > clave){
-    anterior->der = &n;
+    anterior->der = n;
   }else{
-    anterior->izq = &n;
+    anterior->izq = n;
   }
-  siguiente = &n;
+  siguiente = n;
 }
 
 
@@ -250,7 +253,7 @@ void DiccLog<K,S>::ItLog::EliminarSiguiente(){
       }else{
         nodoAB* temp = siguiente;
         nodoAB* rec = temp->der;
-        while(rec.izq != NULL){
+        while(rec->izq != NULL){
           rec = rec->izq;
         }
         temp->clave = rec->clave;
@@ -293,7 +296,7 @@ void DiccLog<K,S>::ItLog::EliminarHoja(){
 template<class K ,class S>
 void DiccLog<K,S>::ItLog::EliminarRaiz(){
   if(siguiente->der != NULL && siguiente->izq != NULL){
-    (siguiente->izq).padre = siguiente->der;
+    (siguiente->izq)->padre = siguiente->der;
     (siguiente->der)->izq = siguiente->izq;
     delete siguiente;
     siguiente = siguiente->der;
@@ -313,7 +316,7 @@ template<class K ,class S>
 void DiccLog<K,S>::ItLog::EliminarConUnHijo(){
   nodoAB* temp = siguiente;
   if(siguiente->der == NULL){
-    (temp->izq).padre = anterior;
+    (temp->izq)->padre = anterior;
     if(anterior->der == siguiente){
       anterior->der = temp->izq;
     }else{
@@ -322,7 +325,7 @@ void DiccLog<K,S>::ItLog::EliminarConUnHijo(){
     delete siguiente;
     siguiente = temp->izq;
   }else{
-    (temp->der).padre = anterior;
+    (temp->der)->padre = anterior;
     if(anterior->der == siguiente){
       anterior->der = temp->der;
     }else{
@@ -377,39 +380,54 @@ DiccLog<K,S>::~DiccLog(){
 
 template<class K ,class S>
 void DiccLog<K,S>::Definir(const K& clave, const S& sig){
+  cerr << "asd" << endl;
   if (EsVacio()){
+    cerr << "primero" << endl;
     nodoAB* p = new nodoAB(clave,sig);
     raiz = p;
   }else{
     Buscar(clave).AgregarComoSiguiente(clave, sig);
+    cerr << "segundo" << endl;
   }
+  cerr << "si" << endl;
 }
 
 template<class K ,class S>
-typename DiccLog<K,S>::ItLog DiccLog<K,S>::CrearIt(){
-  return ItLog(this);
-  typename DiccLog<K,S>::ItLog res;
-  res.siguiente = this;
+typename DiccLog<K,S>::ItLog DiccLog<K,S>::CrearIt() const{
+  typename DiccLog<K,S>::ItLog res = ItLog(raiz, NULL, false);
+  return res;
 }
 
 
 template<class K ,class S>
 typename DiccLog<K,S>::ItLog DiccLog<K,S>::Buscar(const K& c){
-  typename DiccLog<K,S>::ItLog res = CrearIt();
-  res.busca = true;
-  while(res.HaySiguiente() && res.SiguienteClave()!= c){
-    res.anterior = res.siguiente;
-    if(res.SiguienteClave() < c){
-      res.siguiente = res.siguiente->der;
+  nodoAB* p = raiz;
+  cerr << "entro al buscar" << endl;
+  while(p->clave != c && !(p->izq == NULL && p->der == NULL)){
+    cerr << "se metio al ciclo" << endl;
+    if(c < p->clave){
+      cerr << "te rompiste?1" << endl;
+      p = p->izq;
     }else{
-      res.siguiente = res.siguiente->izq;
+      cerr << "te rompiste?2" << endl;
+      p = p->der;
     }
   }
+  cerr << "salio del ciclo" << endl;
+  bool b = true;
+  if (EsVacio())
+  {
+    typename DiccLog<K,S>::ItLog res = ItLog(NULL, p, b);  //Recordar que acá está el segmentation fault, la primera vez el anterior tiene que ser NULL pero a partir de la segunda el anterior tiene que ser el verdadero anterior
+  }else{
+    typename DiccLog<K,S>::ItLog res = ItLog(p->padre, p, b);
+  }
+  cerr << "casi termina" << endl;  //ES UN FORRO
+  return res;
 }
 
 template<class K ,class S>
 DiccLog<K,S>& DiccLog<K,S>::operator=(const DiccLog<K,S>& otro){
-  typename DiccLog<K,S>::ItLog res(otro);
+  typename DiccLog<K,S>::DiccLog<K,S> res(otro);
   return res;
 }
 
@@ -422,12 +440,12 @@ bool DiccLog<K,S>::EsVacio(){
 
 
 template<class K ,class S>
-bool DiccLog<K,S>::Definido(const K& clave) const{
+bool DiccLog<K,S>::Definido(const K& clave){
   return Buscar(clave).HaySiguiente();
 }
 
 template<class K ,class S>
-const S& DiccLog<K,S>::Obtener(const K& clave) const{
+S& DiccLog<K,S>::Obtener(const K& clave){
   return Buscar(clave).SiguienteSignificado();
 }
 

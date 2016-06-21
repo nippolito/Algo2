@@ -5,10 +5,19 @@ using namespace aed2;
 using namespace modulos;
 
 int main(){
-	DiccLog<int, int> d;
-	//DiccLog<int, int> dl;
+	DiccLog<Nat, String> d;
 	Nat n;
 	String s;
+	d.Definir(10, "caca");
+	// d.Buscar(10);
+	//d.Definido(10);
+	d.Definir(12, "hola");
+	d.Definir(11, "carlos");
+	//d.Obtener(10);
+	//DiccLog<Nat, String>::ItLog it = d.CrearIt();
+	//cout << it.siguiente << endl;
+    //DiccLog<Nat, String>::nodoAB p(10, "caca");
+   // cout << p << endl;
 	// int ch;
 	// while (1)
 	// {
