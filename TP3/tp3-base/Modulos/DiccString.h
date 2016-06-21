@@ -49,6 +49,7 @@ class DiccString{
         ItStr();
 
         ItStr(const typename DiccString<S>::ItStr& otro);
+        ItStr(nodoStr* s, nodoStr* a, String c, bool b);
 
         ItStr& operator = (const typename DiccString<S>::ItStr& otro);
 
@@ -87,6 +88,7 @@ class DiccString{
         	const_ItStr();
 
         	const_ItStr(const typename DiccString<S>::ItStr& otro);
+          const_ItStr(nodoStr* s, nodoStr* a, String c, bool b);
 
           const_ItStr(const typename DiccString<S>::const_ItStr& otro);
 
@@ -121,10 +123,10 @@ class DiccString{
       nodoStr* caracteres[256];     // ¿Asi se inicializan arreglos?
       S* significado; 
 
-      nodoStr(const S& s) : padre(NULL), significado(s){}
-      friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
+      nodoStr(S* s) : padre(NULL), significado(s){}
+      /*friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
         return os << n.clave << ":" << n.significado;
-      }
+      }*/
 
       };
 
@@ -133,9 +135,9 @@ class DiccString{
       String clav;
 
       data(const S& s, const String& c) : clav(c), sig(s){}
-      friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
+      /*friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
         return os << n.clave << ":" << n.significado;
-      }
+      }*/
 
       };
 
@@ -154,6 +156,9 @@ DiccString<S>::ItStr::ItStr(): siguiente(NULL), anterior(NULL), clave (""),busca
 
 template<class S>
 DiccString<S>::ItStr::ItStr(const typename DiccString<S>::ItStr& otro): siguiente(otro.siguiente), anterior(otro.anterior), clave(otro.clave), busca(otro.busca), recorrido(otro.recorrido) {}
+
+template<class S>
+DiccString<S>::ItStr::ItStr(nodoStr* s, nodoStr* a, String c, bool b): siguiente(s), anterior(a), busca(b), clave(c){}
 
 template<class S>
 typename DiccString<S>::ItStr& DiccString<S>::ItStr::operator = (const typename DiccString<S>::ItStr& otro){
@@ -254,26 +259,186 @@ void DiccString<S>::ItStr::Avanzar(){
     }
   }
 }
-/*
+
 template<class S>
-void EliminarSiguiente();
-*/
+void DiccString<S>::ItStr::EliminarSiguiente(){
+  siguiente->significado = NULL;
+  while(ApuntaAHoja() && siguiente->significado == NULL && anterior != NULL){
+    int j = *(clave.end());
+    delete siguiente;
+    anterior[j] = NULL;
+    siguiente = anterior;
+    anterior = anterior->padre;
+  }
+  if(recorrido.EsVacia()){
+    anterior = siguiente;
+    siguiente = NULL;
+  }else{
+    siguiente = recorrido.Tope().sig;
+    clave = recorrido.Tope().clav;
+    anterior = siguiente->padre;
+    recorrido.Desapilar();
+  }
+}
+
+template<class S>
+bool DiccString<S>::ItStr::ApuntaAHoja(){
+  bool res = true;
+  int i = 0;
+  while(res && i<256){
+    res = res || (siguiente->caracteres)[i]==NULL;
+  }
+  return res;
+}
+
+template<class S>
+void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){
+  S* p = &s;
+  if (anterior==NULL){
+    nodoStr n(p);
+    for (int i=0;i<256;i++){
+      n.caracteres[i] = NULL;
+    }
+  }else{
+    cerr << (anterior==NULL) << endl;
+    if(c == clave && siguiente!=NULL){
+      cerr << "Salio por THEN" << endl;
+      siguiente->significado = p;
+    }else{
+      cerr << "Salio por ELSE" << endl;
+      int j = clave.length();
+      nodoStr n(NULL);
+      for (int i=0;i<256;i++){
+        n.caracteres[i] = NULL;
+      }
+      n.padre = anterior;
+      int i=c[j];
+      (anterior->caracteres)[i] = &n;
+      siguiente = &n;
+      j++;
+      while(j < c.length()){
+        nodoStr n(NULL);
+        for (int i=0;i<256;i++){
+          n.caracteres[i] = NULL;
+        }
+        n.padre = anterior;
+        int i=c[j];
+        (anterior->caracteres)[i] = &n;
+        anterior = siguiente;
+        siguiente = &n;
+      j++;
+      }
+      clave = c;
+      siguiente->significado = p;
+    }
+  }
+}
+
 
 //  ------------>> FUNCIONES DEL DICCSTRING <<---------------
 
-/*
+
 template<class S>
 DiccString<S>::DiccString():raiz(NULL){}
 
 template<class S>
-DiccString<S>::DiccString(const DiccString<S>& otro){}
+DiccString<S>::DiccString(const DiccString<S>& otro){
+  typename DiccString<S>::ItStr it (otro);
+  while(HaySiguiente(it)){
+     Definir(it.SiguienteClave(),it.SiguienteSignificado());
+    it.Avanzar();
+  }
+}
 
 template<class S>
-DiccString<S>::~DiccString(){}
+DiccString<S>::~DiccString(){
+  typename DiccString<S>::ItStr it = CrearIt();
+  while(it.HaySiguiente()){
+    it.EliminarSiguiente();
+  }
+}
 
 template<class S>
-DiccString<S>& operator=(const DiccString<S>& otro){}
-*/
+DiccString<S>& DiccString<S>::operator=(const DiccString<S>& otro){
+  typename DiccString<S>::ItStr res = new ItStr(otro);
+  return *res;
+}
+
+template<class S>
+typename DiccString<S>::ItStr DiccString<S>::CrearIt(){
+  typename DiccString<S>::ItStr res(raiz,NULL,"",false);
+  return res;
+}
+
+template<class S>
+typename DiccString<S>::ItStr DiccString<S>::Buscar(const String& s){
+  nodoStr* rec = raiz;
+  nodoStr* padre = NULL;
+  String clave = "";
+  int j = 0;
+  int n = s.length();
+  while (clave!=s && rec!=NULL){
+    int i = s[j];
+    padre = rec;
+    rec = (rec->caracteres)[i];
+    clave.append(&s[j]);
+    j++;
+  }
+  typename DiccString<S>::ItStr res(rec,padre,clave,true);
+  cerr << "El Buscar funca  " << (rec==NULL) << endl;
+  return res;
+}
+
+template<class S>
+void DiccString<S>::Definir(const String& clave, const S& significado){
+  Buscar(clave).AgregarComoSiguiente(clave,significado);
+}
+
+template<class S>
+bool DiccString<S>::EsVacio(){
+  return raiz==NULL;
+}
+
+template<class S>
+bool DiccString<S>::Definido(const String& clave) const{
+  return Buscar(clave).HaySiguiente();
+}
+
+template<class S>
+const S& DiccString<S>::Obtener(const String& clave) const{
+  return Buscar(clave).SiguienteSignificado();
+}
+
+template<class S>
+void DiccString<S>::Borrar(const String& clave){
+  Buscar(clave).EliminarSiguiente();
+}
+
+template<class S>
+const String DiccString<S>::Minimo(){
+  DiccString<S>::ItStr i = CrearIt();
+  while(!i.ApuntaAHoja()){
+    i.Avanzar();
+  }
+  String res = i.clave;
+  return res;
+}
+
+template<class S>
+const String DiccString<S>::Maximo(){
+  nodoStr* a = raiz;
+  String res = "";
+  while(a != NULL){
+    int j = 255;
+    while(j > 0 && (a->caracteres)[j] == NULL){
+      j--;
+    }
+    char i = j;
+    res.append(&i);
+    a = (a->caracteres)[j];
+  }
+  return res;
+}
 
 
 };	
