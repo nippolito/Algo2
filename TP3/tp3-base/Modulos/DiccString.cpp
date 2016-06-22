@@ -7,10 +7,10 @@ using namespace modulos;
 
 int main(){
 	DiccString<Nat> D;
-	assert(D.EsVacio());
-	D.Definir("A",27);
-	cout << D.Obtener("A");
-	D.Definir("AN",11);
+//	assert(D.EsVacio());
+//	D.Definir("A",27);
+//	cout << D.Obtener("A");
+//	D.Definir("AN",11);
 
 
 
