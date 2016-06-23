@@ -36,15 +36,21 @@ int main(){
 	cerr << d.EsVacio() << endl;
 	d.Borrar(10);
 	cerr << "Borro piola" << endl;*/
-	for (int i=0;i<4;i=i+2){
+	/*for (int i=0;i<4;i=i+2){
 		d.Definir(i,"Puto");
-	}
-	d.Definir(3, "Tu Vieja");
-	d.Definir(5,"Tu Hermana");
+	}*/
+	d.Definir(5, "Tu Vieja");
+	d.Definir(6,"Tu Hermana");
 	//cerr << "Ya lo creo" << endl;
 	//d.Borrar(6);
 	//cerr << "Borro el 6" << endl;
-	d.Definir(1, "Pelas como un granjero");
+	//d.Definir(3, "Pelas como un granjero");
+	d.Definir(4, "Pelas como un granjero");
+	//d.Definir(2, "Pelas como un granjero");
+	//d.Definir(1, "Pelas como un granjero");
+	d.Borrar(5);
+	//d.Borrar(6);
+	//d.Borrar(5);
 	// for (int i=0; i<4;i=i+2){
 	// 	//cout << i << endl;
 	// 	//assert(d.Definido(i));

@@ -266,17 +266,18 @@ void DiccLog<K,S>::ItLog::EliminarSiguiente(){
         nodoAB* antrec = rec->padre;
         temp->clave = rec->clave;
         temp->significado = rec->significado;
+         typename DiccLog<K,S>::ItLog it = diccionario->Buscar(rec->clave);
         if(rec->der == NULL){
-          //diccionario->Buscar(rec->clave).EliminarHoja();
-          rec->padre->izq = NULL;
-          delete rec;
+          it.EliminarHoja();
+          /*rec->padre->izq = NULL;
+          delete rec;*/
         }else{
-          //diccionario->Buscar(rec->clave).EliminarConUnHijo();
-          nodoAB* temp2 = siguiente;
+          it.EliminarConUnHijo();
+          /*nodoAB* temp2 = siguiente;
           antrec->izq = temp2->der;
           temp2 = antrec->der;
           delete rec;
-          rec=temp2;
+          rec=temp2;*/
         }
       } 
     }else{
@@ -319,17 +320,19 @@ void DiccLog<K,S>::ItLog::EliminarRaiz(){                               // Le ag
     nodoAB* antrec = rec->padre;
     temp->clave = rec->clave;
     temp->significado = rec->significado;
+    typename DiccLog<K,S>::ItLog it = diccionario->Buscar(rec->clave);
     if(rec->der == NULL){
-      //diccionario->Buscar(rec->clave).EliminarHoja();
-      rec->padre->izq = NULL;
+     it.EliminarHoja();
+      /*rec->padre->izq = NULL;
       delete rec;
+      rec = NULL;*/
     }else{
-      //diccionario->Buscar(rec->clave).EliminarConUnHijo();
-      nodoAB* temp2 = siguiente;
+     it.EliminarConUnHijo();
+      /*nodoAB* temp2 = siguiente;
       antrec->izq = temp2->der;
       temp2 = antrec->der;
       delete rec;
-      rec=temp2;
+      rec=temp2;*/
     }
   }else{
     if(siguiente->der != NULL){
@@ -552,7 +555,7 @@ DiccLog<K,S>& DiccLog<K,S>::operator=(const DiccLog<K,S>& otro){
   typename DiccLog<K,S>::ItLog it = CrearIt();
   while(it.HaySiguiente())
   {
-    it.EliminarSiguiente();
+    it.nodoStrSiguiente();
   }
   it = otro.CrearIt();
   while(it.HaySiguiente()){
@@ -584,7 +587,7 @@ S& DiccLog<K,S>::Obtener(const K& clave){
 
 template<class K ,class S>
 void DiccLog<K,S>::Borrar(const K& clave){
-  assert(Definido(clave));
+  //assert(Definido(clave));
   Buscar(clave).EliminarSiguiente();
 }
 
