@@ -7,10 +7,14 @@ using namespace modulos;
 
 int main(){
 	DiccString<Nat> D;
-//	assert(D.EsVacio());
-//	D.Definir("A",27);
-//	cout << D.Obtener("A");
-//	D.Definir("AN",11);
+	//assert(D.EsVacio());
+	D.Definir("A",27);
+	cerr << "Definio piola" << endl;
+	cerr << D.Definido("A") << endl;
+	//cout << D.Obtener("A") << endl;
+	cout << "VIVA PERON" << endl;
+	D.Definir("AN",11);
+	cout << "VIVA PERON" << endl;
 
 
 

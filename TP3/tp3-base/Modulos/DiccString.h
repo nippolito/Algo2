@@ -14,13 +14,34 @@ namespace modulos{
 
 template<class S>
 class DiccString{
+  private:
+
+    struct nodoStr { 
+      nodoStr* padre;
+      nodoStr* caracteres[256];     // ¿Asi se inicializan arreglos?
+      S* significado; 
+
+      nodoStr(S* s) : padre(NULL), significado(s){}
+      /*friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
+        return os << n.clave << ":" << n.significado;
+      }*/
+
+      };
+
+    struct data { 
+      nodoStr* sig;
+      String clav;
+
+      data(const S& s, const String& c) : clav(c), sig(s){}
+      /*friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
+        return os << n.clave << ":" << n.significado;
+      }*/
+
+      };
 	public:
 
-	  struct nodoStr;
-    struct data;
-
   	class ItStr;
-		class const_ItStr;
+		//class const_ItStr;
 
 		DiccString();
 		DiccString(const DiccString<S>& otro);
@@ -30,17 +51,17 @@ class DiccString{
 		void Definir(const String& clave, const S& significado);
 
 		bool EsVacio();
-    bool Definido(const String& clave) const;
-		const S& Obtener(const String& clave) const;
+    bool Definido(const String& clave);
+		const S& Obtener(const String& clave);
 		void Borrar(const String& clave);
 		const String Maximo();
 		const String Minimo();
 		
 		ItStr CrearIt();
-    const_ItStr CrearIt() const;
+    //const_ItStr CrearIt() const;
     
     ItStr Buscar(const String&);
-    const_ItStr Buscar(const String&) const;
+    //const_ItStr Buscar(const String&) const;
 
     class ItStr
     {
@@ -49,7 +70,6 @@ class DiccString{
         ItStr();
 
         ItStr(const typename DiccString<S>::ItStr& otro);
-        ItStr(nodoStr* s, nodoStr* a, String c, bool b);
 
         ItStr& operator = (const typename DiccString<S>::ItStr& otro);
 
@@ -63,7 +83,7 @@ class DiccString{
 
         // FUNCIONES PRIVADAS, ¿QUE HACEMOS?
         bool ApuntaAHoja();
-        void AgregarComoSiguiente(String clave, S sig);
+        void AgregarComoSiguiente(const String clave, const S sig);
 
       private:	
       		nodoStr* siguiente;
@@ -71,9 +91,13 @@ class DiccString{
       		Pila<data> recorrido;
           String clave;
       		bool busca;
+          DiccString<S>* diccionario;    // EN EL TP NO ESTABA, PERDIAMOS REFERENCIA AL ARBOL
+
+          ItStr(nodoStr* s, nodoStr* a, String c, bool b, DiccString<S>* d);
 
       		friend typename DiccString<S>::ItStr DiccString<S>::CrearIt();
-       	 	friend class DiccString<S>::const_ItStr;
+          friend class DiccString<S>;
+       	 	// friend class DiccString<S>::const_ItStr;
 
         /*  friend ostream& operator<<(ostream& os, const typename DiccString<S>::ItStr& it){
           os<<"it";
@@ -81,7 +105,7 @@ class DiccString{
           }*/
     };
 
-   	class const_ItStr   // <------- ¿HAY QUE HACER ESTA MIERDA?
+   	/*class const_ItStr   // <------- ¿HAY QUE HACER ESTA MIERDA?
     {
     	public:
 
@@ -111,36 +135,12 @@ class DiccString{
 
       		friend typename DiccString<S>::const_ItStr DiccString<S>::CrearIt() const;
           
-         /* friend ostream& operator<<(ostream& os, const typename DiccString<S>::ItStr& it){
+          friend ostream& operator<<(ostream& os, const typename DiccString<S>::ItStr& it){
           os<<"it";
           return os;
-          }*/
+          }
 
-    };
-
-    struct nodoStr { 
-      nodoStr* padre;
-      nodoStr* caracteres[256];     // ¿Asi se inicializan arreglos?
-      S* significado; 
-
-      nodoStr(S* s) : padre(NULL), significado(s){}
-      /*friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
-        return os << n.clave << ":" << n.significado;
-      }*/
-
-      };
-
-    struct data { 
-      nodoStr* sig;
-      String clav;
-
-      data(const S& s, const String& c) : clav(c), sig(s){}
-      /*friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
-        return os << n.clave << ":" << n.significado;
-      }*/
-
-      };
-
+    };*/
     
     private:
 		
@@ -152,13 +152,13 @@ class DiccString{
 //  ------------>> FUNCIONES DEL ITSTR <<---------------
 
 template<class S>
-DiccString<S>::ItStr::ItStr(): siguiente(NULL), anterior(NULL), clave (""),busca(false){}
+DiccString<S>::ItStr::ItStr(): siguiente(NULL), anterior(NULL), clave (""),busca(false), diccionario(NULL){}
 
 template<class S>
-DiccString<S>::ItStr::ItStr(const typename DiccString<S>::ItStr& otro): siguiente(otro.siguiente), anterior(otro.anterior), clave(otro.clave), busca(otro.busca), recorrido(otro.recorrido) {}
+DiccString<S>::ItStr::ItStr(const typename DiccString<S>::ItStr& otro): siguiente(otro.siguiente), anterior(otro.anterior), clave(otro.clave), busca(otro.busca), recorrido(otro.recorrido), diccionario(otro.diccionario) {}
 
 template<class S>
-DiccString<S>::ItStr::ItStr(nodoStr* s, nodoStr* a, String c, bool b): siguiente(s), anterior(a), busca(b), clave(c){}
+DiccString<S>::ItStr::ItStr(nodoStr* s, nodoStr* a, String c, bool b, DiccString<S>* d): siguiente(s), anterior(a), busca(b), clave(c), diccionario(d){}
 
 template<class S>
 typename DiccString<S>::ItStr& DiccString<S>::ItStr::operator = (const typename DiccString<S>::ItStr& otro){
@@ -294,12 +294,17 @@ bool DiccString<S>::ItStr::ApuntaAHoja(){
 template<class S>
 void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){
   S* p = &s;
+  cerr << "Llego al Agregar" << endl;
   if (anterior==NULL){
-    nodoStr n(p);
+    cerr << "Entro al THEN" << endl;
+    nodoStr* n = new nodoStr(p);
     for (int i=0;i<256;i++){
-      n.caracteres[i] = NULL;
+      n->caracteres[i] = NULL;
     }
+    diccionario->raiz = n;
+
   }else{
+    cerr << "Entro al ELSE" << endl;
     cerr << (anterior==NULL) << endl;
     if(c == clave && siguiente!=NULL){
       cerr << "Salio por THEN" << endl;
@@ -311,12 +316,15 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){
       for (int i=0;i<256;i++){
         n.caracteres[i] = NULL;
       }
+      cerr << "Termino el 1° for" << endl;
       n.padre = anterior;
       int i=c[j];
       (anterior->caracteres)[i] = &n;
       siguiente = &n;
       j++;
+      cerr << c.length() << j << endl;
       while(j < c.length()){
+        cerr << "NICO SOS PUTO Y CAGON" << endl;
         nodoStr n(NULL);
         for (int i=0;i<256;i++){
           n.caracteres[i] = NULL;
@@ -326,7 +334,7 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){
         (anterior->caracteres)[i] = &n;
         anterior = siguiente;
         siguiente = &n;
-      j++;
+        j++;
       }
       clave = c;
       siguiente->significado = p;
@@ -366,7 +374,7 @@ DiccString<S>& DiccString<S>::operator=(const DiccString<S>& otro){
 
 template<class S>
 typename DiccString<S>::ItStr DiccString<S>::CrearIt(){
-  typename DiccString<S>::ItStr res(raiz,NULL,"",false);
+  typename DiccString<S>::ItStr res(raiz,NULL,"",false, this);
   return res;
 }
 
@@ -384,8 +392,8 @@ typename DiccString<S>::ItStr DiccString<S>::Buscar(const String& s){
     clave.append(&s[j]);
     j++;
   }
-  typename DiccString<S>::ItStr res(rec,padre,clave,true);
-  cerr << "El Buscar funca  " << (rec==NULL) << endl;
+  typename DiccString<S>::ItStr res(rec,padre,clave,true, this);
+  //cerr << "El Buscar funca  >>>" << (rec==NULL) << endl;
   return res;
 }
 
@@ -400,12 +408,12 @@ bool DiccString<S>::EsVacio(){
 }
 
 template<class S>
-bool DiccString<S>::Definido(const String& clave) const{
+bool DiccString<S>::Definido(const String& clave){
   return Buscar(clave).HaySiguiente();
 }
 
 template<class S>
-const S& DiccString<S>::Obtener(const String& clave) const{
+const S& DiccString<S>::Obtener(const String& clave){
   return Buscar(clave).SiguienteSignificado();
 }
 
