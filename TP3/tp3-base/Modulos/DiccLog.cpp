@@ -6,11 +6,14 @@ using namespace modulos;
 
 int main(){
 	DiccLog<Nat, String> d;
-	Nat n;
-	String s;
-	d.Definir(10, "caca");
-	d.Buscar(10);
-	cout << d.Definido(10) << endl;
+	//Nat n;
+	//String s;
+	d.Definir(10, "Antonio");
+	d.Definir(6, "Sylvanas");
+	d.Definir(4, "Brann Bronzebeard");
+	d.Borrar(4);
+	//d.Buscar(10);
+	//cout << d.Definido(10) << endl;
 	//d.Definir(12, "hola");
 	//d.Definir(11, "carlos");
 	//d.Obtener(10);
