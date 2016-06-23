@@ -4,14 +4,63 @@ using namespace std;
 using namespace aed2;
 using namespace modulos;
 
+void CrearVacioYLlenarlo(){
+	DiccLog<Nat,String> d;
+	for (int i=0;i<10;i=i+2){
+		d.Definir(i,"Puto");
+	}
+	d.Definir(3, "Tu Vieja");
+	d.Definir(7,"Tu Hermana");
+	//d.Borrar(6);
+	//cerr << "Borro el 6" << endl;
+	d.Definir(1, "Pelas como un granjero");
+	for (int i=0; i<10;i=i+2){
+		cout << i << endl;
+		assert(d.Definido(i));
+		if (d.Definido(i)){
+			d.Borrar(i);
+			cout << "Borro el " << i << endl;
+		}
+	}
+	assert(d.EsVacio());
+}
+
+
+
 int main(){
-	DiccLog<Nat, String> d;
-	//Nat n;
-	//String s;
-	d.Definir(10, "Antonio");
-	d.Definir(6, "Sylvanas");
-	d.Definir(4, "Brann Bronzebeard");
-	d.Borrar(4);
+	//CrearVacioYLlenarlo();
+
+	DiccLog<Nat,String> d;
+	/*d.Definir(10,"Caca");
+	cerr << "Definio piola" << endl;
+	cerr << d.EsVacio() << endl;
+	d.Borrar(10);
+	cerr << "Borro piola" << endl;*/
+	for (int i=0;i<4;i=i+2){
+		d.Definir(i,"Puto");
+	}
+	d.Definir(3, "Tu Vieja");
+	d.Definir(5,"Tu Hermana");
+	//cerr << "Ya lo creo" << endl;
+	//d.Borrar(6);
+	//cerr << "Borro el 6" << endl;
+	d.Definir(1, "Pelas como un granjero");
+	// for (int i=0; i<4;i=i+2){
+	// 	//cout << i << endl;
+	// 	//assert(d.Definido(i));
+	// 	d.Borrar(i);
+	// 	cout << "Borro el " << i << endl;
+	// }
+	//assert(d.EsVacio());
+
+	//d.Definir(10, "Antonio");
+	//d.Definir(6, "Sylvanas");
+	//d.Definir(4, "Brann Bronzebeard");
+	//d.Borrar(6);
+	//cout << d.Obtener(10) << endl;
+	//cout << d.Obtener(4) << endl;
+	//cout << d.Definido(6) << endl;
+	//d.Definir(30, "The Ancient One");
 	//d.Buscar(10);
 	//cout << d.Definido(10) << endl;
 	//d.Definir(12, "hola");
