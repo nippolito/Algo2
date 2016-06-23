@@ -90,6 +90,8 @@ class DiccLog{
       		Pila<nodoAB*> recorrido;
       		bool busca;
 
+
+          ItLog(nodoAB* sig, nodoAB* ant, bool b);
           ItLog(const DiccLog<K,S>* d);
           void CambiaFlag();
 
@@ -163,6 +165,9 @@ template<class K ,class S>
 DiccLog<K,S>::ItLog::ItLog(const DiccLog<K,S>* d): siguiente(d->raiz), anterior(NULL), busca(false){}
 
 template<class K ,class S>
+DiccLog<K,S>::ItLog::ItLog(nodoAB* sig, nodoAB* ant, bool b): siguiente(sig) , anterior(ant) , busca(b){}
+
+template<class K ,class S>
 void DiccLog<K,S>::ItLog::CambiaFlag(){
   busca = !busca;
 }
@@ -170,9 +175,8 @@ void DiccLog<K,S>::ItLog::CambiaFlag(){
 
 template<class K ,class S>
 typename DiccLog<K,S>::ItLog& DiccLog<K,S>::ItLog::operator = (const typename DiccLog<K, S>::ItLog& otro){
-  typename DiccLog<K,S>::ItLog* res = new ItLog(otro);
-  //nodoAB* n = new nodoAB(clave,sig);
-  return *res;
+  DiccLog<K,S>::ItLog res(otro);
+  return res;
 }
 
 template<class K ,class S>
@@ -399,6 +403,7 @@ void DiccLog<K,S>::Definir(const K& clave, const S& sig){
     cerr << "segundo" << endl;
   }
   cerr << "si" << endl;
+  cerr << raiz->clave << endl;
 }
 
 template<class K ,class S>
@@ -411,7 +416,7 @@ typename DiccLog<K,S>::ItLog DiccLog<K,S>::CrearIt() const{
 template<class K ,class S>
 typename DiccLog<K,S>::ItLog DiccLog<K,S>::Buscar(const K& c){
   nodoAB* p = raiz;
-  typename DiccLog<K,S>::ItLog res;
+  //typename DiccLog<K,S>::ItLog res;
   cerr << "entro al buscar" << endl;
   while(p->clave != c && !(p->izq == NULL && p->der == NULL)){
     cerr << "se metio al ciclo" << endl;
@@ -423,15 +428,17 @@ typename DiccLog<K,S>::ItLog DiccLog<K,S>::Buscar(const K& c){
       p = p->der;
     }
   }
-  cerr << "salio del ciclo" << endl;
-  bool b = true;
-  if (EsVacio())
-  {
-     res = ItLog();  //Recordar que acá está el segmentation fault, la primera vez el anterior tiene que ser NULL pero a partir de la segunda el anterior tiene que ser el verdadero anterior
-  }else{
+  typename DiccLog<K,S>::ItLog res = ItLog(p, p->padre, true);
+  if(EsVacio()){
+    cerr << "vacio?" << endl;
     res = ItLog();
+  }else{
+    cerr << "crea?" << endl;
   }
+  cerr << "salio del ciclo" << endl;
   cerr << "casi termina" << endl;  //ES UN FORRO
+  cerr << p << endl;
+  cerr << res.siguiente << endl;
   return res;
 }
 
