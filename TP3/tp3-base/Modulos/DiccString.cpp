@@ -8,7 +8,8 @@ using namespace modulos;
 int main(){
 	DiccString<String> d;
 
-	d.Definir("Dr.Balanced" , "Neutral");
+	d.Definir("Dr.Balanced", "Neutral");
+	//cerr << "Define piola" << endl;
 	//d.Definir("Antonidas" , "Mage");
 	// d.Definir("Antonidas" , "Mage");
 	// d.Definir("Antonidas" , "Mage");

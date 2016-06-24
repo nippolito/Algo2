@@ -32,7 +32,7 @@ class DiccString{
       nodoStr* sig;
       String clav;
 
-      data(const S& s, const String& c) : clav(c), sig(s){}
+      data(nodoStr* s, String c) : sig(s), clav(c) {}
       /*friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
         return os << n.clave << ":" << n.significado;
       }*/
@@ -175,8 +175,12 @@ DiccString<S>::ItStr::ItStr(nodoStr* s, nodoStr* a, String c, bool b, DiccString
 
 template<class S>
 typename DiccString<S>::ItStr& DiccString<S>::ItStr::operator = (const typename DiccString<S>::ItStr& otro){
-  DiccString<S>::ItStr res(otro);
-  return res;
+  siguiente = otro.siguiente;
+  anterior = otro.anterior;
+  recorrido = otro.recorrido;
+  busca = otro.busca;
+  clave = otro.clave;
+  return *this;
 }
 
 template<class S>
@@ -202,6 +206,7 @@ S& DiccString<S>::ItStr::SiguienteSignificado(){
 
 template<class S>
 void DiccString<S>::ItStr::Avanzar(){
+  cerr << "Entramos al Avanzar" << endl;
   if(busca){
     typename DiccString<S>::ItStr it(*this);
     while(it.anterior != NULL){
@@ -213,7 +218,7 @@ void DiccString<S>::ItStr::Avanzar(){
       while(j >= 0){
         if(siguiente->caracteres[j] != NULL){
           String nuevaclave = clave;
-          data d;
+          data d(NULL,"");
           d.sig = siguiente->caracteres[j];
           char cj = j;
           nuevaclave.append(&cj); //OJO con el &, no sabemos si funca!
@@ -223,7 +228,7 @@ void DiccString<S>::ItStr::Avanzar(){
         j--;
       }
       it.siguiente = it.recorrido.Tope().sig;
-      it.clave = it.recorrido.Tope().clave;
+      it.clave = it.recorrido.Tope().clav;
       it.anterior = it.siguiente->padre;
       it.recorrido.Desapilar();
     }
@@ -231,10 +236,11 @@ void DiccString<S>::ItStr::Avanzar(){
     busca = false;
   }
   int j = 255;
+  cerr << "0" << endl;
   while(j >= 0){
     if(siguiente->caracteres[j] != NULL){
       String nuevaclave = clave;
-      data d;
+      data d(NULL,"");
       d.sig = siguiente->caracteres[j];
       char cj = j;
       nuevaclave.append(&cj);
@@ -243,11 +249,13 @@ void DiccString<S>::ItStr::Avanzar(){
     }
     j--;
   }
+  cerr << "1" << endl;
   if(recorrido.EsVacia()){
+    cerr << "Estaba en una hoja" << endl;
     anterior = siguiente;
     siguiente = NULL;
   }else{
-    while(recorrido.Tope().sig->significado == NULL && !recorrido.EsVacia()){
+    while(!recorrido.EsVacia() && recorrido.Tope().sig->significado == NULL){
       int j = 255;
       nodoStr* guardanodo = recorrido.Tope().sig;
       String guardaclave = recorrido.Tope().clav;
@@ -255,7 +263,7 @@ void DiccString<S>::ItStr::Avanzar(){
       while(j >= 0){
         if(guardanodo->caracteres[j] != NULL){
           String nuevaclave = guardaclave;
-          data d;
+          data d(NULL,"");
           d.sig = guardanodo->caracteres[j];
           char cj = j;
           nuevaclave.append(&cj); //OJO con el &, no sabemos si funca!
@@ -265,11 +273,14 @@ void DiccString<S>::ItStr::Avanzar(){
         j--;
       }
     }
+    cerr << "2" << endl;
     if(recorrido.EsVacia()){
+      cerr << "Era la ultima definida" << endl;
       anterior = siguiente;
       siguiente = NULL;
     }else{
-      siguiente = recorrido.Tope();
+      cerr << "Avanzo" << endl;
+      siguiente = recorrido.Tope().sig;
       anterior = siguiente->padre;
       recorrido.Desapilar();
     }
@@ -279,21 +290,40 @@ void DiccString<S>::ItStr::Avanzar(){
 template<class S>
 void DiccString<S>::ItStr::EliminarSiguiente(){
   siguiente->significado = NULL;
-  while(ApuntaAHoja() && siguiente->significado == NULL && anterior != NULL){
-    int j = *(clave.end());
+  if (anterior==NULL && ApuntaAHoja()){
     delete siguiente;
-    anterior[j] = NULL;
-    siguiente = anterior;
-    anterior = anterior->padre;
-  }
-  if(recorrido.EsVacia()){
-    anterior = siguiente;
+    diccionario->raiz = NULL;
     siguiente = NULL;
   }else{
-    siguiente = recorrido.Tope().sig;
-    clave = recorrido.Tope().clav;
-    anterior = siguiente->padre;
-    recorrido.Desapilar();
+    while(ApuntaAHoja() && siguiente->significado == NULL && anterior != NULL){
+      int j = *(clave.end());
+      clave.erase(clave.length()-1, clave.length());
+      delete siguiente;
+      anterior[j] = NULL;
+      siguiente = anterior;
+      anterior = anterior->padre;
+    }
+    for(int j=255;j>=0;j--){
+      if(siguiente->caracteres[j]!=NULL){
+        String nuevaclave = clave;
+        data d(NULL,"");
+        d.sig = siguiente->caracteres[j];
+        char cj = j;
+        nuevaclave.append(&cj);
+        d.clav = nuevaclave;
+        recorrido.Apilar(d); 
+      }
+    }
+    if(recorrido.EsVacia()){
+      anterior = siguiente;
+      siguiente = NULL;
+    }else{
+      /*siguiente = recorrido.Tope().sig;
+      clave = recorrido.Tope().clav;
+      anterior = siguiente->padre;
+      recorrido.Desapilar();*/
+      Avanzar();
+    }
   }
 }
 
@@ -303,6 +333,7 @@ bool DiccString<S>::ItStr::ApuntaAHoja(){
   int i = 0;
   while(res && i<256){
     res = res || (siguiente->caracteres)[i]==NULL;
+    i++;
   }
   return res;
 }
