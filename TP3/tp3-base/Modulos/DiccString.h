@@ -358,27 +358,36 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el dise�
     }
     diccionario->raiz = n;
     siguiente = n;
+    if(c==""){
+      n->significado=p;
+      return;
+    }else{
+      anterior = siguiente;
+      siguiente=NULL;
+    }
   }
   if(c == clave && siguiente!=NULL){        // En el diseño faltó chequear si el nodo existía ya o había que crearlo
     siguiente->significado = p;
   }else{
     int j = clave.length();
-    nodoStr n = new nodoStr(NULL);
+    nodoStr* n = new nodoStr(NULL);
     for (int i=0;i<256;i++){
-      n.caracteres[i] = NULL;
+      n->caracteres[i] = NULL;
     }
-    n.padre = anterior;
-    int i = c[j-1];
-    (anterior->caracteres)[i] = n;
+    n->padre = anterior;
+    if(anterior!=NULL){
+      int i = c[j];
+      (anterior->caracteres)[i] = n;
+    }
     siguiente = n;
     j++;
     while(j < c.length()){
-      nodoStr n = new nodoStr(NULL);
+      nodoStr* n = new nodoStr(NULL);
       for (int i=0;i<256;i++){
-        n.caracteres[i] = NULL;
+        n->caracteres[i] = NULL;
       }
-      n.padre = anterior;
-      int i=c[j-1];
+      n->padre = anterior;
+      int i=c[j];
       (anterior->caracteres)[i] = n;
       anterior = siguiente;
       siguiente = n;
@@ -432,7 +441,7 @@ typename DiccString<S>::ItStr DiccString<S>::Buscar(const String& s){
   String clave = "";
   int j = 0;
   int n = s.length();
-  while (clave!=s && rec!=NULL){
+  while (clave != s && rec != NULL){
     int i = s[j];
     padre = rec;
     rec = (rec->caracteres)[i];
@@ -440,7 +449,6 @@ typename DiccString<S>::ItStr DiccString<S>::Buscar(const String& s){
     j++;
   }
   typename DiccString<S>::ItStr res(rec,padre,clave,true, this);
-  //cerr << "El Buscar funca  >>>" << (rec==NULL) << endl;
   return res;
 }
 

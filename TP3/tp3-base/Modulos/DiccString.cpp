@@ -9,7 +9,7 @@ int main(){
 	DiccString<String> d;
 
 	d.Definir("Dr.Balanced" , "Neutral");
-	d.Definir("Antonidas" , "Mage");
+	//d.Definir("Antonidas" , "Mage");
 	// d.Definir("Antonidas" , "Mage");
 	// d.Definir("Antonidas" , "Mage");
 	// d.Definir("Antonidas" , "Mage");
