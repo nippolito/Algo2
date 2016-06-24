@@ -6,18 +6,13 @@ using namespace modulos;
 #include <cassert>
 
 int main(){
-	DiccString<Nat> D;
-	//assert(D.EsVacio());
-	D.Definir("A",27);
-	cerr << "Definio piola" << endl;
-	cerr << D.Definido("A") << endl;
-	//cout << D.Obtener("A") << endl;
-	cout << "VIVA PERON" << endl;
-	D.Definir("AN",11);
-	cout << "VIVA PERON" << endl;
+	DiccString<String> d;
 
-
-
+	d.Definir("Dr.Balanced" , "Neutral");
+	d.Definir("Antonidas" , "Mage");
+	// d.Definir("Antonidas" , "Mage");
+	// d.Definir("Antonidas" , "Mage");
+	// d.Definir("Antonidas" , "Mage");
 
 	return 0;
 }

@@ -251,7 +251,7 @@ void DiccLog<K,S>::ItLog::AgregarComoSiguiente(K clave, S sig){
 
 template<class K ,class S>
 void DiccLog<K,S>::ItLog::EliminarSiguiente(){
-  if(siguiente->clave!=diccionario->raiz->clave && siguiente->der != NULL && siguiente->izq != NULL){
+  if(siguiente->clave != diccionario->raiz->clave && siguiente->der == NULL && siguiente->izq == NULL){
     EliminarHoja();
   }else{
     if(anterior != NULL){
@@ -264,9 +264,9 @@ void DiccLog<K,S>::ItLog::EliminarSiguiente(){
           rec = rec->izq;
         }
         nodoAB* antrec = rec->padre;
+        typename DiccLog<K,S>::ItLog it = diccionario->Buscar(rec->clave);
         temp->clave = rec->clave;
         temp->significado = rec->significado;
-         typename DiccLog<K,S>::ItLog it = diccionario->Buscar(rec->clave);
         if(rec->der == NULL){
           it.EliminarHoja();
           /*rec->padre->izq = NULL;
@@ -290,7 +290,7 @@ void DiccLog<K,S>::ItLog::EliminarSiguiente(){
 
 template<class K ,class S>
 void DiccLog<K,S>::ItLog::EliminarHoja(){
-  if(siguiente->padre->izq = siguiente){
+  if(siguiente->padre->izq->clave == siguiente->clave){
     siguiente->padre->izq = NULL;
     delete siguiente;
   }else{
@@ -318,9 +318,9 @@ void DiccLog<K,S>::ItLog::EliminarRaiz(){                               // Le ag
       rec = rec->izq;
     }
     nodoAB* antrec = rec->padre;
+    typename DiccLog<K,S>::ItLog it = diccionario->Buscar(rec->clave);
     temp->clave = rec->clave;
     temp->significado = rec->significado;
-    typename DiccLog<K,S>::ItLog it = diccionario->Buscar(rec->clave);
     if(rec->der == NULL){
      it.EliminarHoja();
       /*rec->padre->izq = NULL;

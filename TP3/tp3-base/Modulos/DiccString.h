@@ -41,7 +41,7 @@ class DiccString{
 	public:
 
   	class ItStr;
-		//class const_ItStr;
+		class const_ItStr;
 
 		DiccString();
 		DiccString(const DiccString<S>& otro);
@@ -50,18 +50,18 @@ class DiccString{
 
 		void Definir(const String& clave, const S& significado);
 
-		bool EsVacio();
-    bool Definido(const String& clave);
-		const S& Obtener(const String& clave);
+		bool EsVacio() const;
+    bool Definido(const String& clave) const;
+		S& Obtener(const String& clave);
 		void Borrar(const String& clave);
-		const String Maximo();
-		const String Minimo();
+		const String Maximo() const;
+		const String Minimo() const;
 		
 		ItStr CrearIt();
-    //const_ItStr CrearIt() const;
+    const_ItStr CrearIt() const;
     
     ItStr Buscar(const String&);
-    //const_ItStr Buscar(const String&) const;
+    const_ItStr Buscar(const String&) const;
 
     class ItStr
     {
@@ -81,12 +81,15 @@ class DiccString{
         void Avanzar();
         void EliminarSiguiente();
 
-        // FUNCIONES PRIVADAS, ¿QUE HACEMOS?
-        bool ApuntaAHoja();
-        void AgregarComoSiguiente(const String clave, const S sig);
+    
+      
 
       private:	
-      		nodoStr* siguiente;
+      		
+        friend class DiccString<S>;
+        friend class DiccString<S>::const_ItStr;
+
+          nodoStr* siguiente;
       		nodoStr* anterior;
       		Pila<data> recorrido;
           String clave;
@@ -95,17 +98,18 @@ class DiccString{
 
           ItStr(nodoStr* s, nodoStr* a, String c, bool b, DiccString<S>* d);
 
-      		friend typename DiccString<S>::ItStr DiccString<S>::CrearIt();
-          friend class DiccString<S>;
-       	 	// friend class DiccString<S>::const_ItStr;
+            bool ApuntaAHoja();
+        void AgregarComoSiguiente(const String clave, const S sig);
 
-        /*  friend ostream& operator<<(ostream& os, const typename DiccString<S>::ItStr& it){
-          os<<"it";
-          return os;
-          }*/
+      		friend typename DiccString<S>::ItStr DiccString<S>::CrearIt();
+         
+
+        friend ostream& operator<<(ostream& os, const typename DiccString<S>::ItStr& it){
+            return os << (it->siguiente).clave << ":" << (it->siguiente).significado << endl;
+          }
     };
 
-   	/*class const_ItStr   // <------- ¿HAY QUE HACER ESTA MIERDA?
+   	class const_ItStr   // <------- ¿HAY QUE HACER ESTA MIERDA?
     {
     	public:
 
@@ -132,15 +136,19 @@ class DiccString{
       		Pila<data> recorrido; //asegurar que la lista funcione como una pila (insertar por adelante y sacar por adelante)
           String clave;
       		bool busca;
+          const DiccString<S>* diccionario; 
+
+         
+         bool ApuntaAHoja();
+         void AgregarComoSiguiente(const String clave, const S sig);
 
       		friend typename DiccString<S>::const_ItStr DiccString<S>::CrearIt() const;
           
-          friend ostream& operator<<(ostream& os, const typename DiccString<S>::ItStr& it){
-          os<<"it";
-          return os;
+         friend ostream& operator<<(ostream& os, const typename DiccString<S>::const_ItStr& it){
+            return os << (it->siguiente).clave << ":" << (it->siguiente).significado << endl;
           }
 
-    };*/
+    };
     
     private:
 		
@@ -148,6 +156,11 @@ class DiccString{
 
 	};
 
+template<class S>
+ostream& operator << (ostream &os, const DiccString<S>& d);
+
+template<class S>
+bool operator == (const DiccString<S>& d1, const DiccString<S>& d2);
 
 //  ------------>> FUNCIONES DEL ITSTR <<---------------
 
@@ -165,10 +178,13 @@ typename DiccString<S>::ItStr& DiccString<S>::ItStr::operator = (const typename 
   DiccString<S>::ItStr res(otro);
   return res;
 }
-/*
+
 template<class S>
-bool operator == (const typename DiccString<S>::ItStr& otro) const;
-*/
+bool DiccString<S>::ItStr:: operator == (const typename DiccString<S>::ItStr& otro) const
+{
+  return (siguiente==otro.siguiente && anterior==otro.anterior && recorrido==otro.recorrido && busca==otro.busca && clave == otro.clave);
+}
+
 template<class S>
 bool DiccString<S>::ItStr::HaySiguiente() const{
   return siguiente !=NULL;
@@ -290,55 +306,86 @@ bool DiccString<S>::ItStr::ApuntaAHoja(){
   }
   return res;
 }
-
+/*
 template<class S>
-void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){
+void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el diseño falto contemplar el caso de definir la raíz
   S* p = &s;
-  cerr << "Llego al Agregar" << endl;
   if (anterior==NULL){
-    cerr << "Entro al THEN" << endl;
     nodoStr* n = new nodoStr(p);
     for (int i=0;i<256;i++){
       n->caracteres[i] = NULL;
     }
     diccionario->raiz = n;
-
   }else{
-    cerr << "Entro al ELSE" << endl;
-    cerr << (anterior==NULL) << endl;
-    if(c == clave && siguiente!=NULL){
-      cerr << "Salio por THEN" << endl;
+    if(c == clave && siguiente!=NULL){        // En el diseño faltó chequear si el nodo existía ya o había que crearlo
       siguiente->significado = p;
     }else{
-      cerr << "Salio por ELSE" << endl;
       int j = clave.length();
-      nodoStr n(NULL);
+      nodoStr n = new nodoStr(NULL);
       for (int i=0;i<256;i++){
         n.caracteres[i] = NULL;
       }
-      cerr << "Termino el 1° for" << endl;
       n.padre = anterior;
-      int i=c[j];
-      (anterior->caracteres)[i] = &n;
-      siguiente = &n;
+      int i = c[j];
+      (anterior->caracteres)[i] = n;
+      siguiente = n;
       j++;
-      cerr << c.length() << j << endl;
       while(j < c.length()){
-        cerr << "NICO SOS PUTO Y CAGON" << endl;
-        nodoStr n(NULL);
+        nodoStr n = new nodoStr(NULL);
         for (int i=0;i<256;i++){
           n.caracteres[i] = NULL;
         }
         n.padre = anterior;
         int i=c[j];
-        (anterior->caracteres)[i] = &n;
+        (anterior->caracteres)[i] = n;
         anterior = siguiente;
-        siguiente = &n;
+        siguiente = n;
         j++;
       }
       clave = c;
       siguiente->significado = p;
     }
+  }
+}*/
+
+template<class S>
+void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el diseño falto contemplar el caso de definir la raíz
+  S* p = &s;
+  if (anterior==NULL){
+    nodoStr* n = new nodoStr(NULL);
+    for (int i=0;i<256;i++){
+      n->caracteres[i] = NULL;
+    }
+    diccionario->raiz = n;
+    siguiente = n;
+  }
+  if(c == clave && siguiente!=NULL){        // En el diseño faltó chequear si el nodo existía ya o había que crearlo
+    siguiente->significado = p;
+  }else{
+    int j = clave.length();
+    nodoStr n = new nodoStr(NULL);
+    for (int i=0;i<256;i++){
+      n.caracteres[i] = NULL;
+    }
+    n.padre = anterior;
+    int i = c[j-1];
+    (anterior->caracteres)[i] = n;
+    siguiente = n;
+    j++;
+    while(j < c.length()){
+      nodoStr n = new nodoStr(NULL);
+      for (int i=0;i<256;i++){
+        n.caracteres[i] = NULL;
+      }
+      n.padre = anterior;
+      int i=c[j-1];
+      (anterior->caracteres)[i] = n;
+      anterior = siguiente;
+      siguiente = n;
+      j++;
+    }
+    clave = c;
+    siguiente->significado = p;
   }
 }
 
@@ -403,17 +450,17 @@ void DiccString<S>::Definir(const String& clave, const S& significado){
 }
 
 template<class S>
-bool DiccString<S>::EsVacio(){
+bool DiccString<S>::EsVacio() const{
   return raiz==NULL;
 }
 
 template<class S>
-bool DiccString<S>::Definido(const String& clave){
+bool DiccString<S>::Definido(const String& clave) const{
   return Buscar(clave).HaySiguiente();
 }
 
 template<class S>
-const S& DiccString<S>::Obtener(const String& clave){
+S& DiccString<S>::Obtener(const String& clave){
   return Buscar(clave).SiguienteSignificado();
 }
 
@@ -423,7 +470,7 @@ void DiccString<S>::Borrar(const String& clave){
 }
 
 template<class S>
-const String DiccString<S>::Minimo(){
+const String DiccString<S>::Minimo() const {
   DiccString<S>::ItStr i = CrearIt();
   while(!i.ApuntaAHoja()){
     i.Avanzar();
@@ -433,7 +480,7 @@ const String DiccString<S>::Minimo(){
 }
 
 template<class S>
-const String DiccString<S>::Maximo(){
+const String DiccString<S>::Maximo() const {
   nodoStr* a = raiz;
   String res = "";
   while(a != NULL){
