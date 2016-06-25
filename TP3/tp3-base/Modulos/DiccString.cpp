@@ -8,11 +8,14 @@ using namespace modulos;
 int main(){
 	DiccString<String> d;
 
-	d.Definir("Dr.Balanced", "Neutral");
+	d.Definir("Varian Wrynn", "Warrior");
 	d.Definir("Antonidas" , "Mage");
 	d.Definir("Doomhammer" , "Shaman");
-	d.Definir("Sap" , "Rogue");
+	//d.Definir("Antique Healbot" , "Neutral");
 	//d.Definir("Cenarius" , "Druid");
+
+	//d.Borrar("Sap");
+	//d.Borrar("Cenarius");
 
 	return 0;
 }

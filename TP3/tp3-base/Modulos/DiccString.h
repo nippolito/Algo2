@@ -17,11 +17,13 @@ class DiccString{
   private:
 
     struct nodoStr { 
-      nodoStr* padre;
-      nodoStr* caracteres[256];     // ¿Asi se inicializan arreglos?
-      S* significado; 
+        nodoStr* padre;
+        nodoStr* caracteres[256];     // ¿Asi se inicializan arreglos?
+        S* significado; 
 
-      nodoStr(S* s) : padre(NULL), significado(s){}
+        nodoStr(S* s) : padre(NULL), significado(s){for(int j = 0 ; j < 256 ; j++){
+        caracteres[j]=NULL;}
+        };
       /*friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
         return os << n.clave << ":" << n.significado;
       }*/
@@ -64,6 +66,7 @@ class DiccString{
     const_ItStr Buscar(const String&) const;
     bool sonTodosNull(nodoStr*[],int);
     void destructorrecursivo(nodoStr*);
+   
 
     class ItStr
     {
@@ -451,10 +454,12 @@ DiccString<S>::DiccString(const DiccString<S>& otro){
 
 template<class S>
 bool DiccString<S>::sonTodosNull(nodoStr* caracteres[] , int n){
+ 
+  if (EsVacio()){return true;}
   int i=0;
   bool res = true;
   while(i<n){
-    res = res && caracteres[i] == NULL;
+    res = (res && caracteres[i] == NULL);
     i++;
   }
 return res;
@@ -462,7 +467,8 @@ return res;
 
 
 template<class S>
-void DiccString<S>::destructorrecursivo(nodoStr* n){
+void DiccString<S>::destructorrecursivo(nodoStr* n){  
+  
   if(sonTodosNull(n->caracteres,256)){
     delete n;
   }
