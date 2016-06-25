@@ -508,7 +508,6 @@ typename DiccLog<K,S>::ItLog DiccLog<K,S>::CrearIt(){
   return ItLog(this);
 }
 
-
 template<class K ,class S>
 typename DiccLog<K,S>::const_ItLog DiccLog<K,S>::CrearIt() const{
   //typename DiccLog<K,S>::const_ItLog res = ItLog(this);
@@ -565,9 +564,6 @@ DiccLog<K,S>& DiccLog<K,S>::operator=(const DiccLog<K,S>& otro){
 
 return *this;
 }
-
-
-
 
 template<class K ,class S>
 bool DiccLog<K,S>::EsVacio() const{

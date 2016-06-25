@@ -10,7 +10,10 @@ int main(){
 
 	d.Definir("Varian Wrynn", "Warrior");
 	d.Definir("Antonidas" , "Mage");
-	d.Definir("Doomhammer" , "Shaman");
+	d.Borrar("Varian Wrynn");
+//	cout << d.Definido("Antonidas") << endl;
+	//d.Borrar("Antonidas");
+	//d.Definir("Doomhammer" , EliminarSiguiente"Shaman");
 	//d.Definir("Antique Healbot" , "Neutral");
 	//d.Definir("Cenarius" , "Druid");
 

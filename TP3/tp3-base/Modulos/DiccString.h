@@ -143,7 +143,7 @@ class DiccString{
       		bool busca;
           const DiccString<S>* diccionario; 
 
-         
+         const_ItStr(nodoStr* s, nodoStr* a, String c, bool b, const DiccString<S>* d);
          bool ApuntaAHoja();
          void AgregarComoSiguiente(const String clave, const S sig);
 
@@ -211,7 +211,6 @@ S& DiccString<S>::ItStr::SiguienteSignificado(){
 
 template<class S>
 void DiccString<S>::ItStr::Avanzar(){
-  cerr << "Entramos al Avanzar" << endl;
   if(busca){
     typename DiccString<S>::ItStr it(*this);
     while(it.anterior != NULL){
@@ -241,7 +240,6 @@ void DiccString<S>::ItStr::Avanzar(){
     busca = false;
   }
   int j = 255;
-  //cerr << "0" << endl;
   while(j >= 0){
     if(siguiente->caracteres[j] != NULL){
       String nuevaclave = clave;
@@ -253,10 +251,8 @@ void DiccString<S>::ItStr::Avanzar(){
       recorrido.Apilar(d);  
     }
     j--;
-  }
-  //cerr << "1" << endl;
+  };
   if(recorrido.EsVacia()){
-    //cerr << "Estaba en una hoja" << endl;
     anterior = siguiente;
     siguiente = NULL;
   }else{
@@ -278,13 +274,10 @@ void DiccString<S>::ItStr::Avanzar(){
         j--;
       }
     }
-    //cerr << "2" << endl;
-    if(recorrido.EsVacia()){
-      //cerr << "Era la ultima definida" << endl;
+    if(recorrido.EsVacia()){     
       anterior = siguiente;
       siguiente = NULL;
     }else{
-      //cerr << "Avanzo" << endl;
       siguiente = recorrido.Tope().sig;
       anterior = siguiente->padre;
       recorrido.Desapilar();
@@ -295,14 +288,12 @@ void DiccString<S>::ItStr::Avanzar(){
 template<class S>
 void DiccString<S>::ItStr::EliminarSiguiente(){
   siguiente->significado = NULL;
-  cerr << (anterior==NULL) << endl;
   if (anterior==NULL && ApuntaAHoja()){
     delete siguiente;
     diccionario->raiz = NULL;
     siguiente = NULL;
   }else{
     while(ApuntaAHoja() && siguiente->significado == NULL && anterior != NULL){
-      //cerr << clave.length() << endl;
       int i = *(clave.end());
       clave.resize(clave.length()-1);
       delete siguiente;
@@ -437,6 +428,140 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el dise√
 }
 
 
+//-------------------------------------- Funciones del const_ItStr ---------------------------------------
+
+/*const_ItStr();
+
+          const_ItStr(const typename DiccString<S>::ItStr& otro);
+          const_ItStr(nodoStr* s, nodoStr* a, String c, bool b);
+
+          const_ItStr(const typename DiccString<S>::const_ItStr& otro);
+
+          const_ItStr& operator = (const typename DiccString<S>::const_ItStr& otro);
+
+          bool operator==(const typename DiccString<S>::const_ItStr& otro) const;
+
+          bool HaySiguiente() const;
+          const String& SiguienteClave() const;
+          const S& SiguienteSignificado() const;
+          void Avanzar(); */
+
+template<class S>
+DiccString<S>::const_ItStr::const_ItStr(): siguiente(NULL), anterior(NULL), clave (""),busca(false), diccionario(NULL){}
+
+template<class S>
+DiccString<S>::const_ItStr::const_ItStr(const typename DiccString<S>::const_ItStr& otro): siguiente(otro.siguiente), anterior(otro.anterior), clave(otro.clave), busca(otro.busca), recorrido(otro.recorrido), diccionario(otro.diccionario) {}
+
+template<class S>
+DiccString<S>::const_ItStr::const_ItStr(nodoStr* s, nodoStr* a, String c, bool b, const DiccString<S>* d): siguiente(s), anterior(a), busca(b), clave(c), diccionario(d){}
+
+template<class S>
+typename DiccString<S>::const_ItStr& DiccString<S>::const_ItStr::operator = (const typename DiccString<S>::const_ItStr& otro){
+  siguiente = otro.siguiente;
+  anterior = otro.anterior;
+  recorrido = otro.recorrido;
+  busca = otro.busca;
+  clave = otro.clave;
+  return *this;
+}
+
+template<class S>
+bool DiccString<S>::const_ItStr:: operator == (const typename DiccString<S>::const_ItStr& otro) const
+{
+  return (siguiente==otro.siguiente && anterior==otro.anterior && recorrido==otro.recorrido && busca==otro.busca && clave == otro.clave);
+}
+
+template<class S>
+bool DiccString<S>::const_ItStr::HaySiguiente() const{
+  return siguiente!=NULL;
+}
+
+template<class S>
+const String& DiccString<S>::const_ItStr::SiguienteClave() const{
+  return clave;
+}
+
+template<class S>
+const S& DiccString<S>::const_ItStr::SiguienteSignificado() const{
+  return *(siguiente->significado);
+}
+
+template<class S>
+void DiccString<S>::const_ItStr::Avanzar(){
+  if(busca){
+    typename DiccString<S>::const_ItStr it(*this);
+    while(it.anterior != NULL){
+      it.siguiente = it.anterior;
+      it.anterior = it.anterior->padre;
+    }
+    while(it.clave != clave){
+      int j = 255;
+      while(j >= 0){
+        if(siguiente->caracteres[j] != NULL){
+          String nuevaclave = clave;
+          data d(NULL,"");
+          d.sig = siguiente->caracteres[j];
+          char cj = j;
+          nuevaclave.append(&cj); //OJO con el &, no sabemos si funca!
+          d.clav = nuevaclave;
+          recorrido.Apilar(d);
+        }
+        j--;
+      }
+      it.siguiente = it.recorrido.Tope().sig;
+      it.clave = it.recorrido.Tope().clav;
+      it.anterior = it.siguiente->padre;
+      it.recorrido.Desapilar();
+    }
+    *this = it;
+    busca = false;
+  }
+  int j = 255;
+  while(j >= 0){
+    if(siguiente->caracteres[j] != NULL){
+      String nuevaclave = clave;
+      data d(NULL,"");
+      d.sig = siguiente->caracteres[j];
+      char cj = j;
+      nuevaclave.append(&cj);
+      d.clav = nuevaclave;
+      recorrido.Apilar(d);  
+    }
+    j--;
+  };
+  if(recorrido.EsVacia()){
+    anterior = siguiente;
+    siguiente = NULL;
+  }else{
+    while(!recorrido.EsVacia() && recorrido.Tope().sig->significado == NULL){
+      int j = 255;
+      nodoStr* guardanodo = recorrido.Tope().sig;
+      String guardaclave = recorrido.Tope().clav;
+      recorrido.Desapilar();
+      while(j >= 0){
+        if(guardanodo->caracteres[j] != NULL){
+          String nuevaclave = guardaclave;
+          data d(NULL,"");
+          d.sig = guardanodo->caracteres[j];
+          char cj = j;
+          nuevaclave.append(&cj); //OJO con el &, no sabemos si funca!
+          d.clav = nuevaclave;
+          recorrido.Apilar(d);
+        }
+        j--;
+      }
+    }
+    if(recorrido.EsVacia()){     
+      anterior = siguiente;
+      siguiente = NULL;
+    }else{
+      siguiente = recorrido.Tope().sig;
+      anterior = siguiente->padre;
+      recorrido.Desapilar();
+    }
+  }
+}
+
 //  ------------>> FUNCIONES DEL DICCSTRING <<---------------
 
 
@@ -502,8 +627,34 @@ DiccString<S>& DiccString<S>::operator=(const DiccString<S>& otro){
 }
 
 template<class S>
+typename DiccString<S>::const_ItStr DiccString<S>::CrearIt() const{
+  typename DiccString<S>::const_ItStr res(raiz,NULL,"",false, this);
+  return res;
+}
+
+template<class S>
 typename DiccString<S>::ItStr DiccString<S>::CrearIt(){
   typename DiccString<S>::ItStr res(raiz,NULL,"",false, this);
+  return res;
+}
+
+
+template<class S>
+typename DiccString<S>::const_ItStr DiccString<S>::Buscar(const String& s) const{
+  nodoStr* rec = raiz;
+  nodoStr* padre = NULL;
+  String clave = "";
+  int j = 0;
+  int n = s.length();
+  while (clave != s && rec != NULL){
+    int i = s[j];
+    padre = rec;
+    rec = (rec->caracteres)[i];
+    clave.append(&s[j]);
+    j++;
+  }
+  //typename DiccString<S>::const_ItStr res(rec,padre,clave,true, this);
+  typename DiccString<S>::const_ItStr res = CrearIt();
   return res;
 }
 
