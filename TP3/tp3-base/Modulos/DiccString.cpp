@@ -9,11 +9,10 @@ int main(){
 	DiccString<String> d;
 
 	d.Definir("Dr.Balanced", "Neutral");
-	//cerr << "Define piola" << endl;
-	//d.Definir("Antonidas" , "Mage");
-	// d.Definir("Antonidas" , "Mage");
-	// d.Definir("Antonidas" , "Mage");
-	// d.Definir("Antonidas" , "Mage");
+	d.Definir("Antonidas" , "Mage");
+	d.Definir("Doomhammer" , "Shaman");
+	d.Definir("Sap" , "Rogue");
+	//d.Definir("Cenarius" , "Druid");
 
 	return 0;
 }

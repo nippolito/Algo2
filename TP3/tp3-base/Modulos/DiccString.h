@@ -62,6 +62,8 @@ class DiccString{
     
     ItStr Buscar(const String&);
     const_ItStr Buscar(const String&) const;
+    bool sonTodosNull(nodoStr*[],int);
+    void destructorrecursivo(nodoStr*);
 
     class ItStr
     {
@@ -448,11 +450,43 @@ DiccString<S>::DiccString(const DiccString<S>& otro){
 }
 
 template<class S>
+bool DiccString<S>::sonTodosNull(nodoStr* caracteres[] , int n){
+  int i=0;
+  bool res = true;
+  while(i<n){
+    res = res && caracteres[i] == NULL;
+    i++;
+  }
+return res;
+}
+
+
+template<class S>
+void DiccString<S>::destructorrecursivo(nodoStr* n){
+  if(sonTodosNull(n->caracteres,256)){
+    delete n;
+  }
+  else
+  {
+    int i = 0;
+    while(i<256){
+      if(n->caracteres[i] != NULL){
+        destructorrecursivo(n->caracteres[i]);
+      }
+    i++;
+    }
+  delete n;
+  }
+}
+
+template<class S>
 DiccString<S>::~DiccString(){
-  typename DiccString<S>::ItStr it = CrearIt();
+ destructorrecursivo(raiz);
+ /* typename DiccString<S>::ItStr it = CrearIt();
   while(it.HaySiguiente()){
     it.EliminarSiguiente();
   }
+*/
 }
 
 template<class S>
