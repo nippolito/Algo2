@@ -50,7 +50,7 @@ class DiccString{
     ~DiccString();
 		DiccString<S>& operator=(const DiccString<S>& otro);
 
-		void Definir(const String& clave, const S& significado);
+		void Definir(const String& clave, S& sig);
 
 		bool EsVacio() const;
     bool Definido(const String& clave) const;
@@ -104,7 +104,7 @@ class DiccString{
           ItStr(nodoStr* s, nodoStr* a, String c, bool b, DiccString<S>* d);
 
           bool ApuntaAHoja();
-          void AgregarComoSiguiente(const String clave, const S sig);
+          void AgregarComoSiguiente(String clave, S& sig);
 
       		friend typename DiccString<S>::ItStr DiccString<S>::CrearIt();
          
@@ -147,7 +147,6 @@ class DiccString{
 
          const_ItStr(nodoStr* s, nodoStr* a, String c, bool b, const DiccString<S>* d);
          bool ApuntaAHoja();
-         void AgregarComoSiguiente(const String clave, const S sig);
 
       		friend typename DiccString<S>::const_ItStr DiccString<S>::CrearIt() const;
           
@@ -214,7 +213,6 @@ S& DiccString<S>::ItStr::SiguienteSignificado(){
 template<class S>
 void DiccString<S>::ItStr::Avanzar(){
   if(busca){
-    cerr << "Entro al busca" << endl;
     typename DiccString<S>::ItStr it(*this);
     while(it.anterior != NULL){
       it.siguiente = it.anterior;
@@ -244,7 +242,7 @@ void DiccString<S>::ItStr::Avanzar(){
   }
   int j = 255;
   while(j >= 0){
-    cerr << (siguiente->caracteres[j]==NULL) << ", ";
+    //cerr << (siguiente->caracteres[j]==NULL) << ", ";
     if(siguiente->caracteres[j] != NULL){
       String nuevaclave = clave;
       data d(NULL,"");
@@ -258,22 +256,23 @@ void DiccString<S>::ItStr::Avanzar(){
     }
     j--;
   }
+  cerr << endl;
   //cerr << "Agregó a los hijos del primero" << endl;
   if(recorrido.EsVacia()){
     anterior = siguiente;
     siguiente = NULL;
   }else{
     while(!recorrido.EsVacia() && recorrido.Tope().sig->significado == NULL){
-      cerr << "Tope sin definir. El tope es   < " << recorrido.Tope().sig << " , " << recorrido.Tope().clav << " >" << endl;
+      //cerr << "Tope sin definir. El tope es   < " << recorrido.Tope().sig << " , " << recorrido.Tope().clav << " >" << endl;
       int j = 255;
       nodoStr* guardanodo = recorrido.Tope().sig;
       String guardaclave = recorrido.Tope().clav;
       recorrido.Desapilar();
-      cerr << "La pila esta vacia?: " << recorrido.EsVacia();
+      //cerr << "La pila esta vacia?: " << recorrido.EsVacia();
       if (recorrido.EsVacia()){
-        cerr << endl;
+        //cerr << endl;
       }else{
-        cerr << "      El tope es   < " << recorrido.Tope().sig << " , " << recorrido.Tope().clav << " >"  << endl;
+        //cerr << "      El tope es   < " << recorrido.Tope().sig << " , " << recorrido.Tope().clav << " >"  << endl;
       }
       while(j >= 0){
         if(guardanodo->caracteres[j] != NULL){
@@ -354,6 +353,65 @@ bool DiccString<S>::ItStr::ApuntaAHoja(){
   }
   return res;
 }
+
+
+template<class S>
+void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S& s){   // En el diseño falto contemplar el caso de definir la raíz
+  S* p = &s;
+  if (anterior==NULL){
+    if (diccionario->EsVacio()){
+      nodoStr* n = new nodoStr(p);
+      diccionario->raiz = n;
+      siguiente = n;
+      int j = 0;
+      while (j<c.length()){
+        nodoStr* n = new nodoStr(NULL);
+        int i = c[j];
+        n->padre = siguiente;
+        siguiente->caracteres[i]=n;
+        anterior = siguiente;
+        siguiente= n;
+        j++;
+      }
+      siguiente->significado = p;
+    }else{
+      siguiente->significado = p;
+    }
+  }else{
+    if (HaySiguiente()){
+      siguiente->significado = p;
+    }else{
+      nodoStr* n = new nodoStr(NULL);
+      int j = clave.length();
+      n->padre = anterior;
+      int i = c[j-1];
+      anterior->caracteres[i] = n;
+      siguiente = n;
+      while (j<c.length()){
+        nodoStr* n = new nodoStr(NULL);
+        int i = c[j];
+        n->padre = siguiente;
+        siguiente->caracteres[i]=n;
+        anterior = siguiente;
+        siguiente= n;
+        j++;
+      }
+      siguiente->significado = p;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 template<class S>
 void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el diseño falto contemplar el caso de definir la raíz
@@ -396,9 +454,9 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el dise�
   }
 }*/
 
-template<class S>
+/*template<class S>
 void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el diseño falto contemplar el caso de definir la raíz
-  S* p = &s;
+S* p = &s;
   if (anterior==NULL){
     nodoStr* n = new nodoStr(NULL);
     diccionario->raiz = n;
@@ -411,8 +469,6 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el dise�
       siguiente = NULL;
     }
   }
-
-
 
   if(c == clave && siguiente!=NULL){        // En el diseño faltó chequear si el nodo existía ya o había que crearlo
     siguiente->significado = p;
@@ -436,7 +492,7 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el dise�
     clave = c;
     siguiente->significado = p;
   }
-}
+}*/
 
 
 
@@ -580,7 +636,7 @@ void DiccString<S>::const_ItStr::Avanzar(){
 
 
 template<class S>
-DiccString<S>::DiccString():raiz(NULL){}
+DiccString<S>::DiccString():raiz(new nodoStr(NULL)){}
 
 template<class S>
 DiccString<S>::DiccString(const DiccString<S>& otro){
@@ -690,8 +746,10 @@ typename DiccString<S>::ItStr DiccString<S>::Buscar(const String& s){
 }
 
 template<class S>
-void DiccString<S>::Definir(const String& clave, const S& significado){
-  Buscar(clave).AgregarComoSiguiente(clave,significado);
+void DiccString<S>::Definir(const String& clave, S& sig){
+ 
+Buscar(clave).AgregarComoSiguiente(clave,sig);
+
 }
 
 template<class S>
