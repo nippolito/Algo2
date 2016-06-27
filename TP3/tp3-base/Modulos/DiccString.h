@@ -136,6 +136,8 @@ class DiccString{
         
     	private:
 
+          friend class DiccString<S>;
+
        		nodoStr* siguiente;
       		nodoStr* anterior;
       		Pila<data> recorrido; //asegurar que la lista funcione como una pila (insertar por adelante y sacar por adelante)
@@ -196,7 +198,7 @@ bool DiccString<S>::ItStr:: operator == (const typename DiccString<S>::ItStr& ot
 
 template<class S>
 bool DiccString<S>::ItStr::HaySiguiente() const{
-  return siguiente!=NULL;
+  return !(siguiente == NULL);
 }
 
 template<class S>
@@ -212,6 +214,7 @@ S& DiccString<S>::ItStr::SiguienteSignificado(){
 template<class S>
 void DiccString<S>::ItStr::Avanzar(){
   if(busca){
+    cerr << "Entro al busca" << endl;
     typename DiccString<S>::ItStr it(*this);
     while(it.anterior != NULL){
       it.siguiente = it.anterior;
@@ -225,7 +228,7 @@ void DiccString<S>::ItStr::Avanzar(){
           data d(NULL,"");
           d.sig = siguiente->caracteres[j];
           char cj = j;
-          nuevaclave.append(&cj); //OJO con el &, no sabemos si funca!
+          nuevaclave.push_back(cj);
           d.clav = nuevaclave;
           recorrido.Apilar(d);
         }
@@ -241,48 +244,64 @@ void DiccString<S>::ItStr::Avanzar(){
   }
   int j = 255;
   while(j >= 0){
+    cerr << (siguiente->caracteres[j]==NULL) << ", ";
     if(siguiente->caracteres[j] != NULL){
       String nuevaclave = clave;
       data d(NULL,"");
       d.sig = siguiente->caracteres[j];
       char cj = j;
-      nuevaclave.append(&cj);
+      nuevaclave.push_back(cj);
       d.clav = nuevaclave;
-      recorrido.Apilar(d);  
+      recorrido.Apilar(d); 
+      //cerr << "Agregamos la   " << cj << endl; 
+      //cerr << siguiente << endl;
     }
     j--;
-  };
+  }
+  //cerr << "Agregó a los hijos del primero" << endl;
   if(recorrido.EsVacia()){
     anterior = siguiente;
     siguiente = NULL;
   }else{
     while(!recorrido.EsVacia() && recorrido.Tope().sig->significado == NULL){
+      cerr << "Tope sin definir. El tope es   < " << recorrido.Tope().sig << " , " << recorrido.Tope().clav << " >" << endl;
       int j = 255;
       nodoStr* guardanodo = recorrido.Tope().sig;
       String guardaclave = recorrido.Tope().clav;
       recorrido.Desapilar();
+      cerr << "La pila esta vacia?: " << recorrido.EsVacia();
+      if (recorrido.EsVacia()){
+        cerr << endl;
+      }else{
+        cerr << "      El tope es   < " << recorrido.Tope().sig << " , " << recorrido.Tope().clav << " >"  << endl;
+      }
       while(j >= 0){
         if(guardanodo->caracteres[j] != NULL){
           String nuevaclave = guardaclave;
           data d(NULL,"");
           d.sig = guardanodo->caracteres[j];
           char cj = j;
-          nuevaclave.append(&cj); //OJO con el &, no sabemos si funca!
+          nuevaclave.push_back(cj);
           d.clav = nuevaclave;
           recorrido.Apilar(d);
+          /*cerr << d.clav << endl;
+          cerr << cj << endl;*/
         }
         j--;
       }
     }
-    if(recorrido.EsVacia()){     
+    if(recorrido.EsVacia()){  
       anterior = siguiente;
       siguiente = NULL;
     }else{
       siguiente = recorrido.Tope().sig;
+      clave = recorrido.Tope().clav;
       anterior = siguiente->padre;
       recorrido.Desapilar();
     }
   }
+  /*cerr << siguiente << endl;
+  cerr << HaySiguiente() << endl;*/
 }
 
 template<class S>
@@ -307,7 +326,7 @@ void DiccString<S>::ItStr::EliminarSiguiente(){
         data d(NULL,"");
         d.sig = siguiente->caracteres[j];
         char cj = j;
-        nuevaclave.append(&cj);
+        nuevaclave.push_back(cj);
         d.clav = nuevaclave;
         recorrido.Apilar(d); 
       }
@@ -382,39 +401,31 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el dise�
   S* p = &s;
   if (anterior==NULL){
     nodoStr* n = new nodoStr(NULL);
-    for (int i=0;i<256;i++){
-      n->caracteres[i] = NULL;
-    }
     diccionario->raiz = n;
     siguiente = n;
-    if(c==""){
+    if(c == ""){
       n->significado=p;
       return;
     }else{
       anterior = siguiente;
-      siguiente=NULL;
+      siguiente = NULL;
     }
   }
+
+
+
   if(c == clave && siguiente!=NULL){        // En el diseño faltó chequear si el nodo existía ya o había que crearlo
     siguiente->significado = p;
   }else{
     int j = clave.length();
     nodoStr* n = new nodoStr(NULL);
-    for (int i=0;i<256;i++){
-      n->caracteres[i] = NULL;
-    }
+    int i = c[j];
+    (anterior->caracteres)[i] = n;
     n->padre = anterior;
-    if(anterior!=NULL){
-      int i = c[j];
-      (anterior->caracteres)[i] = n;
-    }
     siguiente = n;
     j++;
     while(j < c.length()){
       nodoStr* n = new nodoStr(NULL);
-      for (int i=0;i<256;i++){
-        n->caracteres[i] = NULL;
-      }
       n->padre = anterior;
       int i=c[j];
       (anterior->caracteres)[i] = n;
@@ -426,6 +437,9 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el dise�
     siguiente->significado = p;
   }
 }
+
+
+
 
 
 //-------------------------------------- Funciones del const_ItStr ---------------------------------------
@@ -473,7 +487,7 @@ bool DiccString<S>::const_ItStr:: operator == (const typename DiccString<S>::con
 
 template<class S>
 bool DiccString<S>::const_ItStr::HaySiguiente() const{
-  return siguiente!=NULL;
+  return !(siguiente == NULL);
 }
 
 template<class S>
@@ -502,7 +516,7 @@ void DiccString<S>::const_ItStr::Avanzar(){
           data d(NULL,"");
           d.sig = siguiente->caracteres[j];
           char cj = j;
-          nuevaclave.append(&cj); //OJO con el &, no sabemos si funca!
+          nuevaclave.push_back(cj);
           d.clav = nuevaclave;
           recorrido.Apilar(d);
         }
@@ -523,7 +537,7 @@ void DiccString<S>::const_ItStr::Avanzar(){
       data d(NULL,"");
       d.sig = siguiente->caracteres[j];
       char cj = j;
-      nuevaclave.append(&cj);
+      nuevaclave.push_back(cj);
       d.clav = nuevaclave;
       recorrido.Apilar(d);  
     }
@@ -544,7 +558,7 @@ void DiccString<S>::const_ItStr::Avanzar(){
           data d(NULL,"");
           d.sig = guardanodo->caracteres[j];
           char cj = j;
-          nuevaclave.append(&cj); //OJO con el &, no sabemos si funca!
+          nuevaclave.push_back(cj); //OJO con el &, no sabemos si funca!
           d.clav = nuevaclave;
           recorrido.Apilar(d);
         }
@@ -612,12 +626,11 @@ void DiccString<S>::destructorrecursivo(nodoStr* n){
 
 template<class S>
 DiccString<S>::~DiccString(){
- destructorrecursivo(raiz);
- /* typename DiccString<S>::ItStr it = CrearIt();
+  destructorrecursivo(raiz);
+  /*typename DiccString<S>::ItStr it = CrearIt();
   while(it.HaySiguiente()){
     it.EliminarSiguiente();
-  }
-*/
+  }*/
 }
 
 template<class S>
@@ -650,11 +663,11 @@ typename DiccString<S>::const_ItStr DiccString<S>::Buscar(const String& s) const
     int i = s[j];
     padre = rec;
     rec = (rec->caracteres)[i];
-    clave.append(&s[j]);
+    clave.push_back(s[j]);
     j++;
   }
-  //typename DiccString<S>::const_ItStr res(rec,padre,clave,true, this);
-  typename DiccString<S>::const_ItStr res = CrearIt();
+  typename DiccString<S>::const_ItStr res(rec,padre,clave,true,this);
+  //typename DiccString<S>::const_ItStr res = CrearIt();
   return res;
 }
 
@@ -669,7 +682,7 @@ typename DiccString<S>::ItStr DiccString<S>::Buscar(const String& s){
     int i = s[j];
     padre = rec;
     rec = (rec->caracteres)[i];
-    clave.append(&s[j]);
+    clave.push_back(s[j]);
     j++;
   }
   typename DiccString<S>::ItStr res(rec,padre,clave,true, this);
@@ -721,7 +734,7 @@ const String DiccString<S>::Maximo() const {
       j--;
     }
     char i = j;
-    res.append(&i);
+    res.push_back(i);
     a = (a->caracteres)[j];
   }
   return res;

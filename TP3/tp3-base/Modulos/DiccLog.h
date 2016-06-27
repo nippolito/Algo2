@@ -101,7 +101,7 @@ class DiccLog{
           }
     };
 
-   	class const_ItLog   // <------- ¿HAY QUE HACER ESTA MIERDA? NOOOO, justificar que nuestro iterador no modificable es igual al modificable sólo que con algunas funciones restringidas.
+   	class const_ItLog   
     {
     	public:
 
