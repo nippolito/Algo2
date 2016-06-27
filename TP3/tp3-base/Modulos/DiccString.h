@@ -85,7 +85,7 @@ class DiccString{
         S& SiguienteSignificado();
         void Avanzar();
         void EliminarSiguiente();
-
+          bool ApuntaAHoja(); 
     
       
 
@@ -103,7 +103,6 @@ class DiccString{
 
           ItStr(nodoStr* s, nodoStr* a, String c, bool b, DiccString<S>* d);
 
-          bool ApuntaAHoja();
           void AgregarComoSiguiente(String clave, S& sig);
 
       		friend typename DiccString<S>::ItStr DiccString<S>::CrearIt();
@@ -312,10 +311,10 @@ void DiccString<S>::ItStr::EliminarSiguiente(){
     siguiente = NULL;
   }else{
     while(ApuntaAHoja() && siguiente->significado == NULL && anterior != NULL){
-      int i = *(clave.end());
+      int i = clave[clave.length()-1];
       clave.resize(clave.length()-1);
       delete siguiente;
-      anterior[i] = NULL;
+      anterior->caracteres[i] = NULL;
       siguiente = anterior;
       anterior = anterior->padre;
     }
@@ -373,14 +372,9 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S& s){   // En el dise
         siguiente= n;
         j++;
       }
-      siguiente->significado = p;
-    }else{
-      siguiente->significado = p;
-    }
-  }else{
-    if (HaySiguiente()){
-      siguiente->significado = p;
-    }else{
+      }
+   }else{
+    if (!HaySiguiente()){
       nodoStr* n = new nodoStr(NULL);
       int j = clave.length();
       n->padre = anterior;
@@ -396,9 +390,9 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S& s){   // En el dise
         siguiente= n;
         j++;
       }
-      siguiente->significado = p;
     }
   }
+  siguiente->significado = p;  
 }
 
 

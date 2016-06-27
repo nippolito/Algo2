@@ -30,8 +30,11 @@ void SearchAndDestroy(){
 	d.Definir("ana",a);
 	d.Definir("banana",a);
 	d.Definir("anastasia",a);
+	cerr << "Chaannn" << endl;
 	d.Definir("babosa",a);
+	cerr << "Defino la primera" << endl;
 	d.Definir("baboso",a);
+	cerr << "Defino la segunda" << endl;
 	d.Definir("ya",a);
 	d.Definir("no",a);
 	d.Definir("queremos",a);
@@ -41,18 +44,31 @@ void SearchAndDestroy(){
 	d.Definir("wololooooooooooooo",a);
 
 	d.Borrar("banananananananana");
+	cerr << 1 << endl;
 	d.Borrar("a");
-	d.Borrar("banananananananana");
-	d.Borrar("banananananananana");
-	d.Borrar("banananananananana");
-	d.Borrar("banananananananana");
-	d.Borrar("banananananananana");
+	cerr << 2 << endl;
+	d.Borrar("ana");
+	cerr << 3 << endl;
+	d.Borrar("anastasia");
+	d.Borrar("babosa");
+	cerr << d.Definido("baboso") << endl;
+	
+	d.Borrar("baboso");
+	cerr << 6 << endl;
+	d.Borrar("ya");
+	cerr << 7 << endl;
+	
 }
 
 
 
 
 int main(){
+	/*String s = "LA CONCHA DE TU MADRE ALL BOYS";
+	cerr << s[s.length()-1] << endl;
+	cerr << *(s.end()) << endl;
+	s.resize(s.length()-1);
+	cerr << *(s.end()) << endl;*/
 	AgregarSufijos();
 	SearchAndDestroy();
 
