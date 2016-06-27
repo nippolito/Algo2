@@ -30,18 +30,18 @@ namespace modulo{
 				String campo;
 				Dato minimo;
 				Dato maximo;
-				DiccLog< Dato, Lista<apuntador> > regpordato;
-
-				indiceNat() : campo("higuain muerto") , minimo(0), maximo(0), regpordato(DiccLog< Dato, Lista<apuntador> >){}
+				DiccLog< Dato, Lista<T> > regpordato;
+				DiccLog< Dato, Lista<T> > res;
+				indiceNat() : campo("higuain muerto") , minimo(0), maximo(0), regpordato(res){}
 			};
 
 			struct indiceStr {
 				String campo;
 				Dato minimo;
 				Dato maximo;
-				DiccString< Lista<apuntador> > regpordato;
-
-				indiceStr() : campo("higuain muerto") , minimo("a"), maximo("z"), regpordato(DiccString< Lista<apuntador> >){}
+				DiccString< Lista<T> > regpordato;
+				DiccString< Lista<T> > res;
+				indiceStr() : campo("higuain muerto") , minimo("a"), maximo("z"), regpordato(res){}
 			};
 
 			struct tupla {
