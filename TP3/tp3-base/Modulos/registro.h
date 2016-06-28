@@ -29,7 +29,7 @@ class Registro {		// Algunas funciones con "?" cambiaron de nombre
 		// bool EnTodos(const String c, const Conj<Registro>);
 		// Registro CombinarTodos(const String c, const Conj<Registro>) const;
 		Conj<String> DiferenciaSimetrica(const Registro r2) const;
-		Dicc<String,Dato> DameDic();
+		Dicc<String,Dato> DameDic() const;
 		ostream& mostrarRegistro(ostream& os) const;
 	
 	private:

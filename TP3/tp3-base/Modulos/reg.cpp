@@ -111,7 +111,7 @@ Conj<String> Registro::DiferenciaSimetrica(const Registro r2) const{
 	return res;
 }
 
-Dicc<String,Dato> Registro::DameDic(){
+Dicc<String,Dato> Registro::DameDic() const {
 	return dic;
 }
 
