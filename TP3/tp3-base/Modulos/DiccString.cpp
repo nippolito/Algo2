@@ -5,13 +5,13 @@ using namespace modulos;
 
 #include <cassert>
 
-void AgregarSufijos(){
+void AgregarPrefijos(){
 	DiccString<Nat> d;
 	String clave1 = "";
-	String clave2 = "hsdv";
+	String clave2 = "hsdvas";
 	Nat j = 0;
 	Nat j2 = 100;
-	for (int i=0; i<29; i++){			// EL NUMERO MAGICO ES 60!!!!!!
+	for (int i=0; i<29; i++){			// EL NUMERO MAGICO ES 60!!!!!!     <---------- PREGUNTAR A GERVA... O NO
 		char c = i;
 		char c2 = i+100;
 		clave1.push_back(c);
@@ -23,6 +23,68 @@ void AgregarSufijos(){
 	}
 }
 
+void permutaciones(){
+	DiccString<Nat> d;
+	Nat sig = 27;
+	char ci;
+	char cj;
+	char ck;
+	String clav="";
+	for (int i=65; i<123; i++){				// Aca se rompe todo cuando usamos caracteres menos populares (ASCII: 0-64 y 124-255)
+		for(int j=65;j<123;j++){
+			for(int k=65;k<66;k++){
+				ci = i;
+				cj = j;
+				ck = k;
+				clav = "";
+				clav.push_back(ci);
+				clav.push_back(cj);
+				clav.push_back(ck);
+				cout << "Iteracion (" << i-65 << "," << j-65 << "," << k-65 <<"):  " << clav << endl;
+				if(!d.Definido(clav)){
+					d.Definir(clav,sig);
+				}
+			}
+		}
+	}
+}
+
+void DameSignificados(){
+	DiccString<Nat> d;
+	Nat a [13];
+	for (int i =0 ; i < 13 ; i++){
+		 a[i] = i+27;
+	}
+	String claves[13];
+	claves[0] = "a";
+	claves[1] = "ana";
+	claves[2] = "banana";
+	claves[3] = "anastasia";
+	claves[4] = "babosa";
+	claves[5] = "baboso";
+	claves[6] = "wolo";
+	claves[7] = "no";
+	claves[8] = "queremos";
+	claves[9] = "example@example.com";
+	claves[10] = "osos";
+	claves[11] = "banananananana";
+	claves[12] = "wololololololololo";
+
+	for (int i=0;i<13;i++){
+		d.Definir(claves[i],a[i]);
+	}
+	for (int i=0;i<13;i++){
+		cout << claves[i] << " --> " <<d.Obtener(claves[i]) << endl;
+	}
+	cout << "El maximo es: " << d.Maximo() << endl;
+	cout << "El minimo es: " << d.Minimo() << endl;
+
+
+
+
+
+}
+
 void SearchAndDestroy(){
 	DiccString<String> d;
 	String a = "$";
@@ -30,11 +92,8 @@ void SearchAndDestroy(){
 	d.Definir("ana",a);
 	d.Definir("banana",a);
 	d.Definir("anastasia",a);
-	cerr << "Chaannn" << endl;
 	d.Definir("babosa",a);
-	cerr << "Defino la primera" << endl;
 	d.Definir("baboso",a);
-	cerr << "Defino la segunda" << endl;
 	d.Definir("ya",a);
 	d.Definir("no",a);
 	d.Definir("queremos",a);
@@ -64,14 +123,10 @@ void SearchAndDestroy(){
 
 
 int main(){
-	/*String s = "LA CONCHA DE TU MADRE ALL BOYS";
-	cerr << s[s.length()-1] << endl;
-	cerr << *(s.end()) << endl;
-	s.resize(s.length()-1);
-	cerr << *(s.end()) << endl;*/
-	AgregarSufijos();
+	/*AgregarPrefijos();
 	SearchAndDestroy();
-
-
+	permutaciones();
+	*/
+	DameSignificados();
 	return 0;
 }

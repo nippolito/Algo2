@@ -85,7 +85,6 @@ class DiccString{
         S& SiguienteSignificado();
         void Avanzar();
         void EliminarSiguiente();
-          bool ApuntaAHoja(); 
     
       
 
@@ -104,6 +103,7 @@ class DiccString{
           ItStr(nodoStr* s, nodoStr* a, String c, bool b, DiccString<S>* d);
 
           void AgregarComoSiguiente(String clave, S& sig);
+          bool ApuntaAHoja(); 
 
       		friend typename DiccString<S>::ItStr DiccString<S>::CrearIt();
          
@@ -241,7 +241,6 @@ void DiccString<S>::ItStr::Avanzar(){
   }
   int j = 255;
   while(j >= 0){
-    //cerr << (siguiente->caracteres[j]==NULL) << ", ";
     if(siguiente->caracteres[j] != NULL){
       String nuevaclave = clave;
       data d(NULL,"");
@@ -250,29 +249,18 @@ void DiccString<S>::ItStr::Avanzar(){
       nuevaclave.push_back(cj);
       d.clav = nuevaclave;
       recorrido.Apilar(d); 
-      //cerr << "Agregamos la   " << cj << endl; 
-      //cerr << siguiente << endl;
     }
     j--;
   }
-  cerr << endl;
-  //cerr << "Agregó a los hijos del primero" << endl;
   if(recorrido.EsVacia()){
     anterior = siguiente;
     siguiente = NULL;
   }else{
     while(!recorrido.EsVacia() && recorrido.Tope().sig->significado == NULL){
-      //cerr << "Tope sin definir. El tope es   < " << recorrido.Tope().sig << " , " << recorrido.Tope().clav << " >" << endl;
       int j = 255;
       nodoStr* guardanodo = recorrido.Tope().sig;
       String guardaclave = recorrido.Tope().clav;
       recorrido.Desapilar();
-      //cerr << "La pila esta vacia?: " << recorrido.EsVacia();
-      if (recorrido.EsVacia()){
-        //cerr << endl;
-      }else{
-        //cerr << "      El tope es   < " << recorrido.Tope().sig << " , " << recorrido.Tope().clav << " >"  << endl;
-      }
       while(j >= 0){
         if(guardanodo->caracteres[j] != NULL){
           String nuevaclave = guardaclave;
@@ -282,8 +270,6 @@ void DiccString<S>::ItStr::Avanzar(){
           nuevaclave.push_back(cj);
           d.clav = nuevaclave;
           recorrido.Apilar(d);
-          /*cerr << d.clav << endl;
-          cerr << cj << endl;*/
         }
         j--;
       }
@@ -298,8 +284,6 @@ void DiccString<S>::ItStr::Avanzar(){
       recorrido.Desapilar();
     }
   }
-  /*cerr << siguiente << endl;
-  cerr << HaySiguiente() << endl;*/
 }
 
 template<class S>
@@ -589,10 +573,10 @@ void DiccString<S>::const_ItStr::Avanzar(){
       char cj = j;
       nuevaclave.push_back(cj);
       d.clav = nuevaclave;
-      recorrido.Apilar(d);  
+      recorrido.Apilar(d); 
     }
     j--;
-  };
+  }
   if(recorrido.EsVacia()){
     anterior = siguiente;
     siguiente = NULL;
@@ -608,23 +592,36 @@ void DiccString<S>::const_ItStr::Avanzar(){
           data d(NULL,"");
           d.sig = guardanodo->caracteres[j];
           char cj = j;
-          nuevaclave.push_back(cj); //OJO con el &, no sabemos si funca!
+          nuevaclave.push_back(cj);
           d.clav = nuevaclave;
           recorrido.Apilar(d);
         }
         j--;
       }
     }
-    if(recorrido.EsVacia()){     
+    if(recorrido.EsVacia()){  
       anterior = siguiente;
       siguiente = NULL;
     }else{
       siguiente = recorrido.Tope().sig;
+      clave = recorrido.Tope().clav;
       anterior = siguiente->padre;
       recorrido.Desapilar();
     }
   }
 }
+
+template<class S>
+bool DiccString<S>::const_ItStr::ApuntaAHoja(){
+  bool res = true;
+  int i = 0;
+  while(res && i<256){
+    res = res && (siguiente->caracteres)[i]==NULL;
+    i++;
+  }
+  return res;
+}
+
 
 //  ------------>> FUNCIONES DEL DICCSTRING <<---------------
 
@@ -768,20 +765,45 @@ void DiccString<S>::Borrar(const String& clave){
 
 template<class S>
 const String DiccString<S>::Minimo() const {
-  DiccString<S>::ItStr i = CrearIt();
-  while(!i.ApuntaAHoja()){
-    i.Avanzar();
+  DiccString<S>::const_ItStr i = CrearIt();
+  if (i.siguiente->significado != NULL){
+    return "";
+  }else{
+      i.Avanzar();
+      return i.clave;
   }
-  String res = i.clave;
-  return res;
 }
+
+/*
+template<class S>
+const String DiccString<S>::Minimo() const {
+  nodoStr* a = raiz;
+  String res = "";
+  cerr << "Por Entrar al While" << endl;
+  int j = 0;
+  while(a != NULL){
+    j=0;
+    while(j < 255 && (a->caracteres)[j] == NULL){
+      j++;
+    }
+    cerr << "Encontre la siguiente letra" << endl;
+    char i = j;
+    res.push_back(i);
+    a = (a->caracteres)[j];
+    cerr << "Avanzo de nodo" << endl;
+  }
+  cerr << "Sali del While" << endl;
+  return res;
+}*/
+
 
 template<class S>
 const String DiccString<S>::Maximo() const {
   nodoStr* a = raiz;
   String res = "";
+  int j = 255;
   while(a != NULL){
-    int j = 255;
+    j = 255;
     while(j > 0 && (a->caracteres)[j] == NULL){
       j--;
     }
