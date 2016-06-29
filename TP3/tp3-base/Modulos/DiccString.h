@@ -631,9 +631,9 @@ DiccString<S>::DiccString():raiz(new nodoStr(NULL)){}
 
 template<class S>
 DiccString<S>::DiccString(const DiccString<S>& otro){
-  typename DiccString<S>::ItStr it (otro);
-  while(HaySiguiente(it)){
-     Definir(it.SiguienteClave(),it.SiguienteSignificado());
+  typename DiccString<S>::const_ItStr it = otro.CrearIt();
+  while(it.HaySiguiente()){
+    Definir(it.SiguienteClave(), it.SiguienteSignificado());   //hay un error acá, el tipo de la siguiente clave ya que en el definir no le gusta que el significado no sea const
     it.Avanzar();
   }
 }

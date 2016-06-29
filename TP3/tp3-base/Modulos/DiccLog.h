@@ -475,7 +475,7 @@ DiccLog<K,S>::DiccLog(): raiz(NULL){}
 
 template<class K ,class S>
 DiccLog<K,S>::DiccLog(const DiccLog<K,S>& otro){
-  typename DiccLog<K,S>::ItLog it = otro.CrearIt();
+  typename DiccLog<K,S>::const_ItLog it = otro.CrearIt();
   while(it.HaySiguiente()){
     Definir(it.SiguienteClave(),it.SiguienteSignificado());
     it.Avanzar();
