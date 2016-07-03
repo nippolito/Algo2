@@ -28,7 +28,7 @@ namespace modulo{
 				String campo;
 				Dato minimo;
 				Dato maximo;
-				DiccLog< Dato, Lista<apuntador> > regpordato;
+				DiccLog< Nat, Lista<apuntador> > regpordato;
 				//DiccLog< Dato, Lista<T> > res;
 				indiceNat() : campo("higuain muerto") , minimo(0), maximo(0){}
 			};
@@ -61,13 +61,13 @@ namespace modulo{
 			void BorrarRegistro(const Registro crit);
 			void Indexar(const String c);
 			bool TipoCampo(const String c) const;
-			const Conj<Registro> Registros() const;
+			const Lista<Registro> Registros() const;
 			const Conj<String> Claves() const;
 			Dato Minimo(const String c);
 			Dato Maximo(const String c);
 			const Conj<String> Indices() const;
 			bool Compatible(const Registro r) const;
-			Conj<Registro> CombinarRegistro(const String c, const Tabla t) const;
+			Lista<Registro> CombinarRegistro(const String c, const Tabla t) const;
 			Conj<Dato> DameColumna(const String c, const Conj<Registro> cr) const;
 			bool MismosTipos(const Registro r) const;
 			Conj<Registro> BuscarT(const Registro r) const;
@@ -175,11 +175,11 @@ bool Tabla::TipoCampo(const String c) const {
 return it.SiguienteSignificado().EsNat();
 }
 
-const Conj<Registro> Tabla::Registros() const{		// No actualizamos un cambio de estructura, "registros" es una Lista  y no un Conj
-	Conj<Registro> res;
+const Lista<Registro> Tabla::Registros() const{		// No actualizamos un cambio de estructura, "registros" es una Lista  y no un Conj
+	Lista<Registro> res;
 	typename Lista<Registro>::const_Iterador it = registros.CrearIt();
 	while(it.HaySiguiente()){
-		res.AgregarRapido(it.Siguiente());
+		res.AgregarAtras(it.Siguiente());		//Cambie lo que devuelve la operacion porque no funcaba, en vez de devolver un conj devuelve una lista
 		it.Avanzar();
 	}
 	return res;
@@ -249,8 +249,8 @@ Nat Tabla::CantidadDeAccesos() const{
 }
 
 
-Conj<Registro> Tabla::CombinarRegistro(const String c, const Tabla t) const{
-	Conj<Registro> res;
+Lista<Registro> Tabla::CombinarRegistro(const String c, const Tabla t) const{		//NO TIRA ERROR PORQUE DEVUELVE UNA LISTA EN VEZ DE UN CONJ (NO FUNCIONA EL CONJ SI LE PASAS LISTAS)
+	Lista<Registro> res;
 	typename Lista<Registro>::const_Iterador it = registros.CrearIt();		// Los Dicc(campo,dato) son Registros y cambiamos Conj por Lista porque no actualizamos el cambio de estructura
 	Dato valor;
 	while(it.HaySiguiente()){
@@ -259,7 +259,7 @@ Conj<Registro> Tabla::CombinarRegistro(const String c, const Tabla t) const{
 		crit.Definir(c,valor);
 		typename Conj<Registro>::Iterador Ic = t.BuscarT(crit).CrearIt();
 		while (Ic.HaySiguiente()){
-			res.Agregar(it.Siguiente().AgregarCampos(Ic.Siguiente()));
+			res.AgregarAtras(it.Siguiente().AgregarCampos(Ic.Siguiente()));
 			Ic.Avanzar();			// En el tp no avanzaba el iterador... genius
 		}
 		it.Avanzar();			// En el tp no avanzaba el iterador... DOBLE GENUIS
