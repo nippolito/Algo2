@@ -183,44 +183,44 @@ mt.modificaciones++;
 iBorrarRegistro:
 
 t.modificaciones++;
-itDicc(campo, dato) j = crit.CrearIt(); 
-campo c = j.SiguienteClave();
-dato d = j.SiguienteSignificado();
-if(Nat?(d) = tipoCampo(c, t) ){
-	if(t.indicesUsados.Nat && t.indiceN.campo == c){
-		itDiccLog() it = Buscar(t.indiceN.regpordato, d);   //***
+typename Dicc<Campo,Dato>::Iterador j = crit.DameDic().CrearIt();
+Campo c = j.SiguienteClave();
+Dato d = j.SiguienteSignificado();
+if(Nat?(d) == tipoCampo(c, t) ){
+	if(t.indicesUsados.nat && t.indiceN.campo == c){
+		typename DiccLog<K,S>::ItLog it = Buscar(t.indiceN.regpordato, d);
 	}
 	if(it.SiguienteClave() == d){
-		if(t.indicesUsados.String){
-			String s = obtener(t.indiceS.campo, Siguiente(it.SiguienteSignificado().reg));   //***
+		if(t.indicesUsados.str){
+			String s = obtener(t.indiceS.campo, (it.SiguienteSignificado()).reg.Siguiente());
 		}
-		ItLista(apuntador) itl = CrearIt(it.SiguienteSignificado());
-		EliminarSiguiente(itl.Siguiente().reg);
-		if(t.indicesUsados.String){
-			EliminarSiguiente(itl.Siguiente().compadre);   //***
+		typename Lista<apuntador>::Iterador itl = it.SiguienteSignificado().CrearIt();
+		(itl.Siguiente().reg).EliminarSiguiente();
+		if(t.indicesUsados.str){
+			itl.Siguiente().compadre.EliminarSiguiente();
 			if(Pertenece?(claves(t), indiceS.campo) || Longitud(Obtener(indiceS.regpordato, s)) == 1){
 				Borrar(indiceS.regpordato, s);
 			}
 		}
 		Borrar(indiceN.regpordato, d);
 		if(mt.indiceN.maximo == d){
-			mt.indiceN.maximo = Maximo(mt.indiceN.regpordat);
+			mt.indiceN.maximo = Maximo(mt.indiceN.regpordato);
 		}
 		if(mt.indiceN.minimo == d){
 			mt.indiceN.minimo = Minimo(mt.indiceN.regpordato);
 		}
 	}
 }else{
-	if(t.indicesUsados.String && t.indiceS.campo == c){
-		ItDiccString() it = Buscar(t.indiceS.regpordato, d);    //*****
+	if(t.indicesUsados.str && t.indiceS.campo == c){
+		typename DiccLog<S>::ItLog it = Buscar(t.indiceN.regpordato, d);
 		if(it.SiguienteClave() == d){
-			if(t.indicesUsados.Nat){
-				Nat n = Obtener(t.indiceN.campo, Siguiente(it.SiguienteSignificado().reg));
+			if(t.indicesUsados.nat){
+				Nat n = Obtener(t.indiceN.campo, it.SiguienteSignificado().reg.Siguiente());
 			}
-			itLista(apuntador) itl = CrearIt(it.SiguienteSignificado());
-			EliminarSiguiente(itl.Siguiente().reg);
-			if(t.indicesUsados.Nat){
-				EliminarSiguiente(itl.Siguiente().compadre));
+			typename Lista<apuntador>::Iterador itl = it.SiguienteSignificado().CrearIt();
+			itl.Siguiente().reg.EliminarSiguiente();
+			if(t.indicesUsados.nat){
+				itl.Siguiente().compadre.EliminarSiguiente();
 				if(Pertenece?(claves(t), indiceN.campo) || Longitud(Obtener(indiceN.regpordato, n)) == 1){
 					Borrar(mt.indiceN.regpordato, n);
 				}
@@ -241,21 +241,21 @@ if(Nat?(d) = tipoCampo(c, t) ){
 
 BuscarYBorrar:
 
-itConj(registro) rs = CrearIt(mt.registros);
-while(HaySiguiente(rs) && !(Obtener(Siguiente(rs), c) == d)) {
-	Avanzar(rs);
+typename Lista<registro>::Iterador rs = mt.registros.CrearIt();
+while(rs.HaySiguiente() && !(Obtener(rs.Siguiente(), c) == d)) {
+	rs.Avanzar();
 }
-if(mt.indicesUsados.Nat || mt.indicesUsados.String){
-	if(mt.indicesUsados.Nat){
-		ls = Obtener(Obtener(Siguiente(rs), mt.indiceN.campo), mt.indiceN.regpordato);
-		fa = CrearIt(ls);
-		while(HaySiguiente(fa) && Obtener(Siguiente(Siguiente(fa).reg), c) == d){
-			Avanzar(fa);
+if(mt.indicesUsados.nat || mt.indicesUsados.str){
+	if(mt.indicesUsados.nat){
+		ls = Obtener(Obtener(rs.Siguiente(), mt.indiceN.campo), mt.indiceN.regpordato);
+		fa = ls.CrearIt();
+		while(fa.HaySiguiente() && Obtener(fa.Siguiente().reg.Siguiente(), c) == d){
+			fa.Avanzar();
 		}
-		m = Significado(Siguiente(Siguiente(fa).reg), mt.indiceN.campo);
-		EliminarSiguiente(fa.reg);
-		if(Longitud(Obtener(Obtener(Siguiente(rs), mt.indiceN.campo))) == 0){
-			Borrar(mt.indiceN.regpordato, Obtener(Siguiente(Siguiente(fa).reg), mt.indiceN.campo));
+		m = Significado(fa.Siguiente().reg.Siguiente(), mt.indiceN.campo);
+		fa.reg.EliminarSiguiente();
+		if(Longitud(Obtener(Obtener(rs.Siguiente(), mt.indiceN.campo))) == 0){
+			Borrar(mt.indiceN.regpordato, Obtener(fa.Siguiente().reg.Siguiente(), mt.indiceN.campo));
 		}
 		if(mt.indiceN.maximo == m){
 			mt.indiceN.maximo = Maximo(mt.indiceN.regpordato);
@@ -264,16 +264,16 @@ if(mt.indicesUsados.Nat || mt.indicesUsados.String){
 			mt.indiceN.minimo = Minimo(mt.indiceN.regpordato);
 		}
 	}
-	if(mt.indicesUsados.String){
-		ts = Obtener(Obtener(Siguiente(rs), mt.indiceS.campo), mt.indiceS.regpordato);
-		fu = CrearIt(ts);
-		while(HaySiguiente(fu) && Obtener(Siguiente(Siguiente(fu).reg), c) == d){
-			Avanzar(fu);
+	if(mt.indicesUsados.str){
+		ts = Obtener(Obtener(rs.Siguiente(), mt.indiceS.campo), mt.indiceS.regpordato);
+		fu = ts.CrearIt();
+		while(fu.HaySiguiente() && Obtener(fu.Siguiente().reg.Siguiente(), c) == d){
+			fu.Avanzar();
 		}
-		n = Significado(Siguiente(Siguiente(fu).reg), mt.indiceS.campo);
-		EliminarSiguiente(fu.reg);
-		if(Longitud(Obtener(Obtener(Siguiente(rs), mt.indiceS.campo))) == 0){
-			Borrar(mt.indiceS.regpordato, Obtener(Siguiente(Siguiente(fu).reg), mt.indiceS.campo));
+		n = Significado(fu.Siguiente().reg.Siguiente(), mt.indiceS.campo);
+		fu.reg.EliminarSiguiente();
+		if(Longitud(Obtener(Obtener(rs.Siguiente(), mt.indiceS.campo))) == 0){
+			Borrar(mt.indiceS.regpordato, Obtener(fu.Siguiente().reg.Siguiente(), mt.indiceS.campo));
 		}
 		if(mt.indiceS.maximo == n){
 			mt.indiceS.maximo = Maximo(mt.indiceS.regpordato);
@@ -283,17 +283,17 @@ if(mt.indicesUsados.Nat || mt.indicesUsados.String){
 		}
 	}
 }else{
-	EliminarSiguiente(rs);
+	rs.EliminarSiguiente();
 }
 
 
 iIndexar:
 
-itLista(Dicc(campo, dato)) it = mt.registros.CrearIt();
+typename Dicc<Campo,Dato>::Iterador it = mt.registros.CrearIt();
 int min = Significado(it, c);
 int max = Significado(it, c);
 if(TipoCampo(c, mt)){
-	mt.indicesUsados.Nat = true;
+	mt.indicesUsados.nat = true;
 	mt.indiceN.campo = c;
 	while(it.HaySiguiente()){
 		if(!(MenorOIgual(min, Significado(it, c)))){
@@ -307,20 +307,20 @@ if(TipoCampo(c, mt)){
 		}else{
 			Agregar(mt.indiceN.regpordato, Significado(it, c), < it, Vacia().CrearIt() >);
 		}
-		if(mt.indicesUsados.String){
-			itLista(apuntador) In = Retroceder(CrearItUlt(Obtener(mt.indiceN.regpordato, Significado(it, c)))); //****
-			Is = CrearIt(Obtener(mt.indiceS.regpordato), Significado(it, c));  //****
+		if(mt.indicesUsados.str){
+			typename Lista<apuntador>::Iterador In = Retroceder(Obtener(mt.indiceN.regpordato, Significado(it, c)).CrearItUlt());
+			Is = Obtener(mt.indiceS.regpordato, Significado(it, c)).CrearIt();
 		}
-		while(Obtener(Siguiente(Siguiente(Is).reg), indiceS.campo) != Significado(it, c)){
-			Avanzar(Is);
+		while(Obtener(Is.Siguiente().reg.Siguiente(), indiceS.campo) != Significado(it, c)){
+			Is.Avanzar();
 		}
-		Siguiente(Is).compadre = In;
-		Siguiente(In).compadre = Is;
+		Is.Siguiente().compadre = In;
+		In.Siguiente().compadre = Is;
 	}
 }else{
-	mt.indicesUsados.String = true;
+	mt.indicesUsados.str = true;
 	mt.indiceS.campo = c;
-	while(HaySiguiente(it)){
+	while(it.HaySiguiente()){
 		if(!(MenorOIgual(min, Significado(it, c)))){
 			Dato min = Significado(it, c);
 		}
@@ -332,16 +332,16 @@ if(TipoCampo(c, mt)){
 		}else{
 			Agregar(mt.indiceS.regpordato, Significado(it, c), < it, Vacia().CrearIt() > );
 		}
-		if(mt.indicesUsados.Nat){
-			itLista(apuntador) Is = Retroceder(CrearItUlt(Obtener(mt.indiceS.regpordato, Significado(it, c))));
-			In = CrearIt(Obtener(mt.indiceN.regpordato, Significado(it, c)));
-			while(Obtener(Siguiente(Siguiente(In).reg), indiceN.campo) != Significado(it, c)){
-				Avanzar(In);
+		if(mt.indicesUsados.nat){
+			typename Lista<apuntador>::Iterador Is = Retroceder(Obtener(mt.indiceS.regpordato, Significado(it, c)).CrearItUlt()); 
+			In = Obtener(mt.indiceN.regpordato, Significado(it, c)).CrearIt();
+			while(Obtener(In.Siguiente().reg.Siguiente() != Significado(it, c)){
+				In.Avanzar();
 			}
-			Siguiente(In).compadre = Is;
-			Siguiente(Is).compadre = In;
+			In.Siguiente().compadre = Is;
+			Is.Siguiente().compadre = In;
 		}
-		Avanzar(it);
+		it.Avanzar();
 	}
 	mt.indiceS.minimo = min;
 	mt.indiceS.maximo = max;
@@ -352,19 +352,19 @@ if(TipoCampo(c, mt)){
 
 iMismosTipos, chequeár dónde tiene que estar esta función porque nunca usamos la tabla:
 
-itDicc(campo, dato) it1 = r.CrearIt();
+typename Dicc<Campo,Dato>::Iterador it1 = r.CrearIt();
 while(it1.HaySiguiente() && (TipoCampo(it1.SiguienteClave(), t) == Nat?(it1.SiguienteSignificado()))){
-	Avanzar(it);
+	it1.Avanzar();
 }
-bool res = !(HaySiguiente(it1));
+bool res = !(it1.HaySiguiente());
 
 
 
 
 iDameColumna:
 
-conj(Dato) res = vacio();
-Conj(Dicc(campo, clave)) it = cr.CrearIt();
+Conj<Dato> res = vacio();
+Lista< Dicc<Campo, Dato> > it = cr.CrearIt();
 while(it.HaySiguiente()){
 	Agregar(res, Significado(c, it.Siguiente()));
 	it.Avanzar();
@@ -376,39 +376,39 @@ while(it.HaySiguiente()){
 
 iBuscarT:
 
-itDicc(campo, dato) it = crit.CrearIt();
-while(it.HaySiguiente() && Def?(it.SiguienteClave(), t.columnas) && (Nat?(SiguienteSignificado(it)) == tipoCampo(SiguienteClave(it), t))){
-	Avanzar(it);
+typename Dicc<Campo,Dato>::Iterador it = crit.CrearIt();
+while(it.HaySiguiente() && Def?(it.SiguienteClave(), t.columnas) && (Nat?(it.SiguienteSignificado()) == tipoCampo(it.SiguienteClave(), t))){
+	it.Avanzar();
 }
-conj(registro) res = vacio();
-conj(campo) cs = campos(crit);
-if(!(HaySiguiente(it))){
-	if(t.indicesUsados.Nat == true && Pertenece?(t.indiceN.campo, cs)){
-		ItLog(nat, Lista(apuntador)) i = Buscar(t.indiceN.regpordato, n);
-		ItLista(apuntador) I = i.SiguienteSignificado().CrearIt();
-		while(I.HaySiguiente()){
-			if(CoincidenTodos(Siguiente(I.Siguiente().res), cs, crit)){
-				AgregarRapido(res, Siguiente(I.Siguiente().res));
+Lista<Registro> res = vacio();
+Conj<Campo> cs = campos(crit);
+if(!(it.HaySiguiente()) ){
+	if(t.indicesUsados.nat == true && Pertenece?(t.indiceN.campo, cs)){
+		typename DiccLog< Nat, Lista<Apuntador> >::ItLog ir = Buscar(t.indiceN.regpordato, n);
+		typename Lista<apuntador>::Iterador i = ir.SiguienteSignificado().CrearIt(); 
+		while(i.HaySiguiente()){
+			if(CoincidenTodos(i.Siguiente().res.Siguiente(), cs, crit)){
+				AgregarRapido(res, i.Siguiente().res.Siguiente();
 			}
-			I.Avanzar();
+			i.Avanzar();
 		}
 	}else{
-		if(t.indicesUsados.String == true && Pertenece?(t.indiceS.campo, cs)){
-			ItStr(conj(ItLista(registro))) ir = Buscar(t.indiceS.regpordato, ****);
-			ItLista(itLista(registro)) I = CrearIt(SiguienteSignificado(ir));
-			while(I.HaySiguiente()){
-				if(CoincidenTodos(Siguiente(I.Siguiente().reg), cs, crit)){
-					AgregarRapido(res, Siguiente(I.Siguiente().reg));
+		if(t.indicesUsados.str == true && Pertenece?(t.indiceS.campo, cs)){
+			typename DiccStr< Conj<ItLista(registro)> >::ItStr ir = Buscar(t.indiceS.regpordato, ****);
+			typename Lista< itLista<registro> >::Iterador i = ir.SiguienteSignificado().CrearIt(); 
+			while(i.HaySiguiente()){
+				if(CoincidenTodos(i.Siguiente().reg.Siguiente(), cs, crit)){
+					AgregarRapido(res, i.Siguiente().reg.Siguiente());
 				}
-				Avanzar(I);
+				i.Avanzar();
 			}
 		}else{
-			ItLista(registro) I = CrearIt(t.registros);
-			while(HaySiguiente(I)){
-				if(CoincidenTodos(Siguiente(I), cs, crit)){
-					AgregarRapido(res, Siguiente(I));
+			typename Lista< Registro >::Iterador i = t.registros.CrearIt(); 
+			while(i.HaySiguiente()){
+				if(CoincidenTodos(i.Siguiente(), cs, crit)){
+					AgregarRapido(res, i.Siguiente());
 				}
-				Avanzar(I);
+				i.Avanzar();
 			}
 		}
 	}
@@ -422,19 +422,19 @@ iEsta:
 if(!(compatible(r,t))){
 	bool res = false;
 }else{
-	if(mt.indicesUsados.Nat == true || mt.indicesUsados.String == true){
-		if(mt.indicesUsados.Nat && Pertenece?(mt.claves, mt.indiceN.campo)){
+	if(mt.indicesUsados.nat == true || mt.indicesUsados.str == true){
+		if(mt.indicesUsados.nat && Pertenece?(mt.claves, mt.indiceN.campo)){
 			if(Definido?(mt.indiceN.regpordato, Obtener(mt.indiceN.campo, r))){
-				res = (r == primero(Siguiente(Significado(mt.indiceN.regpordato))).reg);
+				res = (r == primero(Significado(mt.indiceN.regpordato).reg.Siguiente() );
 			}
 		}
-		if(mt.indicesUsados.String && Pertenece?(mt.claves, mt.indiceN.campo))){
+		if(mt.indicesUsados.string && Pertenece?(mt.claves, mt.indiceN.campo))){
 			if(Definido?(mt.indiceS.regpordato, Obtener(mt.indiceS.campo, r))){
-				res = (r == primero(Siguiente(Significado(mt.indiceS.regpordato))).reg);
+				res = (r == primero(Siguiente(Significado(mt.indiceS.regpordato).reg.Siguiente() );
 			}
 		}
 	}else{
-		ItReg() i = mt.registros.CrearIt();
+		typename Lista<Registro>::Iterador i = mt.registros.CrearIt(); 
 		res = false;
 		while(i.HaySiguiente()){
 			res = (res || (i.Siguiente() == r));
@@ -454,12 +454,12 @@ if(!(compatible(r,t))){
 
 iCombinarRegistros;
 
-conj(registro) res = vacio();
-ItConj(Dicc(campo, dato)) it = CrearIt(Registros(t1));
+Lista<Registro> res = vacio();
+typename Dicc<Campo,Dato>::Iterador it = Registros(t1).CrearIt();
 while(it.HaySiguiente()){
-	dato valor = Obtener(HaySiguiente(it), c);
-	registro crit = Definir(c, d, vacio());
-	ItConj(registro) Ic = CrearIt(BuscarT(t2, crit));
+	Dato valor = Obtener(it.HaySiguiente(), c);
+	Registro crit = Definir(c, d, vacio());
+	typename Lista<Registro>::Iterador Ic = BuscarT(t2, crit).CrearIt(); 
 	while(Ic.HaySiguiente()){
 		Agregar(res, AgregarCampos(it.Siguiente(), Ic.Siguiente()));
 	}
@@ -809,7 +809,8 @@ BASE DE DATOS
 iTablas:
 
 res = Vacio();
-ItDiccString() i = a.TporNombre.CrearIt();
+
+typename DiccStr< >::ItStr i = a.TporNombre.CrearIt();
 while(i.HaySiguiente()){
 	Agregar(res, i.SiguienteClave());
 }
@@ -830,7 +831,7 @@ res.LosJoins = Vacia();
 iAgregarTabla:
 
 AgregarRapido(a.tablas, mt);
-ItConj(tabla) i = a.tablas.CrearIt();
+typename Conj<Tabla>::Iterador i = a.tablas.CrearIt();
 while(i.HaySiguiente() && i.Siguiente != mt){
 	i.Avanzar();
 }
@@ -848,16 +849,16 @@ if(a.tablas == vacio()){
 
 iInsertarEntrada:
 
-ItDiccString() i = Buscar(a.TporNombre, t);
+typename DiccStr< >::ItStr i = Buscar(a.TporNombre, t);
 AgregarRegistro(i.Siguiente(), r);
 if(CantidadAccesos(Obtener(a.TporNombre, t).Siguiente(), a) > CantidadAccesos(a.TablaMax.Siguiente(), a)){
 	a.TablaMax = Obtener(a.TporNombre, t);
 }
 if(Definido?(a.joins, t)){
-	ItDiccString() it = Obtener(a.TporNombre, t).CrearIt();
+	typename DiccStr< >::ItStr it = Obtener(a.TporNombre, t).CrearIt();
 	while(it.HaySiguiente()){
 		AgregarAdelante(it.SiguienteSignificado().cambios, < t, r >);
-		if(iHayJoin(it.SiguienteClave(), t, a)){
+		if(HayJoin(it.SiguienteClave(), t, a)){
 			AgregarAdelante(Obtener(Obtener(a.joins, it.SiguienteClave()), t).cambios, < t, r >);
 		}
 		it.Avanzar();
@@ -870,16 +871,16 @@ if(Definido?(a.joins, t)){
 
 iBorrar:
 
-ItDiccString() i = Buscar(a.TporNombre, t);
+typename DiccStr< >::ItStr i = Buscar(a.TporNombre, t);
 BorrarRegistro(i.SiguienteSignificado(), r);
 if(CantidadAccesos(Significado(a.TporNombre, t).Siguiente(), a) > CantidadAccesos(a.tablaMax.Siguiente(), a)){
 	a.TablaMax = Obtener(a.TporNombre, t);
 }
 if(Definido?(a.joins, t)){
-	ItDiccString() it = CrearIt(Obtener(a.joins, t));
+	typename DiccStr< >::ItStr it = Obtener(a.joins, t).CrearIt();
 	while(it.HaySiguiente()){
 		AgregarAdelante(it.SiguienteSignificado().cambios, < t, r >);
-		if(iHayJoin(it.SiguienteClave(), t, a)){
+		if(HayJoin(it.SiguienteClave(), t, a)){
 			AgregarAdelante(Obtener(Obtener(a.joins, it.SiguienteClave(), t).cambios), < t, r >);
 		}
 		it.Avanzar();
@@ -892,18 +893,18 @@ if(Definido?(a.joins, t)){
 
 iGenerarVistaJoin:
 
-conj(registro) rs = combinarRegistros(ca, t1, t2);
-ItReg() it = rs.CrearIt();
+Conj<Registro> rs = combinarRegistros(ca, t1, t2);
+typename Registro::Iterador it = rs.CrearIt();
 nt = NuevaTabla("nuevat", Agregar(Vacio(), it.campos()));
 Indexar(ca, nt);
 while(it.HaySiguiente()){
 	AgregarRegistro(it.Siguiente, nt);
 }
 AgregarAdelante(nt, a.LosJoins);
-ItDiccString() it2 = a.LosJoins.CrearIt();
+typename DiccStr< >::ItStr it2 = a.LosJoins.CrearIt();
 res = Registros(it2.Siguiente()).CrearIt();
 if(!Definido?(a.joins, t1)){
-	diccString(join) d = Definir(Vacio(); t2, < ca, <>, it2 >);
+	DiccString<Join> d = Definir(Vacio(); t2, < ca, <>, it2 >);
 	Definir(a.joins, t1, d);
 }else{
 	Definir(Significado(a.joins, t1), t2, < ca, <>, it2 >);
@@ -915,9 +916,9 @@ if(!Definido?(a.joins, t1)){
 iVistaJoin:
 
 tab = Obtener(Obtener(a.Joins, t1), t2).Siguiente().verJoin;
-ItLista() itC = Obtener(Obtener(a.Joins, t1), t2).cambios.CrearItUlt();
-registro crit = Vacio();
-string ca = CampoJoin(t1, t2, a);
+typename Lista::Iterador itC = Obtener(Obtener(a.Joins, t1), t2).cambios.CrearItUlt();
+Registro crit = Vacio();
+String ca = CampoJoin(t1, t2, a);
 while(itC.HayAnterior()){
 	dato d = Obtener(ca, itC.Anterior().regmod);
 	Definir(ca, d, crit);
@@ -943,10 +944,3 @@ while(itC.HayAnterior()){
 	itC.Retroceder();
 }
 res = Registros(tab).CrearIt();
-
-
-
-
-
-
-
