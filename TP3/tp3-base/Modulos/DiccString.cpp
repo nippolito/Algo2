@@ -127,6 +127,16 @@ int main(){
 	SearchAndDestroy();
 	permutaciones();
 	*/
-	DameSignificados();
+	//DameSignificados();
+	DiccString<String> d;
+	String a = "$";
+	String b = "eso";
+	d.Definir("a",a);
+	d.Definir("ana",a);
+	d.Definir("banana",b);
+	
+
+	DiccString<String> d2(d);	
+
 	return 0;
 }

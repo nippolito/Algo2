@@ -102,7 +102,7 @@ class DiccString{
 
           ItStr(nodoStr* s, nodoStr* a, String c, bool b, DiccString<S>* d);
 
-          void AgregarComoSiguiente(String clave, S& sig);
+          void AgregarComoSiguiente(const String clave, S& sig);
           bool ApuntaAHoja(); 
 
       		friend typename DiccString<S>::ItStr DiccString<S>::CrearIt();
@@ -339,7 +339,7 @@ bool DiccString<S>::ItStr::ApuntaAHoja(){
 
 
 template<class S>
-void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S& s){   // En el diseño falto contemplar el caso de definir la raíz
+void DiccString<S>::ItStr::AgregarComoSiguiente(const String c, S& s){   // En el diseño falto contemplar el caso de definir la raíz
   S* p = &s;
   if (anterior==NULL){
     if (diccionario->EsVacio()){
@@ -633,7 +633,8 @@ template<class S>
 DiccString<S>::DiccString(const DiccString<S>& otro){
   typename DiccString<S>::const_ItStr it = otro.CrearIt();
   while(it.HaySiguiente()){
-    Definir(it.SiguienteClave(), it.SiguienteSignificado());   //hay un error acá, el tipo de la siguiente clave ya que en el definir no le gusta que el significado no sea const
+    S sign = it.SiguienteSignificado();
+    Definir(it.SiguienteClave(),sign);   //hay un error acá, el tipo de la siguiente clave ya que en el definir no le gusta que el significado no sea const
     it.Avanzar();
   }
 }

@@ -31,6 +31,7 @@ namespace modulo{
 				DiccLog< Nat, Lista<apuntador> > regpordato;
 				//DiccLog< Dato, Lista<T> > res;
 				indiceNat() : campo("higuain muerto") , minimo(0), maximo(0){}
+				
 			};
 
 			struct indiceStr {
@@ -40,6 +41,7 @@ namespace modulo{
 				DiccString< Lista<apuntador> > regpordato;
 				//DiccString< Lista<T> > res;
 				indiceStr() : campo("higuain muerto") , minimo("a"), maximo("z"){}
+				
 			};
 
 			struct tupla {
