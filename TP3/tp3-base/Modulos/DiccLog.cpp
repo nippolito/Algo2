@@ -93,9 +93,5 @@ int main(){
 	DameDicc();
 	BuscarYAvanzar();
 
-
-
-
-
 	return 0;
 }

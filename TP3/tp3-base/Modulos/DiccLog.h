@@ -475,10 +475,16 @@ DiccLog<K,S>::DiccLog(): raiz(NULL){}
 
 template<class K ,class S>
 DiccLog<K,S>::DiccLog(const DiccLog<K,S>& otro){
+  if (otro.EsVacio()){
+    raiz = NULL;
+  }else{
+  raiz = otro.raiz;
   typename DiccLog<K,S>::const_ItLog it = otro.CrearIt();
+  it.Avanzar();
   while(it.HaySiguiente()){
     Definir(it.SiguienteClave(),it.SiguienteSignificado());
     it.Avanzar();
+  }
   }
 }
 

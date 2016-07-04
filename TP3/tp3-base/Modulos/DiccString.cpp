@@ -129,11 +129,11 @@ int main(){
 	*/
 	//DameSignificados();
 	DiccString<String> d;
-	String a = "$";
-	String b = "eso";
-	d.Definir("a",a);
-	d.Definir("ana",a);
-	d.Definir("banana",b);
+	//String a = "$";
+	//String b = "eso";
+	//d.Definir("a",a);
+	//d.Definir("ana",a);
+	//d.Definir("banana",b);
 	
 
 	DiccString<String> d2(d);	
