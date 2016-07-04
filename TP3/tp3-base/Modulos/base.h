@@ -51,7 +51,7 @@ namespace modulo{
 			Conj<Tabla> tablas;
 			DiccString<typename::Conj<Tabla>::Iterador> TporNombre;
 			Conj<String> nombres;
-			typename Conj<Tabla>::Iterador tablaMax;
+			typename Conj<Tabla>::Iterador TablaMax;
 			DiccString< DiccString<Join> > joins;
 			Lista<Tabla> losjoins;
 
@@ -62,25 +62,41 @@ namespace modulo{
 //----------------------------------------> ALGORITMOS <-------------------------------
 Base::Base(){}
 
-Base::Base(const Base& otra): tablas(otra.tablas) ,TporNombre(otra.TporNombre),  nombres(otra.nombres) , tablaMax(otra.tablaMax) , joins(otra.joins) , losjoins(otra.losjoins) {}
+Base::Base(const Base& otra): tablas(otra.tablas) ,TporNombre(otra.TporNombre),  nombres(otra.nombres) , TablaMax(otra.TablaMax) , joins(otra.joins) , losjoins(otra.losjoins) {}
 
 Base::~Base(){}
 
-/*Base::Conj<String> Tablas(){
+Conj<String> Base::Tablas(){
 	Conj<String> res;
-	typename DiccString<String,typename::Conj<Tabla>::Iterador>::const_ItStr it = TporNombre.CrearIt();
+	typename DiccString<typename::Conj<Tabla>::Iterador>::const_ItStr it = TporNombre.CrearIt();
 	while(it.HaySiguiente()){
 		res.AgregarRapido(it.SiguienteClave());
 		it.Avanzar();
 	}
 	return res;
-}*/
-/*
-Base::Tabla DameTabla(const String t){
+}
+
+Tabla  Base::DameTabla(const String t){
 	return TporNombre.Obtener(t).Siguiente();
 }
-*/
 
+
+void Base::AgregarTabla(Tabla t){
+	tablas.AgregarRapido(t);
+	typename Conj<Tabla>::const_Iterador i = tablas.CrearIt();
+	while(i.HaySiguiente() && i.Siguiente().DameNombre() != t.DameNombre()){
+		i.Avanzar();
+	}
+	TporNombre.Definir(t.DameNombre(), i);
+	nombres.AgregarRapido( t.DameNombre());
+	if(tablas.EsVacio()){
+		TablaMax = i;
+	}else{
+		if(t.DameNombre().CantidadAccesos() > TablaMax.Siguiente().DameNombre().CantidadAccesos()){
+			TablaMax = i;
+		}
+	}
+}
 
 
 

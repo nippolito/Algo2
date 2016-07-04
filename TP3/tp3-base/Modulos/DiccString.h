@@ -50,7 +50,7 @@ class DiccString{
     ~DiccString();
 		DiccString<S>& operator=(const DiccString<S>& otro);
 
-		void Definir(const String& clave, S& sig);
+		void Definir(const String& clave, const S& sig);
 
 		bool EsVacio() const;
     bool Definido(const String& clave) const;
@@ -102,7 +102,7 @@ class DiccString{
 
           ItStr(nodoStr* s, nodoStr* a, String c, bool b, DiccString<S>* d);
 
-          void AgregarComoSiguiente(const String clave, S& sig);
+          void AgregarComoSiguiente(const String clave,const S& sig);
           bool ApuntaAHoja(); 
 
       		friend typename DiccString<S>::ItStr DiccString<S>::CrearIt();
@@ -339,7 +339,7 @@ bool DiccString<S>::ItStr::ApuntaAHoja(){
 
 
 template<class S>
-void DiccString<S>::ItStr::AgregarComoSiguiente(const String c, S& s){   // En el diseño falto contemplar el caso de definir la raíz
+void DiccString<S>::ItStr::AgregarComoSiguiente(const String c,const S& s){   // En el diseño falto contemplar el caso de definir la raíz
   S* p = &s;
   if (anterior==NULL){
     if (diccionario->EsVacio()){
@@ -632,9 +632,12 @@ DiccString<S>::DiccString():raiz(new nodoStr(NULL)){}
 template<class S>
 DiccString<S>::DiccString(const DiccString<S>& otro){
     typename DiccString<S>::const_ItStr it = otro.CrearIt();
+    if(it.HaySiguiente() && !otro.Definido("")){
+      it.Avanzar();
+    }
     while(it.HaySiguiente()){
-      S sign = it.SiguienteSignificado();
-      Definir(it.SiguienteClave(),sign); 
+      //S sign = it.SiguienteSignificado();
+      Definir(it.SiguienteClave(),it.SiguienteSignificado()); 
       it.Avanzar();
     }
 }
@@ -740,7 +743,7 @@ typename DiccString<S>::ItStr DiccString<S>::Buscar(const String& s){
 }
 
 template<class S>
-void DiccString<S>::Definir(const String& clave, S& sig){
+void DiccString<S>::Definir(const String& clave, const S& sig){
  
 Buscar(clave).AgregarComoSiguiente(clave,sig);
 

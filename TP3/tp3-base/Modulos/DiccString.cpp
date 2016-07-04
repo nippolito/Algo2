@@ -131,8 +131,8 @@ int main(){
 	DiccString<String> d;
 	
 	//String a = "$";
-	//String b = "eso";
-	//d.Definir("a",a);
+	String b = "eso";
+	d.Definir("a",a);
 	//d.Definir("ana",a);
 	//d.Definir("banana",b);
 	

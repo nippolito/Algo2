@@ -77,6 +77,7 @@ namespace modulo{
 			bool Esta(const Registro r) const;
 			void BuscarYBorrar(const Registro crit);
 			ostream& mostrarTabla(ostream& os) const;
+			const String DameNombre() const; //ESTO NO ESTA EN EL TP
 
 		private: 
 			Nat modificaciones;
@@ -265,6 +266,9 @@ Lista<Registro> Tabla::CombinarRegistro(const String c, const Tabla t) const{		/
 	return res;
 }
 
+const String Tabla::DameNombre() const{
+	return nombre;
+}
 
 /*
 void BorrarRegistro(const Registro crit);
