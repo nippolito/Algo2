@@ -50,7 +50,7 @@ class DiccString{
     ~DiccString();
 		DiccString<S>& operator=(const DiccString<S>& otro);
 
-		void Definir(const String& clave, const S& sig);
+		void Definir(const String& clave,const S& sig);
 
 		bool EsVacio() const;
     bool Definido(const String& clave) const;
@@ -288,6 +288,7 @@ void DiccString<S>::ItStr::Avanzar(){
 
 template<class S>
 void DiccString<S>::ItStr::EliminarSiguiente(){
+  delete siguiente->significado;
   siguiente->significado = NULL;
   if (anterior==NULL && ApuntaAHoja()){
     delete siguiente;
@@ -340,7 +341,8 @@ bool DiccString<S>::ItStr::ApuntaAHoja(){
 
 template<class S>
 void DiccString<S>::ItStr::AgregarComoSiguiente(const String c,const S& s){   // En el diseño falto contemplar el caso de definir la raíz
-  S* p = &s;
+  S* p = new S;
+  *p = s;
   if (anterior==NULL){
     if (diccionario->EsVacio()){
       nodoStr* n = new nodoStr(p);
@@ -371,12 +373,12 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(const String c,const S& s){   //
         n->padre = siguiente;
         siguiente->caracteres[i]=n;
         anterior = siguiente;
-        siguiente= n;
+        siguiente = n;
         j++;
       }
     }
   }
-  siguiente->significado = p;  
+  siguiente->significado = p;
 }
 
 
@@ -631,18 +633,18 @@ DiccString<S>::DiccString():raiz(new nodoStr(NULL)){}
 
 template<class S>
 DiccString<S>::DiccString(const DiccString<S>& otro){
-    typename DiccString<S>::const_ItStr it = otro.CrearIt();
-    if(it.HaySiguiente() && !otro.Definido("")){
-      it.Avanzar();
-    }
-    while(it.HaySiguiente()){
-      //S sign = it.SiguienteSignificado();
-      Definir(it.SiguienteClave(),it.SiguienteSignificado()); 
-      it.Avanzar();
-    }
+  typename DiccString<S>::const_ItStr it = otro.CrearIt();
+  raiz = new nodoStr(NULL);
+  if(it.HaySiguiente() && !otro.Definido("")){
+    it.Avanzar();
+    
+  }
+  while(it.HaySiguiente()){
+    Definir(it.SiguienteClave(),it.SiguienteSignificado());   //hay un error acá, el tipo de la siguiente clave ya que en el definir no le gusta que el significado no sea const
+    it.Avanzar();
+  }
+
 }
-
-
 
 template<class S>
 bool DiccString<S>::sonTodosNull(nodoStr* caracteres[] , int n){
@@ -660,8 +662,8 @@ return res;
 
 template<class S>
 void DiccString<S>::destructorrecursivo(nodoStr* n){  
-  
   if(sonTodosNull(n->caracteres,256)){
+    delete n->significado;
     delete n;
   }
   else
@@ -677,10 +679,11 @@ void DiccString<S>::destructorrecursivo(nodoStr* n){
   }
 }
 
+
 template<class S>
 DiccString<S>::~DiccString(){
   destructorrecursivo(raiz);
-  /*typename DiccString<S>::ItStr it = CrearIt();
+    /*typename DiccString<S>::ItStr it = CrearIt();
   while(it.HaySiguiente()){
     it.EliminarSiguiente();
   }*/
@@ -743,8 +746,8 @@ typename DiccString<S>::ItStr DiccString<S>::Buscar(const String& s){
 }
 
 template<class S>
-void DiccString<S>::Definir(const String& clave, const S& sig){
- 
+void DiccString<S>::Definir(const String& clave,const S& sig){
+
 Buscar(clave).AgregarComoSiguiente(clave,sig);
 
 }
@@ -756,7 +759,8 @@ bool DiccString<S>::EsVacio() const{
 
 template<class S>
 bool DiccString<S>::Definido(const String& clave) const{
-  return Buscar(clave).HaySiguiente();
+  typename DiccString<S>::const_ItStr it = Buscar(clave);
+  return it.HaySiguiente() && it.siguiente->significado!=NULL;
 }
 
 template<class S>

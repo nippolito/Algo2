@@ -83,7 +83,7 @@ Tabla  Base::DameTabla(const String t){
 
 void Base::AgregarTabla(Tabla t){
 	tablas.AgregarRapido(t);
-	typename Conj<Tabla>::const_Iterador i = tablas.CrearIt();
+	typename Conj<Tabla>::Iterador i = tablas.CrearIt();
 	while(i.HaySiguiente() && i.Siguiente().DameNombre() != t.DameNombre()){
 		i.Avanzar();
 	}
@@ -92,13 +92,33 @@ void Base::AgregarTabla(Tabla t){
 	if(tablas.EsVacio()){
 		TablaMax = i;
 	}else{
-		if(t.DameNombre().CantidadAccesos() > TablaMax.Siguiente().DameNombre().CantidadAccesos()){
+		if( CantidadDeAccesos(t.DameNombre()) > CantidadDeAccesos(TablaMax.Siguiente().DameNombre())){
 			TablaMax = i;
 		}
 	}
 }
 
 
+void Base::InsertarEntrada(Registro r, String t){
+	typename DiccString<typename::Conj<Tabla>::Iterador>::ItStr i = TporNombre.Buscar(t);
+	i.SiguienteSignificado().Siguiente().AgregarRegistro(r);
+	if(CantidadDeAccesos(TporNombre.Obtener(t).Siguiente().DameNombre()) > CantidadDeAccesos(TablaMax.Siguiente().DameNombre())){
+		TablaMax = TporNombre.Obtener(t);
+	}
+	if(joins.Definido(t)){
+		typename DiccString< DiccString<Join> >::ItStr it = TporNombre.Obtener(t).CrearIt();
+		while(it.HaySiguiente()){
+			tupla tps;
+			tps.regmod = r;
+			tps.tabmod = t;
+			it.SiguienteSignificado().cambios.AgregarAdelante(tps);
+			if(HayJoin(it.SiguienteClave(), t)){
+				joins.Obtener(it.SiguienteClave()).Obtener(t).cambios.AgregarAdelante(tps);
+			}
+			it.Avanzar();
+		}
+	}
+}
 
 
 
