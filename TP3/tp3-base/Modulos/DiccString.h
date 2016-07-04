@@ -631,13 +631,15 @@ DiccString<S>::DiccString():raiz(new nodoStr(NULL)){}
 
 template<class S>
 DiccString<S>::DiccString(const DiccString<S>& otro){
-  typename DiccString<S>::const_ItStr it = otro.CrearIt();
-  while(it.HaySiguiente()){
-    S sign = it.SiguienteSignificado();
-    Definir(it.SiguienteClave(),sign);   //hay un error acá, el tipo de la siguiente clave ya que en el definir no le gusta que el significado no sea const
-    it.Avanzar();
-  }
+    typename DiccString<S>::const_ItStr it = otro.CrearIt();
+    while(it.HaySiguiente()){
+      S sign = it.SiguienteSignificado();
+      Definir(it.SiguienteClave(),sign); 
+      it.Avanzar();
+    }
 }
+
+
 
 template<class S>
 bool DiccString<S>::sonTodosNull(nodoStr* caracteres[] , int n){

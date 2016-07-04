@@ -88,10 +88,6 @@ namespace modulo{
 			Registro columnas;
 			Lista<Registro> registros;
 
-
-
-
-
 };
 
 
