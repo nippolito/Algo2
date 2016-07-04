@@ -557,18 +557,18 @@ typename DiccLog<K,S>::const_ItLog DiccLog<K,S>::Buscar(const K& c) const{
 
 template<class K ,class S>
 DiccLog<K,S>& DiccLog<K,S>::operator=(const DiccLog<K,S>& otro){
-  typename DiccLog<K,S>::ItLog it = CrearIt();
-  while(it.HaySiguiente())
-  {
-    it.nodoStrSiguiente();
-  }
-  it = otro.CrearIt();
-  while(it.HaySiguiente()){
-    Definir(it.SiguienteClave(),it.SiguienteSignificado());
+  if (otro.EsVacio()){
+    raiz = NULL;
+  }else{
+   raiz = otro.raiz;
+    typename DiccLog<K,S>::const_ItLog it = otro.CrearIt();
     it.Avanzar();
+    while(it.HaySiguiente()){
+      Definir(it.SiguienteClave(),it.SiguienteSignificado());
+      it.Avanzar();
+    }
   }
-
-return *this;
+  return *this;
 }
 
 template<class K ,class S>
