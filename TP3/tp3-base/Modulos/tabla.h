@@ -14,7 +14,7 @@ using namespace std;
 using namespace aed2;
 
 
-namespace modulo{
+namespace modulos{
 	class Tabla {
 		private:
 
