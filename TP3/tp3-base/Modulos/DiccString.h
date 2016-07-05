@@ -55,6 +55,7 @@ class DiccString{
 		bool EsVacio() const;
     bool Definido(const String& clave) const;
 		S& Obtener(const String& clave);
+    const S& Obtener(const String& clave) const;
 		void Borrar(const String& clave);
 		const String Maximo() const;
 		const String Minimo() const;
@@ -777,6 +778,11 @@ bool DiccString<S>::Definido(const String& clave) const{
 
 template<class S>
 S& DiccString<S>::Obtener(const String& clave){
+  return Buscar(clave).SiguienteSignificado();
+}
+
+template<class S>
+const S& DiccString<S>::Obtener(const String& clave) const{
   return Buscar(clave).SiguienteSignificado();
 }
 

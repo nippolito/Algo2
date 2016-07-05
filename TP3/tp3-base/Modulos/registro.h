@@ -26,6 +26,7 @@ class Registro {		// Algunas funciones con "?" cambiaron de nombre
 		Registro CopiarCampos(const Conj<String> cc, const Registro r2) const;
 		bool CoincideAlguno(const Conj<String> cc, const Registro r2) const;
 		bool CoincidenTodos(const Conj<String> cc, const Registro r2) const;
+		bool operator==(const Registro& r) const;
 		// bool EnTodos(const String c, const Conj<Registro>);
 		// Registro CombinarTodos(const String c, const Conj<Registro>) const;
 		Conj<String> DiferenciaSimetrica(const Registro r2) const;
@@ -38,6 +39,10 @@ class Registro {		// Algunas funciones con "?" cambiaron de nombre
 
 ostream& operator<<(ostream& os, const Registro& r){
 	return r.mostrarRegistro(os);
+}
+
+bool Registro::operator==(const Registro& r) const{
+	return r.CoincidenTodos(Campos(), *this) && CoincidenTodos(r.Campos(), r);
 }
 
 };

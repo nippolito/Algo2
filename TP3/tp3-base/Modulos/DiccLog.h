@@ -45,6 +45,7 @@ class DiccLog{
 		bool EsVacio() const;
     bool Definido(const K& clave) const;
 		S& Obtener(const K& clave);
+    const S& Obtener(const K& clave) const;
 		void Borrar(const K& clave);
 		const K Maximo() const;
 		const K Minimo() const;
@@ -588,6 +589,11 @@ bool DiccLog<K,S>::Definido(const K& clave) const{
 
 template<class K ,class S>
 S& DiccLog<K,S>::Obtener(const K& clave){
+  return Buscar(clave).SiguienteSignificado();
+}
+
+template<class K ,class S>
+const S& DiccLog<K,S>::Obtener(const K& clave) const{
   return Buscar(clave).SiguienteSignificado();
 }
 

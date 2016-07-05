@@ -172,23 +172,18 @@ void Tabla::AgregarRegistro(const Registro r){
 
 
 
-bool Tabla::TipoCampo(const String c) const {
-	typename Dicc<String,Dato>::Iterador it = columnas.DameDic().CrearIt();
-	while(it.SiguienteClave() != c){
-		it.Avanzar();
-	}
-return it.SiguienteSignificado().EsNat();
+bool Tabla::TipoCampo(const String c) const {	
+	assert(columnas.Def(c));
+	return columnas.Obtener(c).EsNat();
 }
 
 const Conj<Registro> Tabla::Registros() const{		// No actualizamos un cambio de estructura, "registros" es una Lista  y no un Conj
 	Conj<Registro> res;
 	typename Lista<Registro>::const_Iterador it = registros.CrearIt();
 	while(it.HaySiguiente()){
-		cout << it.Siguiente()<<endl;
 		res.Agregar(it.Siguiente());		
 		it.Avanzar();
 	}
-	
 	return res;
 }
 
@@ -244,7 +239,8 @@ Conj<Dato> Tabla::DameColumna(const String c, const Conj<Registro> cr) const{
  }
 
 bool Tabla::MismosTipos(const Registro r) const{
-	typename Dicc<String,Dato>::Iterador it = columnas.DameDic().CrearIt();
+	Dicc<String, Dato> dc = columnas.DameDic();
+	typename Dicc<String,Dato>::Iterador it = dc.CrearIt();
 		while(it.HaySiguiente() && TipoCampo(it.SiguienteClave()) == it.SiguienteSignificado().EsNat()){
 			it.Avanzar();
 		}
@@ -257,7 +253,8 @@ Nat Tabla::CantidadDeAccesos() const{
 
 
 Conj<Registro> Tabla::BuscarT(const Registro crit) const{
-	typename Dicc<String,Dato>::Iterador it = crit.DameDic().CrearIt();
+	Dicc<String,Dato> ds = crit.DameDic();
+	typename Dicc<String,Dato>::Iterador it = ds.CrearIt();
 	while(it.HaySiguiente() && columnas.Def(it.SiguienteClave()) && TipoCampo(it.SiguienteClave()) == it.SiguienteSignificado().EsNat()){
 		it.Avanzar();
 	}
@@ -296,24 +293,27 @@ Conj<Registro> Tabla::BuscarT(const Registro crit) const{
 			}
 		}
 	}
+	return res;
 }
 
 
 
 Conj<Registro> Tabla::CombinarRegistro(const String c, const Tabla t) const{		//NO TIRA ERROR PORQUE DEVUELVE UNA LISTA EN VEZ DE UN CONJ (NO FUNCIONA EL CONJ SI LE PASAS LISTAS)
 	Conj<Registro> res;
-	typename Lista<Registro>::const_Iterador it = registros.CrearIt();		// Los Dicc(campo,dato) son Registros y cambiamos Conj por Lista porque no actualizamos el cambio de estructura
+	Lista<Registro> lr = registros;
+	typename Lista<Registro>::const_Iterador it = lr.CrearIt();		// Los Dicc(campo,dato) son Registros y cambiamos Conj por Lista porque no actualizamos el cambio de estructura
 	Dato valor;
 	while(it.HaySiguiente()){
 		valor = it.Siguiente().Obtener(c);
 		Registro crit;
 		crit.Definir(c,valor);
-		typename Conj<Registro>::Iterador Ic = t.BuscarT(crit).CrearIt();
+		Conj<Registro> cr = t.BuscarT(crit);
+		typename Conj<Registro>::Iterador Ic = cr.CrearIt();
 		while (Ic.HaySiguiente()){
 			res.Agregar(it.Siguiente().AgregarCampos(Ic.Siguiente()));
-			Ic.Avanzar();			// En el tp no avanzaba el iterador... genius
+			Ic.Avanzar();					// En el tp no avanzaba el iterador... genius
 		}
-		it.Avanzar();			// En el tp no avanzaba el iterador... DOUBLE GENUIS
+		it.Avanzar();					// En el tp no avanzaba el iterador... DOUBLE GENUIS
 	}
 	return res;
 }
@@ -339,7 +339,8 @@ bool Tabla::Esta(const Registro r) const{
 				}
 			}
 		}else{
-			typename Lista<Registro>::const_Iterador i = registros.CrearIt();
+			Lista<Registro> ri = registros;
+			typename Lista<Registro>::const_Iterador i = ri.CrearIt();
 			while(i.HaySiguiente()){
 				res = (res || (i.Siguiente() == r));
 				i.Avanzar();
@@ -348,10 +349,134 @@ bool Tabla::Esta(const Registro r) const{
 	}
 	return res;
 }
+
+void Tabla::Indexar(const String c){
+	typename Lista<Registro>::Iterador it = registros.CrearIt();
+	Dato min = it.Siguiente().Obtener(c);
+	Dato max = it.Siguiente().Obtener(c);
+	if(TipoCampo(c)){
+		indicesUsados.nat = true;
+		indiceN.campo = c;
+		while(it.HaySiguiente()){
+			if(it.Siguiente().Obtener(c).MenorOIgual(min)){
+				min = it.Siguiente().Obtener(c);
+			}
+			if(!(it.Siguiente().Obtener(c).MenorOIgual(max))){
+				max = it.Siguiente().Obtener(c);
+			}
+			apuntador a;
+			a.reg = it;
+			if(indiceN.regpordato.Definido(it.Siguiente().Obtener(c).ValorNat())){
+				indiceN.regpordato.Obtener(it.Siguiente().Obtener(c).ValorNat()).AgregarAtras(a);
+			}else{
+				Lista<apuntador> L;
+				L.AgregarAtras(a);
+				indiceN.regpordato.Definir(it.Siguiente().Obtener(c).ValorNat(), L);
+			}
+			if(indicesUsados.str){
+				typename Lista<apuntador>::Iterador In = indiceN.regpordato.Obtener(it.Siguiente().Obtener(c).ValorNat()).CrearItUlt();
+				In.Retroceder();
+				typename Lista<apuntador>::Iterador Is = indiceS.regpordato.Obtener(it.Siguiente().Obtener(c).ValorStr()).CrearIt();
+				while(Is.Siguiente().reg.Siguiente().Obtener(indiceS.campo) != it.Siguiente().Obtener(c)){
+					Is.Avanzar();
+				}
+			Is.Siguiente().compadre = In;
+			In.Siguiente().compadre = Is;
+			}
+		it.Avanzar();			// En el TP2 no avanzabamos el iterador... TRIIIPLE GENIUS
+		}
+		indiceN.minimo = min;			// No actualizabamos los maximos y
+		indiceN.maximo = max;			// minimos en el TP2
+	}else{
+		indicesUsados.str = true;
+		indiceS.campo = c;
+		while(it.HaySiguiente()){
+			if(!(min.MenorOIgual(it.Siguiente().Obtener(c).ValorStr()))){
+				min = it.Siguiente().Obtener(c);
+			}
+			if(max.MenorOIgual(it.Siguiente().Obtener(c).ValorStr())){
+				max = it.Siguiente().Obtener(c);
+			}
+			apuntador a;
+			a.reg = it;
+			if(indiceS.regpordato.Definido(it.Siguiente().Obtener(c).ValorStr())){
+				indiceS.regpordato.Obtener(it.Siguiente().Obtener(c).ValorStr()).AgregarAtras(a);
+			}else{
+				Lista<apuntador> L;
+				L.AgregarAtras(a);
+				indiceS.regpordato.Definir(it.Siguiente().Obtener(c).ValorStr(), L);
+			}
+			if(indicesUsados.nat){
+				typename Lista<apuntador>::Iterador Is = indiceS.regpordato.Obtener(it.Siguiente().Obtener(c).ValorStr()).CrearItUlt(); 
+				Is.Retroceder();
+				typename Lista<apuntador>::Iterador In = indiceN.regpordato.Obtener(it.Siguiente().Obtener(c).ValorNat()).CrearIt();
+				while(In.Siguiente().reg.Siguiente().Obtener(indiceN.campo) != it.Siguiente().Obtener(c).ValorStr()){
+					In.Avanzar();
+				}
+				In.Siguiente().compadre = Is;
+				Is.Siguiente().compadre = In;
+			}
+			it.Avanzar();
+		}
+		indiceS.minimo = min;
+		indiceS.maximo = max;
+	}
+}
+
+/*
+void BuscarYBorrar(const Registro crit){
+	Dicc<String, Dato> asdf = crit.DameDic();								// 		P
+	typename Dicc<String,Dato>::Iterador asdfg = crit.CrearIt();			// 		A
+	typename Lista<registro>::Iterador rs = registros.CrearIt();			// 		J
+	Dato d = asdfg.SiguienteSignificado();									// 		A
+	while(rs.HaySiguiente() && !(Obtener(rs.Siguiente(), c) == d)) {
+		rs.Avanzar();
+	}
+	if(indicesUsados.nat || indicesUsados.str){
+		if(indicesUsados.nat){
+				ls = indiceN.regpordato.Obtener(rs.Siguiente().Obtener(indiceN.campo));
+				fa = ls.CrearIt();
+			while(fa.HaySiguiente() && Obtener(fa.Siguiente().reg.Siguiente(), c) == d){
+				fa.Avanzar();
+			}
+			m = Significado(fa.Siguiente().reg.Siguiente(), indiceN.campo);
+			fa.reg.EliminarSiguiente();
+			if(Longitud(Obtener(Obtener(rs.Siguiente(), indiceN.campo))) == 0){
+				Borrar(indiceN.regpordato, Obtener(fa.Siguiente().reg.Siguiente(), indiceN.campo));
+			}
+			if(indiceN.maximo == m){
+				indiceN.maximo = Maximo(indiceN.regpordato);
+			}
+			if(indiceN.minimo == m){
+				indiceN.minimo = Minimo(indiceN.regpordato);
+			}
+		}
+		if(indicesUsados.str){
+			ts = Obtener(Obtener(rs.Siguiente(), indiceS.campo), indiceS.regpordato);
+			fu = ts.CrearIt();
+			while(fu.HaySiguiente() && Obtener(fu.Siguiente().reg.Siguiente(), c) == d){
+				fu.Avanzar();
+			}
+			n = Significado(fu.Siguiente().reg.Siguiente(), indiceS.campo);
+			fu.reg.EliminarSiguiente();
+			if(Longitud(Obtener(Obtener(rs.Siguiente(), indiceS.campo))) == 0){
+				Borrar(indiceS.regpordato, Obtener(fu.Siguiente().reg.Siguiente(), indiceS.campo));
+			}
+			if(indiceS.maximo == n){
+				indiceS.maximo = Maximo(indiceS.regpordato);
+			}
+			if(indiceS.minimo == n){
+				indiceS.minimo = Minimo(indiceS.regpordato);
+			}
+		}
+	}else{
+		rs.EliminarSiguiente();
+	}
+}
+*/
+
 /*
 void BorrarRegistro(const Registro crit);
-void Indexar(const String c);
-void BuscarYBorrar(const Registro crit);
 ostream& mostrarTabla(ostream& os) const;
 */
 

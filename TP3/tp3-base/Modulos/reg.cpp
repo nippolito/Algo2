@@ -121,48 +121,56 @@ ostream& Registro::mostrarRegistro(ostream& os) const{
 
 
 
-int main(){
+// int main(){
 	
-	Dato d1("Peron");
-	Dato d2("Evita");
-	Dato d3("Campora");
-	Dato d4("Isabel");
-	Dato d5("Nestor");
+// 	Dato d1("Peron");
+// 	Dato d2("Evita");
+// 	Dato d3("Campora");
+// 	Dato d4("Isabel");
+// 	Dato d5("Nestor");
 	
-	Registro r;
-	r.Definir("General", d1);
-	r.Definir("Descamisados", d2);
-	r.DefinirLento("Traicion", d4);
-	r.DefinirLento("Bisco", d5);
+// 	Registro r;
+// 	r.Definir("General", d1);
+// 	r.Definir("Descamisados", d2);
+// 	r.DefinirLento("Traicion", d4);
+// 	r.DefinirLento("Bisco", d5);
 	
-	cout << d5 << endl;
-	cout << d1 << endl;
-	cout << r.Def("General") << endl;
-	cout << r.DameDic() << endl;
-	cout << r.DameDic().Significado("General") << endl;
-	cout << r.Obtener("General") << endl;
+// 	cout << d5 << endl;
+// 	cout << d1 << endl;
+// 	cout << r.Def("General") << endl;
+// 	cout << r.DameDic() << endl;
+// 	cout << r.DameDic().Significado("General") << endl;
+// 	cout << r.Obtener("General") << endl;
 
-	Conj<String> cs(r.Campos());
-	cout << cs << endl;
+// 	Conj<String> cs(r.Campos());
+// 	cout << cs << endl;
 	
-	Registro r2;
-	r2.Definir("General", d1);
-	r2.DefinirLento("Traicion", d1);
+// 	Registro r2;
+// 	r2.Definir("General", d1);
+// 	r2.DefinirLento("Traicion", d1);
 	
-	Conj<String> c(r2.Campos());
+// 	Conj<String> c(r2.Campos());
 
-	cout << r.CoincidenTodos(c,r2) << endl;
-	Registro ft (r.CopiarCampos(c,r2));
-	//cout << ft.DameDic() << endl;
-	Registro R = r.AgregarCampos(r2);
-	cout << r.DiferenciaSimetrica(r2) << endl;
-	cout << r2.DiferenciaSimetrica(r) << endl;
-	cout << R.DameDic() << endl;
-	Registro R2 = r2.AgregarCampos(r);
-	cout << R2.DameDic() << endl;
+// 	cout << r.CoincidenTodos(c,r2) << endl;
+// 	Registro ft (r.CopiarCampos(c,r2));
+// 	//cout << ft.DameDic() << endl;
+// 	Registro R = r.AgregarCampos(r2);
+// 	cout << r.DiferenciaSimetrica(r2) << endl;
+// 	cout << r2.DiferenciaSimetrica(r) << endl;
+// 	cout << R.DameDic() << endl;
+// 	Registro R2 = r2.AgregarCampos(r);
+// 	cout << R2.DameDic() << endl;
 
-	Registro r10;
-	r10 = r2;
+// 	Registro r10;
+// 	r10 = r2;
+
+// 	Dicc<String, Dato> ds;
+// 	ds.Definir("General", d1);
+// 	ds.Definir("asd", d2);
+// 	typename Dicc<String, Dato>::Iterador i = ds.CrearIt();
+// 	cerr << i.HaySiguiente() << endl;
+// 	cerr << i.SiguienteClave() << endl;
+
 	
-	return 0;
-}
+// 	return 0;
+// }
