@@ -63,22 +63,22 @@ namespace modulos{
 			void BorrarRegistro(const Registro crit);
 			void Indexar(const String c);
 			bool TipoCampo(const String c) const;
-			const Lista<Registro> Registros() const;
+			const Conj<Registro> Registros() const;
 			const Conj<String> Claves() const;
 			Dato Minimo(const String c);
 			Dato Maximo(const String c);
 			const Conj<String> Indices() const;
 			bool Compatible(const Registro r) const;
-			Lista<Registro> CombinarRegistro(const String c, const Tabla t) const;
+			Conj<Registro> CombinarRegistro(const String c, const Tabla t) const;
 			Conj<Dato> DameColumna(const String c, const Conj<Registro> cr) const;
 			bool MismosTipos(const Registro r) const;
 			Conj<Registro> BuscarT(const Registro r) const;
 			Nat CantidadDeAccesos() const;
-			bool Esta(const Registro r) const;
+			bool Esta(const Registro r)const;
 			void BuscarYBorrar(const Registro crit);
 			ostream& mostrarTabla(ostream& os) const;
 			const String DameNombre() const; //ESTO NO ESTA EN EL TP
-
+			const Registro Columnas() const;
 		private: 
 			Nat modificaciones;
 			indiceNat indiceN;
@@ -101,6 +101,12 @@ Tabla::Tabla(const Tabla& otra): modificaciones (otra.modificaciones) , indiceN(
 Tabla::~Tabla(){}
 
 Tabla::Tabla(String s , Conj<String> clav, Registro colum): modificaciones(0) , nombre(s) , claves(clav) , columnas(colum) {}
+
+const Registro Tabla::Columnas() const{
+	Registro r;
+	r = columnas;
+	return r;
+}
 
 void Tabla::AgregarRegistro(const Registro r){
 	typename Lista<apuntador>::Iterador In;
@@ -174,13 +180,15 @@ bool Tabla::TipoCampo(const String c) const {
 return it.SiguienteSignificado().EsNat();
 }
 
-const Lista<Registro> Tabla::Registros() const{		// No actualizamos un cambio de estructura, "registros" es una Lista  y no un Conj
-	Lista<Registro> res;
+const Conj<Registro> Tabla::Registros() const{		// No actualizamos un cambio de estructura, "registros" es una Lista  y no un Conj
+	Conj<Registro> res;
 	typename Lista<Registro>::const_Iterador it = registros.CrearIt();
 	while(it.HaySiguiente()){
-		res.AgregarAtras(it.Siguiente());		//Cambie lo que devuelve la operacion porque no funcaba, en vez de devolver un conj devuelve una lista
+		cout << it.Siguiente()<<endl;
+		res.Agregar(it.Siguiente());		
 		it.Avanzar();
 	}
+	
 	return res;
 }
 
@@ -248,8 +256,52 @@ Nat Tabla::CantidadDeAccesos() const{
 }
 
 
-Lista<Registro> Tabla::CombinarRegistro(const String c, const Tabla t) const{		//NO TIRA ERROR PORQUE DEVUELVE UNA LISTA EN VEZ DE UN CONJ (NO FUNCIONA EL CONJ SI LE PASAS LISTAS)
-	Lista<Registro> res;
+Conj<Registro> Tabla::BuscarT(const Registro crit) const{
+	typename Dicc<String,Dato>::Iterador it = crit.DameDic().CrearIt();
+	while(it.HaySiguiente() && columnas.Def(it.SiguienteClave()) && TipoCampo(it.SiguienteClave()) == it.SiguienteSignificado().EsNat()){
+		it.Avanzar();
+	}
+	Conj<Registro> res;
+	Conj<String> cs = crit.Campos();
+	if(!(it.HaySiguiente())){
+		if(indicesUsados.nat == true && cs.Pertenece(indiceN.campo)){
+			Nat n = crit.Obtener(indiceN.campo).ValorNat();
+			typename DiccLog< Nat, Lista<apuntador> >::const_ItLog ir2 = indiceN.regpordato.Buscar(n);
+			typename Lista<apuntador>::const_Iterador i = ir2.SiguienteSignificado().CrearIt(); 
+			while(i.HaySiguiente()){
+				if(crit.CoincidenTodos(cs, i.Siguiente().reg.Siguiente())){
+					res.AgregarRapido(i.Siguiente().reg.Siguiente());
+				}
+				i.Avanzar();
+			}
+		}else{
+			if(indicesUsados.str == true && cs.Pertenece(indiceS.campo)){
+				String s = crit.Obtener(indiceS.campo).ValorStr();
+				typename DiccString< Lista<apuntador> >::const_ItStr ir = indiceS.regpordato.Buscar(s);
+				typename Lista<apuntador>::const_Iterador i = ir.SiguienteSignificado().CrearIt(); 
+				while(i.HaySiguiente()){
+					if(crit.CoincidenTodos(cs, i.Siguiente().reg.Siguiente())){
+						res.AgregarRapido(i.Siguiente().reg.Siguiente());
+					}
+					i.Avanzar();
+				}
+			}else{
+				typename Lista<Registro>::const_Iterador i = registros.CrearIt(); 
+				while(i.HaySiguiente()){
+					if(crit.CoincidenTodos(cs, i.Siguiente())){
+						res.AgregarRapido(i.Siguiente());
+					}
+					i.Avanzar();
+				}
+			}
+		}
+	}
+}
+
+
+
+Conj<Registro> Tabla::CombinarRegistro(const String c, const Tabla t) const{		//NO TIRA ERROR PORQUE DEVUELVE UNA LISTA EN VEZ DE UN CONJ (NO FUNCIONA EL CONJ SI LE PASAS LISTAS)
+	Conj<Registro> res;
 	typename Lista<Registro>::const_Iterador it = registros.CrearIt();		// Los Dicc(campo,dato) son Registros y cambiamos Conj por Lista porque no actualizamos el cambio de estructura
 	Dato valor;
 	while(it.HaySiguiente()){
@@ -258,10 +310,10 @@ Lista<Registro> Tabla::CombinarRegistro(const String c, const Tabla t) const{		/
 		crit.Definir(c,valor);
 		typename Conj<Registro>::Iterador Ic = t.BuscarT(crit).CrearIt();
 		while (Ic.HaySiguiente()){
-			res.AgregarAtras(it.Siguiente().AgregarCampos(Ic.Siguiente()));
+			res.Agregar(it.Siguiente().AgregarCampos(Ic.Siguiente()));
 			Ic.Avanzar();			// En el tp no avanzaba el iterador... genius
 		}
-		it.Avanzar();			// En el tp no avanzaba el iterador... DOBLE GENUIS
+		it.Avanzar();			// En el tp no avanzaba el iterador... DOUBLE GENUIS
 	}
 	return res;
 }
@@ -270,11 +322,35 @@ const String Tabla::DameNombre() const{
 	return nombre;
 }
 
+bool Tabla::Esta(const Registro r) const{
+	bool res=false;
+	if(Compatible(r)){
+		if(indicesUsados.nat || indicesUsados.str){
+			if(indicesUsados.nat && claves.Pertenece(indiceN.campo)){
+				Nat n = r.Obtener(indiceN.campo).ValorNat();
+				if(indiceN.regpordato.Definido(n)){
+					res = (r == indiceN.regpordato.Obtener(n).Primero().reg.Siguiente());
+				}
+			}
+			if(indicesUsados.str && claves.Pertenece(indiceN.campo)){
+				String s = r.Obtener(indiceS.campo).ValorStr();
+				if(indiceS.regpordato.Definido(s)){
+					res = (r == indiceS.regpordato.Obtener(s).Primero().reg.Siguiente());
+				}
+			}
+		}else{
+			typename Lista<Registro>::const_Iterador i = registros.CrearIt();
+			while(i.HaySiguiente()){
+				res = (res || (i.Siguiente() == r));
+				i.Avanzar();
+			}
+		}
+	}
+	return res;
+}
 /*
 void BorrarRegistro(const Registro crit);
 void Indexar(const String c);
-//Conj<Registro> BuscarT(const Registro r) const;
-bool Esta(const Registro r) const;
 void BuscarYBorrar(const Registro crit);
 ostream& mostrarTabla(ostream& os) const;
 */

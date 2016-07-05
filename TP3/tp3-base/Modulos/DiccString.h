@@ -18,7 +18,7 @@ class DiccString{
 
     struct nodoStr { 
         nodoStr* padre;
-        nodoStr* caracteres[256];     // ¿Asi se inicializan arreglos?
+        nodoStr* caracteres[256];
         S* significado; 
 
         nodoStr(S* s) : padre(NULL), significado(s){for(int j = 0 ; j < 256 ; j++){

@@ -11,7 +11,7 @@ void AgregarPrefijos(){
 	String clave2 = "hsdvas";
 	Nat j = 0;
 	Nat j2 = 100;
-	for (int i=0; i<29; i++){			// EL NUMERO MAGICO ES 60!!!!!!     <---------- PREGUNTAR A GERVA... O NO
+	for (int i=0; i<29; i++){
 		char c = i;
 		char c2 = i+100;
 		clave1.push_back(c);
