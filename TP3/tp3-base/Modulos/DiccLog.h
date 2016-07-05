@@ -557,6 +557,10 @@ typename DiccLog<K,S>::const_ItLog DiccLog<K,S>::Buscar(const K& c) const{
 
 template<class K ,class S>
 DiccLog<K,S>& DiccLog<K,S>::operator=(const DiccLog<K,S>& otro){
+  typename DiccLog<K,S>::ItLog destruc = CrearIt();   //destruyo primero
+  while(destruc.HaySiguiente()){
+    destruc.EliminarSiguiente();
+  }
   if (otro.EsVacio()){
     raiz = NULL;
   }else{

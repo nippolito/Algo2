@@ -1,11 +1,9 @@
-#include "tabla.h"
+#include "base.h"
 using namespace std;
 using namespace aed2;
 using namespace modulos;
 
-
-void AgregarYBorrar(){
-	Tabla t;
+void AgregarYBorr(){
 	Dato d1("Peron");
 	Dato d2("Evita");
 	Dato d3("Campora");
@@ -26,28 +24,37 @@ void AgregarYBorrar(){
 	r3.Definir("aguero", d5);
 	r3.Definir("otamendi crack", d4);
 	r3.Definir("todos muertos menos otamendi", d3);
-
+	
+	Conj<String> clav;
+	clav.Agregar("aguero");
+	Base b;
+	Tabla t("tablita", clav, r);
 
 	t.AgregarRegistro(r);
 	t.AgregarRegistro(r2);
 	t.AgregarRegistro(r3);
 
-	Registro r3;
-	r3.Definir("pipa", d1);
+	cout << "Las Tablas son: " << b.Tablas() << endl;
+	b.AgregarTabla(t);
+	cout << "Las Tablas son: " << b.Tablas() << endl;
 
-	t.InsertarRegistro(r3);
-	//debiera eliminarme los registros r2 y r3
+	Registro reg;
+	Dato det("messi");
+	reg.Definir("pipa", reg);
+
+	b.InsertarEntrada(reg, t);
+	cout << b.RegistrosB(t1) << endl;
+
+	b.Borrar(reg, t);
+
+
 }
-
-void Index(){
-	
-}
-
-
 
 
 
 int main(){
+
+
 
 
 

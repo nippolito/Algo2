@@ -120,7 +120,7 @@ ostream& Registro::mostrarRegistro(ostream& os) const{
 }
 
 
-/*
+
 int main(){
 	
 	Dato d1("Peron");
@@ -160,6 +160,9 @@ int main(){
 	cout << R.DameDic() << endl;
 	Registro R2 = r2.AgregarCampos(r);
 	cout << R2.DameDic() << endl;
+
+	Registro r10;
+	r10 = r2;
 	
 	return 0;
-}*/
+}

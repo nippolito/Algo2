@@ -41,7 +41,7 @@ namespace modulo{
 			void Borrar(Registro r, String t);
 			typename Lista<Registro>::Iterador GenerarVistaJoin(const String t, const String t2, const String c);
 			void BorrarJoin(const String t1, const String t2);
-			Conj<Registro> Buscar(Registro criterio,Tabla t1);
+			Conj<Registro> Buscar(Registro criterio, String t1);
 			typename Lista<Registro>::const_Iterador VistaJoin(const String t1, const String t2);
 			Conj<Registro> RegistrosB(const String t1);
 			Nat CantidadDeAccesosB(const String t);
@@ -64,6 +64,16 @@ namespace modulo{
 Base::Base(){}
 
 Base::Base(const Base& otra): tablas(otra.tablas) ,TporNombre(otra.TporNombre),  nombres(otra.nombres) , TablaMax(otra.TablaMax) , joins(otra.joins) , losjoins(otra.losjoins) {}
+
+Base& Base::operator=(const Base& otra){
+	tablas = otra.tablas;
+	TporNombre = otra.TporNombre;
+	nombres = otra.nombres;
+	TablaMax = otra.TablaMax;
+	joins = otra.joins;
+	losjoins = otra.losjoins;
+	return *this;
+}
 
 Base::~Base(){}
 
@@ -122,7 +132,7 @@ void Base::InsertarEntrada(Registro r, String t){
 }
 
 
-Conj<Registro> Base::Buscar(Registro criterio,Tabla t1){			//falta buscarT
+Conj<Registro> Base::Buscar(Registro criterio,String t1){			//falta buscarT
 	Conj<Registro> r;
 	return r;
 }
@@ -210,7 +220,12 @@ Nat Base::CantidadDeAccesosB(const String t){
 
 
 typename Lista<Registro>::const_Iterador Base::VistaJoin(const String t1, const String t2){   //tenemos un const iterador porque nos tiraba error pero no sabemos si es correcto
-	Tabla tab;
+	Conj<String> cs;
+	cs.Agregar(CampoJoin(t1, t2));
+	Registro rg1 = t1.DameTabla().Columnas();
+	Registro rg2 = t2.DameTabla().Columnas();
+	Registro rg3 = rg1.AgregarCampos(rg2); 
+	Tabla tab("tab", cs, rg3);
 	tab = joins.Obtener(t1).Obtener(t2).verJoin.Siguiente();
 	typename Lista<tupla>::Iterador itC = joins.Obtener(t1).Obtener(t2).cambios.CrearItUlt();
 	Registro crit;

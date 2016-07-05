@@ -113,7 +113,7 @@ class DiccString{
           }
     };
 
-   	class const_ItStr   // <------- ¿HAY QUE HACER ESTA MIERDA?
+   	class const_ItStr
     {
     	public:
 
@@ -640,9 +640,10 @@ DiccString<S>::DiccString(const DiccString<S>& otro){
     
   }
   while(it.HaySiguiente()){
-    Definir(it.SiguienteClave(),it.SiguienteSignificado());   //hay un error acá, el tipo de la siguiente clave ya que en el definir no le gusta que el significado no sea const
+    Definir(it.SiguienteClave(),it.SiguienteSignificado()); 
     it.Avanzar();
   }
+
 
 }
 
@@ -675,6 +676,7 @@ void DiccString<S>::destructorrecursivo(nodoStr* n){
       }
     i++;
     }
+  delete n->significado;
   delete n;
   }
 }
@@ -691,8 +693,18 @@ DiccString<S>::~DiccString(){
 
 template<class S>
 DiccString<S>& DiccString<S>::operator=(const DiccString<S>& otro){
-  typename DiccString<S>::ItStr res = new ItStr(otro);
-  return *res;
+  destructorrecursivo(raiz); //limpio
+  typename DiccString<S>::const_ItStr it = otro.CrearIt();
+  raiz = new nodoStr(NULL);
+  if(it.HaySiguiente() && !otro.Definido("")){
+    it.Avanzar();
+    
+  }
+  while(it.HaySiguiente()){
+    Definir(it.SiguienteClave(),it.SiguienteSignificado()); 
+    it.Avanzar();
+  }
+  return *this;
 }
 
 template<class S>

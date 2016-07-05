@@ -88,14 +88,15 @@ void BuscarYAvanzar(){
 
 
 int main(){
-	/*CrearVacioYLlenarlo();
+	CrearVacioYLlenarlo();
 	ChequeaSiEstanDefinidos();
 	DameDicc();
-	BuscarYAvanzar();*/
+	BuscarYAvanzar();
 	DiccLog<Nat,String> d;
 
 	d.Definir(3, "Tu Vieja");
 	d.Definir(7,"Tu Hermana");
+	d.Borrar(3);
 	DiccLog<Nat,String> d2;
 	d = d2;
 

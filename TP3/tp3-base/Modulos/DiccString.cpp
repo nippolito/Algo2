@@ -123,20 +123,35 @@ void SearchAndDestroy(){
 
 
 int main(){
-	/*AgregarPrefijos();
+	AgregarPrefijos();
 	SearchAndDestroy();
 	permutaciones();
-	*/
-	//DameSignificados();
+	DameSignificados();
 	DiccString<String> d;
 	
-	//String a = "$";
+	String b = "$";
 	String a = "eso";
 	d.Definir("a",a);
-	//d.Definir("ana",a);
-	//d.Definir("banana",b);
+	d.Definir("banananananananana",a);
+	d.Definir("trololololololololololol",a);
+	d.Definir("wololooooooooooooo",a);
+	d.Definir("ana",a);
+	d.Definir("anamariaasdadsadsakdmaskod",a);
+	d.Definir("banana0",b);
+	d.Definir("banana1",b);
+	d.Definir("banana2",b);
+	d.Definir("banana3",b);
+	d.Definir("banana4",b);
+	d.Definir("banana5",b);
+	d.Definir("banana6",b);
+	d.Definir("banana7",b);
+	d.Definir("banana8",b);
+	d.Definir("banan9a",b);
+
 	
-	DiccString<String> d2(d);	
+	DiccString<String> d2(d);
+	DiccString<String> d3;
+	d3 = d2;
 
 	return 0;
 }

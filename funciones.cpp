@@ -922,9 +922,9 @@ String ca = CampoJoin(t1, t2, a);
 while(itC.HayAnterior()){
 	dato d = Obtener(ca, itC.Anterior().regmod);
 	Definir(ca, d, crit);
-	if(Esta(itC.Anterior().regmod, itC.Anterior().tabmod)){
+	if(itC.Anterior().tabmod.Esta(itC.Anterior().regmod)){
 		if(itC.Anterior().tabmod == t1){
-			if(!EsVacio?(Buscar(crit, t2, a))){
+			if(!EsVacio(Buscar(crit, t2, a))){
 				itB2 = Buscar(crit, t2, a).CrearIt();
 				registro reg1 = AgregarCampos(itC.Anterior().regmod, itB2.Siguiente());
 				AgregarRegistro(reg1, tab);
