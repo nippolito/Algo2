@@ -42,7 +42,7 @@ namespace modulo{
 			typename Lista<Registro>::Iterador GenerarVistaJoin(const String t, const String t2, const String c);
 			void BorrarJoin(const String t1, const String t2);
 			Conj<Registro> Buscar(Registro criterio,Tabla t1);
-			Conj<Registro> VistaJoin(const String t1, const String t2);
+			typename Lista<Registro>::const_Iterador VistaJoin(const String t1, const String t2);
 			Conj<Registro> RegistrosB(const String t1);
 			Nat CantidadDeAccesosB(const String t);
 			String TablaMaxima();
@@ -209,6 +209,40 @@ Nat Base::CantidadDeAccesosB(const String t){
 }
 
 
+typename Lista<Registro>::const_Iterador Base::VistaJoin(const String t1, const String t2){   //tenemos un const iterador porque nos tiraba error pero no sabemos si es correcto
+	Tabla tab;
+	tab = joins.Obtener(t1).Obtener(t2).verJoin.Siguiente();
+	typename Lista<tupla>::Iterador itC = joins.Obtener(t1).Obtener(t2).cambios.CrearItUlt();
+	Registro crit;
+	String ca = CampoJoin(t1, t2);
+	while(itC.HayAnterior()){
+		Dato d;
+		d = itC.Anterior().regmod.Obtener(ca);
+		crit.Definir(ca, d);
+		if(DameTabla(itC.Anterior().tabmod).Esta(itC.Anterior().regmod) ){
+			if(itC.Anterior().tabmod == t1){
+				if(Buscar(crit, DameTabla(t2)).EsVacio() == false ){
+					typename Conj<Registro>::Iterador itB2 = Buscar(crit, DameTabla(t2) ).CrearIt();
+					Registro reg1 = itC.Anterior().regmod.AgregarCampos(itB2.Siguiente());
+					tab.AgregarRegistro(reg1);
+				}
+			}else{
+				if(Buscar(crit, DameTabla(t1)).EsVacio() == false ){
+					typename Conj<Registro>::Iterador itB1 = Buscar(crit, DameTabla(t1) ).CrearIt();
+					Registro reg2 = itC.Anterior().regmod.AgregarCampos(itB1.Siguiente());
+					tab.AgregarRegistro(reg2);   //estaba afuera del If pero lo mandamos acá porque supusimos error previo
+				}
+			}
+		}else{
+			// if(!EsVacio(tab.BuscarT(crit)) ){   //el buscarT toma parámetro const pero acá no funcionaría ya que tab no es const. Igual es lógico que busquemos algo para ver si lo podemos eliminar o no
+			// 	tab.Borrar(crit);
+			// }
+		}
+		itC.Retroceder();
+	}
+	typename Lista<Registro>::const_Iterador res = tab.Registros().CrearIt();
+	return res;
+}
 
 
 
