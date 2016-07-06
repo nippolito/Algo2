@@ -176,26 +176,45 @@ void Borra(){
 	//t5.AgregarRegistro(nico);
 	//t5.AgregarRegistro(cufa);
 	//cout << "Prueba con indice String" << endl;
+	t.Indexar("otamendi crack");	
 	t.Indexar("pipa");	
-	cout << "El dato maximo es: " << t.Maximo("pipa") << endl;
-	cout << "El dato minimo es: " << t.Minimo("pipa") << endl;
-	cout << t.Esta(r)<<endl;
-	cout << "Los registros antes :" << t.Registros()<<endl;
-	cout << t.Indices()<<endl;
-	cout << t.Compatible(r) << "    " << t.Compatible(crit) << endl;
+	//t.MostrameIndices();
+	//cout << "El dato maximo es: " << t.Maximo("pipa") << endl;
+	//cout << "El dato minimo es: " << t.Minimo("pipa") << endl;
+	//cout << t.Esta(r)<<endl;
+	//cout << "Los registros antes :" << t.Registros()<<endl;
+	//cout << t.Indices()<<endl;
+	//cout << t.Compatible(r) << "    " << t.Compatible(crit) << endl;
+	/*cout << "-------------( 1 )--------------" <<endl;
+	t.MostrameIndices();
+	cout << "-------------( 2 )--------------" <<endl;*/
+	
 	t.BorrarRegistro(crit);
-	cout << t.Esta(r)<<endl;
-	cout <<endl<<"Los registros despues: " << t.Registros() << endl ;
-	cout << "El dato maximo es: " << t.Maximo("pipa") << endl;
-	cout << "El dato mínimo es: " << t.Minimo("pipa") << endl;
-	cout << "Los registros antes :" << t.Registros();
+	//cout << t.Esta(r)<<endl;
+	//cout <<endl<<"Los registros despues: " << t.Registros() << endl ;
+	//cout << "El dato maximo es: " << t.Maximo("pipa") << endl;
+	//cout << "El dato mínimo es: " << t.Minimo("pipa") << endl;
+	
+	/*t.MostrameIndices();
+	cout << "-------------( 3 )--------------" <<endl;*/
+
+	//cout << "Los registros antes :" << t.Registros() << endl << endl;
 	t.BorrarRegistro(crit3);
-	cout <<endl<<"Los registros despues: " << t.Registros() << endl ;
-	cout << "Los registros antes :" << t.Registros();
+
+	t.MostrameIndices();
+	cout << "-------------( 4 )--------------" <<endl;
+
+	//cout <<endl<<"Los registros despues: " << t.Registros() << endl ;
+	//cout << "Los registros antes :" << t.Registros() << endl << endl;
+	cout << "antes" << endl;
+	cout << t.Registros()<<endl;
+	cout << "despues" << endl;
 	t.BorrarRegistro(crit2);
-	cout <<endl<<"Los registros despues: " << t.Registros() << endl ;
-	cout << "El dato mínimo es: " << t.Minimo("pipa") << endl;
-	cout << "El dato maximo es: " << t.Maximo("pipa") << endl;
+	t.MostrameIndices();
+	cout << "---------------------------" <<endl;
+	//cout <<endl<<"Los registros despues: " << t.Registros() << endl ;
+	//cout << "El dato mínimo es: " << t.Minimo("pipa") << endl;
+	//cout << "El dato maximo es: " << t.Maximo("pipa") << endl;
 
 	/*
 	cout << "Los registros son: " << t.Registros() << endl; 
@@ -275,9 +294,9 @@ void Indexar(){
 	t.AgregarRegistro(r);
 	t.AgregarRegistro(r2);
 	t.AgregarRegistro(r3);
-	
+
+	t.Indexar("otamendi crack");	
 	t.Indexar("pipa");
-	t.Indexar("otamendi crack");
 	cout << t.Indices()<<endl;
 	//t.MostrameIndices();
 	t.BorrarRegistro(crit3);
@@ -288,10 +307,18 @@ void Indexar(){
 
 
 int main(){
-	//Borra();
-	Indexar();
-
-
+	Borra();
+	//Indexar();
+	/*Dato d1("Peron");
+	Dato d2("Evita");
+	Registro r1;
+	Registro r2;
+	r1.Definir("eso", d1);
+	r1.Definir("coso", d2);
+	r2.Definir("coso", d2);
+	r2.Definir("eso", d1);
+	cout << (r1==r2) << endl;
+*/
 
 
 	return 0;

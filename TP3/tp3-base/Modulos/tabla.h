@@ -385,16 +385,14 @@ void Tabla::Indexar(const String c){
 				indiceN.regpordato.Definir(it.Siguiente().Obtener(c).ValorNat(), L);
 			}
 			if(indicesUsados.str){
-				Lista<apuntador> lal = indiceN.regpordato.Obtener(it.Siguiente().Obtener(c).ValorNat());
-				typename Lista<apuntador>::Iterador In = lal.CrearItUlt();
+				typename Lista<apuntador>::Iterador In = indiceN.regpordato.Obtener( it.Siguiente().Obtener(c).ValorNat() ).CrearItUlt();
 				In.Retroceder();
-				Lista<apuntador> lai = indiceS.regpordato.Obtener(it.Siguiente().Obtener(indiceS.campo).ValorStr());
-				typename Lista<apuntador>::Iterador Is = lai.CrearIt();
-				while(Is.Siguiente().reg.Siguiente().Obtener(indiceS.campo) != it.Siguiente().Obtener(indiceS.campo)){
+				typename Lista<apuntador>::Iterador Is = indiceS.regpordato.Obtener( it.Siguiente().Obtener(indiceS.campo).ValorStr() ).CrearIt();
+				while ( !(Is.Siguiente().reg.Siguiente() == it.Siguiente()) ){
 					Is.Avanzar();
 				}
-			Is.Siguiente().compadre = In;
-			In.Siguiente().compadre = Is;
+				Is.Siguiente().compadre = In;
+				In.Siguiente().compadre = Is;
 			}
 			it.Avanzar();			// En el TP2 no avanzabamos el iterador... TRIIIPLE GENIUS
 		}
@@ -420,12 +418,10 @@ void Tabla::Indexar(const String c){
 				indiceS.regpordato.Definir(it.Siguiente().Obtener(c).ValorStr(), L);
 			}
 			if(indicesUsados.nat){
-				Lista<apuntador> lax = indiceS.regpordato.Obtener(it.Siguiente().Obtener(c).ValorStr());
-				typename Lista<apuntador>::Iterador Is = lax.CrearItUlt(); 
+				typename Lista<apuntador>::Iterador Is = indiceS.regpordato.Obtener(it.Siguiente().Obtener(c).ValorStr()).CrearItUlt(); 
 				Is.Retroceder();
-				Lista<apuntador> laz = indiceN.regpordato.Obtener(it.Siguiente().Obtener(indiceN.campo).ValorNat());
-				typename Lista<apuntador>::Iterador In = laz.CrearIt();
-				while(In.Siguiente().reg.Siguiente().Obtener(indiceN.campo) != it.Siguiente().Obtener(indiceN.campo)){
+				typename Lista<apuntador>::Iterador In = indiceN.regpordato.Obtener(it.Siguiente().Obtener(indiceN.campo).ValorNat()).CrearIt();
+				while(!(In.Siguiente().reg.Siguiente() == it.Siguiente()) ){
 					In.Avanzar();
 				}
 				In.Siguiente().compadre = Is;
@@ -441,32 +437,44 @@ void Tabla::Indexar(const String c){
 void Tabla::MostrameIndices() const{
 	if(indicesUsados.nat){
 		cout << "Indice Nat:" << endl;
-		cout << indiceN.campo << endl;
+		/*cout << indiceN.campo << endl;
 		cout << indiceN.minimo << endl;
-		cout << indiceN.maximo << endl;
-		DiccLog<Nat, Lista<apuntador> > ir = indiceN.regpordato;
-		typename DiccLog<Nat, Lista<apuntador> >::ItLog it = ir.CrearIt();
-		cout << it.SiguienteClave() << endl;
-		cout << it.SiguienteSignificado().EsVacia() << endl;
+		cout << indiceN.maximo << endl;*/
+		typename DiccLog<Nat, Lista<apuntador> >::const_ItLog in = indiceN.regpordato.CrearIt();
+		while(in.HaySiguiente()){
+			cerr << in.SiguienteClave() << ":  "<< endl;
+			typename Lista<apuntador>::const_Iterador i = in.SiguienteSignificado().CrearIt();
+			while(i.HaySiguiente()){
+				cerr << i.Siguiente().reg.Siguiente() << "-->" << i.Siguiente().compadre.Siguiente().reg.Siguiente() << endl;
+				i.Avanzar();
+			}
+			in.Avanzar();
+			cout << endl<<endl;
+		}
 	}
 	if(indicesUsados.str){
 		cout << "Indice String" << endl;
-		cout << indiceS.campo << endl;
+		/*cout << indiceS.campo << endl;
 		cout << indiceS.minimo << endl;
-		cout << indiceS.maximo << endl;
-		DiccString<Lista<apuntador> > is = indiceS.regpordato;
-		typename DiccString<Lista<apuntador> >::ItStr ic = is.CrearIt();
-		ic.Avanzar();
-		cout << ic.SiguienteClave() << endl;
-		cout << ic.SiguienteSignificado().EsVacia() << endl;
+		cout << indiceS.maximo << endl;*/
+		typename DiccString<Lista<apuntador> >::const_ItStr is = indiceS.regpordato.CrearIt();
+		is.Avanzar();
+		while(is.HaySiguiente()){
+			cerr << is.SiguienteClave() << ":  " << endl;
+			typename Lista<apuntador>::const_Iterador i = is.SiguienteSignificado().CrearIt();
+			while(i.HaySiguiente()){
+				cerr << i.Siguiente().reg.Siguiente() << "--->" << i.Siguiente().compadre.Siguiente().reg.Siguiente() << endl;
+				i.Avanzar();
+			}
+			is.Avanzar();
+			cout << endl<< endl;
+		}
 	}
-	cout << "anduvo mostrame índice" << endl;
 }
 
 
 
 void Tabla::BuscarYBorrar(const Registro crit){
-	cerr << "arranca" << endl;
 	Dicc<String, Dato> dica = crit.DameDic();								
 	typename Dicc<String,Dato>::Iterador it7 = dica.CrearIt();			
 	typename Lista<Registro>::Iterador rs = registros.CrearIt();			
@@ -475,33 +483,26 @@ void Tabla::BuscarYBorrar(const Registro crit){
 	while(rs.HaySiguiente() && !(rs.Siguiente().Obtener(c) == d)) {
 		rs.Avanzar();
 	}
-	cerr << "paso el primer ciclo" << endl;
 	if(indicesUsados.nat || indicesUsados.str){
 		if(indicesUsados.nat){
-			Lista<apuntador> ls = indiceN.regpordato.Obtener(rs.Siguiente().Obtener(indiceN.campo).ValorNat());
-			typename Lista<apuntador>::Iterador fa = ls.CrearIt();
-			while(fa.HaySiguiente() && fa.Siguiente().reg.Siguiente().Obtener(c) != d){							//Para que esta esto? Creo que esta mal, deberia buscar por el indiceN.campo y comparar con el rs.siguiente().Obtener(indiceN.campo)
+			typename Lista<apuntador>::Iterador fa = indiceN.regpordato.Obtener(rs.Siguiente().Obtener(indiceN.campo).ValorNat()).CrearIt();
+			while(fa.HaySiguiente() && fa.Siguiente().reg.Siguiente().Obtener(c) != d){	
 				fa.Avanzar();
 			}
-			cerr << "Salgo del ciclo" << endl;
-			cerr << "1" << endl;
 			Nat m = fa.Siguiente().reg.Siguiente().Obtener(indiceN.campo).ValorNat();					//fa es el iterador al apuntador correspondiente y m es el dato del registro correspondiente
 			if(indicesUsados.str){
-				cerr << "2" << endl;
-				cerr << fa.Siguiente().compadre.HaySiguiente() << endl;
-				//fa.Siguiente().compadre.EliminarSiguiente();
-				cerr << "3" << endl;
-				String campostr = indiceS.campo;
 				String s4 = fa.Siguiente().reg.Siguiente().Obtener(indiceS.campo).ValorStr(); 
+				//cerr << indiceS.regpordato.Definido(s4) << endl;
 				Lista<apuntador> la2 = indiceS.regpordato.Obtener(s4);
-				if(la2.Longitud() == 0){
+				if(la2.Longitud() == 1){
 					indiceS.regpordato.Borrar(s4);
+				}else{
+					fa.Siguiente().compadre.EliminarSiguiente();
 				}
 			}
 			if((indiceN.regpordato.Obtener(rs.Siguiente().Obtener(indiceN.campo).ValorNat())).Longitud() == 1){
 				indiceN.regpordato.Borrar(m);
 			}
-			cerr << "3" << endl;
 			fa.Siguiente().reg.EliminarSiguiente();
 			fa.EliminarSiguiente();
 			if(indiceN.maximo == m){
@@ -525,7 +526,6 @@ void Tabla::BuscarYBorrar(const Registro crit){
 						indiceN.regpordato.Borrar(coso);
 					}
 				}*/
-				cerr << "La concha de tu hermana all boys" << endl;
 				if(indiceS.regpordato.Obtener(rs.Siguiente().Obtener(indiceS.campo).ValorStr()).Longitud() == 1){
 					fu.Siguiente().reg.EliminarSiguiente();
 					cerr << "Quedo sin registros D=" << endl;
@@ -561,17 +561,18 @@ void Tabla::BorrarRegistro(const Registro crit){
 			return;
 		}
 		if(indicesUsados.nat && indiceN.campo == c){
-		typename DiccLog< Nat,Lista<apuntador> >::ItLog it = indiceN.regpordato.Buscar(d);
-			if(it.SiguienteClave() == d){
+			typename DiccLog< Nat,Lista<apuntador> >::ItLog it = indiceN.regpordato.Buscar(d);  //
+			if(it.HaySiguiente()){
 				typename Lista<apuntador>::Iterador itl = it.SiguienteSignificado().CrearIt();
-				itl.Siguiente().reg.EliminarSiguiente();
 				if(indicesUsados.str){
 					String s = it.SiguienteSignificado().Primero().reg.Siguiente().Obtener(indiceS.campo).ValorStr();
+					//String s = it.SiguienteSignificado().Primero().reg.Siguiente().Obtener(indiceS.campo).ValorStr();
 					itl.Siguiente().compadre.EliminarSiguiente();
-					if(claves.Pertenece(indiceS.campo) || indiceS.regpordato.Obtener(s).Longitud() == 1){
+					if(claves.Pertenece(indiceS.campo) || indiceS.regpordato.Obtener(s).Longitud() == 0){
 						indiceS.regpordato.Borrar(s);
 					}
 				}
+				itl.Siguiente().reg.EliminarSiguiente();
 				indiceN.regpordato.Borrar(d);
 				if(indiceN.maximo == d && !(indiceN.regpordato.EsVacio())){
 					indiceN.maximo = indiceN.regpordato.Maximo();
@@ -591,14 +592,14 @@ void Tabla::BorrarRegistro(const Registro crit){
 			typename DiccString< Lista<apuntador> >::ItStr it = indiceS.regpordato.Buscar(f);
 			if(it.SiguienteClave() == f){
 				typename Lista<apuntador>::Iterador itl = it.SiguienteSignificado().CrearIt();
-				itl.Siguiente().reg.EliminarSiguiente();
 				if(indicesUsados.nat){
 					Nat n = it.SiguienteSignificado().Primero().reg.Siguiente().Obtener(indiceN.campo).ValorNat();
 					itl.Siguiente().compadre.EliminarSiguiente();
-					if(claves.Pertenece(indiceN.campo) || indiceN.regpordato.Obtener(n).Longitud() == 1){
+					if(claves.Pertenece(indiceN.campo) || indiceN.regpordato.Obtener(n).Longitud() == 0){
 						indiceN.regpordato.Borrar(n);
 					} 
 				}
+				itl.Siguiente().reg.EliminarSiguiente();
 				indiceS.regpordato.Borrar(f);
 				if(indiceS.maximo == f && !(indiceS.regpordato.EsVacio())){
 					indiceS.maximo = indiceS.regpordato.Maximo();
