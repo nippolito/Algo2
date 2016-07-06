@@ -734,7 +734,7 @@ typename DiccString<S>::const_ItStr DiccString<S>::Buscar(const String& s) const
   nodoStr* padre = NULL;
   String clave = "";
   int j = 0;
-  int n = s.length();
+  //int n = s.length();
   while (clave != s && rec != NULL){
     int i = s[j];
     padre = rec;
@@ -753,7 +753,7 @@ typename DiccString<S>::ItStr DiccString<S>::Buscar(const String& s){
   nodoStr* padre = NULL;
   String clave = "";
   int j = 0;
-  int n = s.length();
+  //int n = s.length();
   while (clave != s && rec != NULL){
     int i = s[j];
     padre = rec;

@@ -492,7 +492,7 @@ void Tabla::BuscarYBorrar(const Registro crit){
 			Nat m = fa.Siguiente().reg.Siguiente().Obtener(indiceN.campo).ValorNat();					//fa es el iterador al apuntador correspondiente y m es el dato del registro correspondiente
 			if(indicesUsados.str){
 				String s4 = fa.Siguiente().reg.Siguiente().Obtener(indiceS.campo).ValorStr(); 
-				//cerr << indiceS.regpordato.Definido(s4) << endl;
+				cerr << indiceS.regpordato.Definido(s4) << endl;
 				Lista<apuntador> la2 = indiceS.regpordato.Obtener(s4);
 				if(la2.Longitud() == 1){
 					indiceS.regpordato.Borrar(s4);
@@ -500,21 +500,22 @@ void Tabla::BuscarYBorrar(const Registro crit){
 					fa.Siguiente().compadre.EliminarSiguiente();
 				}
 			}
-			if((indiceN.regpordato.Obtener(rs.Siguiente().Obtener(indiceN.campo).ValorNat())).Longitud() == 1){
+			if((indiceN.regpordato.Obtener( rs.Siguiente().Obtener(indiceN.campo).ValorNat() ) ).Longitud() == 1){
+				fa.Siguiente().reg.EliminarSiguiente();	
 				indiceN.regpordato.Borrar(m);
+			}else{
+				fa.Siguiente().reg.EliminarSiguiente();	
+				fa.EliminarSiguiente();
 			}
-			fa.Siguiente().reg.EliminarSiguiente();
-			fa.EliminarSiguiente();
-			if(indiceN.maximo == m){
+			if(indiceN.maximo == m  && !(indiceN.regpordato.EsVacio())){
 				indiceN.maximo = indiceN.regpordato.Maximo();
 			}
-			if(indiceN.minimo == m){
+			if(indiceN.minimo == m  && !(indiceN.regpordato.EsVacio())){
 				indiceN.minimo = indiceN.regpordato.Minimo();
 			}
 		}else{
 			if(indicesUsados.str){
-				Lista<apuntador> ts = indiceS.regpordato.Obtener(rs.Siguiente().Obtener(indiceS.campo).ValorStr());
-				typename Lista<apuntador>::Iterador fu = ts.CrearIt();
+				typename Lista<apuntador>::Iterador fu = indiceS.regpordato.Obtener(rs.Siguiente().Obtener(indiceS.campo).ValorStr()).CrearIt();
 				while(fu.HaySiguiente() && fu.Siguiente().reg.Siguiente().Obtener(c) != d){
 					fu.Avanzar();
 				}
@@ -528,18 +529,15 @@ void Tabla::BuscarYBorrar(const Registro crit){
 				}*/
 				if(indiceS.regpordato.Obtener(rs.Siguiente().Obtener(indiceS.campo).ValorStr()).Longitud() == 1){
 					fu.Siguiente().reg.EliminarSiguiente();
-					cerr << "Quedo sin registros D=" << endl;
 					indiceS.regpordato.Borrar(n);
 				}else{
 					fu.Siguiente().reg.EliminarSiguiente();
 					fu.EliminarSiguiente();
 				}
-				if(indiceS.maximo == n){
-					cerr << "Actualiza maximo a  " << indiceS.regpordato.Maximo() << endl;
+				if(indiceS.maximo == n  && !(indiceS.regpordato.EsVacio())){
 					indiceS.maximo = indiceS.regpordato.Maximo();
 				}
-				if(indiceS.minimo == n){
-					cerr << "Actualiza minimo" << endl;
+				if(indiceS.minimo == n  && !(indiceS.regpordato.EsVacio())){
 					indiceS.minimo = indiceS.regpordato.Minimo();
 				}
 			}

@@ -188,7 +188,7 @@ void Borra(){
 	/*cout << "-------------( 1 )--------------" <<endl;
 	t.MostrameIndices();
 	cout << "-------------( 2 )--------------" <<endl;*/
-	
+	//cout << t.Registros()<<endl;
 	t.BorrarRegistro(crit);
 	//cout << t.Esta(r)<<endl;
 	//cout <<endl<<"Los registros despues: " << t.Registros() << endl ;
@@ -199,16 +199,17 @@ void Borra(){
 	cout << "-------------( 3 )--------------" <<endl;*/
 
 	//cout << "Los registros antes :" << t.Registros() << endl << endl;
+	//cout << t.Registros()<<endl;
 	t.BorrarRegistro(crit3);
 
-	t.MostrameIndices();
-	cout << "-------------( 4 )--------------" <<endl;
+	//t.MostrameIndices();
+	//cout << "-------------( 4 )--------------" <<endl;
 
 	//cout <<endl<<"Los registros despues: " << t.Registros() << endl ;
 	//cout << "Los registros antes :" << t.Registros() << endl << endl;
-	cout << "antes" << endl;
-	cout << t.Registros()<<endl;
-	cout << "despues" << endl;
+	//cout << "antes" << endl;
+	//cout << t.Registros()<<endl;
+	//cout << "despues" << endl;
 	t.BorrarRegistro(crit2);
 	t.MostrameIndices();
 	cout << "---------------------------" <<endl;
@@ -304,10 +305,137 @@ void Indexar(){
 }	
 
 
+void tuvieja(){
+	Dato d1("Peron");
+	Dato d2("Evita");
+	Dato d3("Campora");
+	Dato d4("Isabel");
+	Dato d5("Nestor");	
+	Dato xz("popa");
+	Dato xx("popo");
+	Dato zx("papo");
+	Dato xc("opap");
+	Dato as(1);
+	Dato ad(2);
+	Dato af(3);
+	Dato ag(4);
+	Registro r;
+	r.Definir("aguero", d3);
+	r.Definir("pipa", as);
+	r.DefinirLento("otamendi crack", d4);
+	r.DefinirLento("todos muertos menos otamendi", d5);
+	Registro r2;
+	r2.Definir("aguero", d1);
+	r2.Definir("pipa", ad);
+	r2.Definir("otamendi crack", d1);
+	r2.Definir("todos muertos menos otamendi", d1);
+	Registro r3;
+	r3.Definir("aguero", d5);
+	r3.Definir("pipa", ag);
+	r3.Definir("otamendi crack", d4);
+	r3.Definir("todos muertos menos otamendi", d3);
+	Registro carlos;
+	carlos.Definir("pipa", d1);
+	carlos.Definir("messi", xz);
+	carlos.Definir("cufa", xc);
+	Registro loscar;
+	loscar.Definir("pipa", d2);
+	loscar.Definir("messi", xc);
+	loscar.Definir("cufa", zx);
+	Registro r10;
+	r10.Definir("aguero",d5);
+	Registro nico;
+	nico.Definir("pipa", as);
+	nico.Definir("messi", ad);
+	nico.Definir("cufa", af);
+	Registro cufa;
+	cufa.Definir("pipa", af);
+	cufa.Definir("messi", af);
+	cufa.Definir("cufa", af);
+	Registro crit;
+	crit.Definir("pipa", as);
+	Registro crit2;
+	crit2.Definir("pipa", ad);
+	Registro crit3;
+	crit3.Definir("pipa",ag);
+	Conj<String> clav;
+	clav.Agregar("pipa");
+	Tabla t("tablita", clav, r);
+	t.AgregarRegistro(r);
+	t.AgregarRegistro(r2);
+	t.AgregarRegistro(r3);
+	//Tabla t2(t);
+	//Tabla t3("tablota", clav, carlos);
+	//t3.AgregarRegistro(carlos);
+	//t3.AgregarRegistro(loscar);
+	//Tabla t5("tableta", clav, nico);
+	//t5.AgregarRegistro(nico);
+	//t5.AgregarRegistro(cufa);
+	//cout << "Prueba con indice String" << endl;
+	//t.Indexar("pipa");
+	t.Indexar("otamendi crack");	
+	//t.MostrameIndices();
+	//cout << "El dato maximo es: " << t.Maximo("pipa") << endl;
+	//cout << "El dato minimo es: " << t.Minimo("pipa") << endl;
+	//cout << t.Esta(r)<<endl;
+	//cout << "Los registros antes :" << t.Registros()<<endl;
+	//cout << t.Indices()<<endl;
+	//cout << t.Compatible(r) << "    " << t.Compatible(crit) << endl;
+	/*cout << "-------------( 1 )--------------" <<endl;
+	t.MostrameIndices();
+	cout << "-------------( 2 )--------------" <<endl;*/
+	//cout << t.Registros()<<endl;
+	t.BorrarRegistro(crit);
+	//cout << t.Esta(r)<<endl;
+	//cout <<endl<<"Los registros despues: " << t.Registros() << endl ;
+	//cout << "El dato maximo es: " << t.Maximo("pipa") << endl;
+	//cout << "El dato mínimo es: " << t.Minimo("pipa") << endl;
+	
+	/*t.MostrameIndices();
+	cout << "-------------( 3 )--------------" <<endl;*/
 
+	//cout << "Los registros antes :" << t.Registros() << endl << endl;
+	//cout << t.Registros()<<endl;
+	t.BorrarRegistro(crit3);
+
+	//t.MostrameIndices();
+	//cout << "-------------( 4 )--------------" <<endl;
+
+	//cout <<endl<<"Los registros despues: " << t.Registros() << endl ;
+	//cout << "Los registros antes :" << t.Registros() << endl << endl;
+	//cout << "antes" << endl;
+	//cout << t.Registros()<<endl;
+	//cout << "despues" << endl;
+	t.BorrarRegistro(crit2);
+	//t.MostrameIndices();
+	//cout << "---------------------------" <<endl;
+	//cout <<endl<<"Los registros despues: " << t.Registros() << endl ;
+	//cout << "El dato mínimo es: " << t.Minimo("pipa") << endl;
+	//cout << "El dato maximo es: " << t.Maximo("pipa") << endl;
+
+	/*
+	cout << "Los registros son: " << t.Registros() << endl; 
+	cout << "Las claves son: " << t.Claves() << endl;
+	cout << "Las columnas son: " << t.Columnas() << endl;
+	t.Indexar("pipa");
+	cout << "El dato máximo es: " << t.Maximo("pipa") << endl;
+	cout << "El nombre de la tabla es: " << t.DameNombre() << endl;
+	cout << "El tipo del campo pipa es: " << t.TipoCampo("pipa") << endl;
+	cout <<"Los registros que coinciden con r10 son: " << t.BuscarT(r10) << endl;
+	cout <<"Los registros combinados son: " <<t.CombinarRegistro("pipa", t3) << endl;
+	cout <<"Esta Carlos?" <<t.Esta(carlos) << endl;
+	cout << "Los indices son de t:"; 
+	t.MostrameIndices();
+	cout << "Los indices son de t5 son: ";
+	t5.MostrameIndices();
+	t5.BuscarYBorrar(crit);
+	*/
+	
+}
 
 int main(){
-	Borra();
+	tuvieja();
+	//Borra();
 	//Indexar();
 	/*Dato d1("Peron");
 	Dato d2("Evita");

@@ -56,6 +56,7 @@ using namespace aed2;
 			res = (str[i] <= otro.str[i] ) ;
 			}
 			}
+		return res;
 	}
 
 

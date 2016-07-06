@@ -25,6 +25,7 @@ bool Registro::Def(const String c) const{
 }
 
 Dato Registro::Obtener(const String c) const{
+	assert(Def(c));
 	return dic.Significado(c);
 }
 
@@ -117,6 +118,7 @@ Dicc<String,Dato> Registro::DameDic() const {
 
 ostream& Registro::mostrarRegistro(ostream& os) const{
 	os << dic;
+	return os;
 }
 
 

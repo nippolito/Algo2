@@ -264,7 +264,7 @@ void DiccLog<K,S>::ItLog::EliminarSiguiente(){
         while(rec->izq != NULL){
           rec = rec->izq;
         }
-        nodoAB* antrec = rec->padre;
+        //nodoAB* antrec = rec->padre;
         typename DiccLog<K,S>::ItLog it = diccionario->Buscar(rec->clave);
         temp->clave = rec->clave;
         temp->significado = rec->significado;
@@ -291,7 +291,7 @@ void DiccLog<K,S>::ItLog::EliminarSiguiente(){
 
 template<class K ,class S>
 void DiccLog<K,S>::ItLog::EliminarHoja(){
-  if(siguiente->padre->izq->clave == siguiente->clave){
+  if(siguiente->padre->izq != NULL && siguiente->padre->izq->clave == siguiente->clave){
     siguiente->padre->izq = NULL;
     delete siguiente;
   }else{
@@ -318,7 +318,7 @@ void DiccLog<K,S>::ItLog::EliminarRaiz(){                               // Le ag
     while(rec->izq != NULL){
       rec = rec->izq;
     }
-    nodoAB* antrec = rec->padre;
+    //nodoAB* antrec = rec->padre;
     typename DiccLog<K,S>::ItLog it = diccionario->Buscar(rec->clave);
     temp->clave = rec->clave;
     temp->significado = rec->significado;
