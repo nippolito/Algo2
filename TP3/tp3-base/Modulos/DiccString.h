@@ -711,12 +711,19 @@ DiccString<S>& DiccString<S>::operator=(const DiccString<S>& otro){
 template<class S>
 typename DiccString<S>::const_ItStr DiccString<S>::CrearIt() const{
   typename DiccString<S>::const_ItStr res(raiz,NULL,"",false, this);
+  // if(!Definido("")){
+  //   res.Avanzar();
+  // }
   return res;
 }
 
 template<class S>
 typename DiccString<S>::ItStr DiccString<S>::CrearIt(){
   typename DiccString<S>::ItStr res(raiz,NULL,"",false, this);
+  // if(!Definido("")){
+  //   res.Avanzar();
+  // }  
+  // cerr << res.SiguienteSignificado().Longitud() << endl;
   return res;
 }
 

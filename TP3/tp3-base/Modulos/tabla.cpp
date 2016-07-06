@@ -81,24 +81,31 @@ void AgregarYBorrar(){
 	Dato ad(2);
 	Dato af(3);
 	Dato ag(4);
+	Dato stc("nacho");
 	Registro nico;
 	nico.Definir("pipa", as);
 	nico.Definir("messi", ad);
 	nico.Definir("cufa", af);
+	nico.Definir("str", stc);
 	Registro cufa;
+
 	cufa.Definir("pipa", af);
 	cufa.Definir("messi", af);
 	cufa.Definir("cufa", af);
+	cufa.Definir("str", stc);
 
 	Tabla t5("tableta", clav, nico);
 	t5.AgregarRegistro(nico);
 	t5.AgregarRegistro(cufa);
+	t5.Indexar("str");
 	t5.Indexar("pipa");
-	// t5.MostrameIndices();
+
+	t5.MostrameIndices();
 
 	Registro crit;
 	crit.Definir("pipa", as);
-	t5.BuscarYBorrar(crit);
+	// t5.BuscarYBorrar(crit);
+	//cout << t5.Esta(nico) << endl;
 
 }
 

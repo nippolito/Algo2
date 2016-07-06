@@ -378,15 +378,15 @@ void Tabla::Indexar(const String c){
 				Lista<apuntador> lal = indiceN.regpordato.Obtener(it.Siguiente().Obtener(c).ValorNat());
 				typename Lista<apuntador>::Iterador In = lal.CrearItUlt();
 				In.Retroceder();
-				Lista<apuntador> lai = indiceS.regpordato.Obtener(it.Siguiente().Obtener(c).ValorStr());
+				Lista<apuntador> lai = indiceS.regpordato.Obtener(it.Siguiente().Obtener(indiceS.campo).ValorStr());
 				typename Lista<apuntador>::Iterador Is = lai.CrearIt();
-				while(Is.Siguiente().reg.Siguiente().Obtener(indiceS.campo) != it.Siguiente().Obtener(c)){
+				while(Is.Siguiente().reg.Siguiente().Obtener(indiceS.campo) != it.Siguiente().Obtener(indiceS.campo)){
 					Is.Avanzar();
 				}
 			Is.Siguiente().compadre = In;
 			In.Siguiente().compadre = Is;
 			}
-		it.Avanzar();			// En el TP2 no avanzabamos el iterador... TRIIIPLE GENIUS
+			it.Avanzar();			// En el TP2 no avanzabamos el iterador... TRIIIPLE GENIUS
 		}
 		indiceN.minimo = min;			// No actualizabamos los maximos y
 		indiceN.maximo = max;			// minimos en el TP2
@@ -413,9 +413,9 @@ void Tabla::Indexar(const String c){
 				Lista<apuntador> lax = indiceS.regpordato.Obtener(it.Siguiente().Obtener(c).ValorStr());
 				typename Lista<apuntador>::Iterador Is = lax.CrearItUlt(); 
 				Is.Retroceder();
-				Lista<apuntador> laz = indiceN.regpordato.Obtener(it.Siguiente().Obtener(c).ValorNat());
+				Lista<apuntador> laz = indiceN.regpordato.Obtener(it.Siguiente().Obtener(indiceN.campo).ValorNat());
 				typename Lista<apuntador>::Iterador In = laz.CrearIt();
-				while(In.Siguiente().reg.Siguiente().Obtener(indiceN.campo) != it.Siguiente().Obtener(c).ValorStr()){
+				while(In.Siguiente().reg.Siguiente().Obtener(indiceN.campo) != it.Siguiente().Obtener(indiceN.campo)){
 					In.Avanzar();
 				}
 				In.Siguiente().compadre = Is;
@@ -434,18 +434,29 @@ void Tabla::MostrameIndices() const{
 		cout << indiceN.campo << endl;
 		cout << indiceN.minimo << endl;
 		cout << indiceN.maximo << endl;
+		DiccLog<Nat, Lista<apuntador> > ir = indiceN.regpordato;
+		typename DiccLog<Nat, Lista<apuntador> >::ItLog it = ir.CrearIt();
+		cout << it.SiguienteClave() << endl;
+		cout << it.SiguienteSignificado().EsVacia() << endl;
 	}
 	if(indicesUsados.str){
 		cout << "Indice String" << endl;
 		cout << indiceS.campo << endl;
 		cout << indiceS.minimo << endl;
 		cout << indiceS.maximo << endl;
+		DiccString<Lista<apuntador> > is = indiceS.regpordato;
+		typename DiccString<Lista<apuntador> >::ItStr ic = is.CrearIt();
+		ic.Avanzar();
+		cout << ic.SiguienteClave() << endl;
+		cout << ic.SiguienteSignificado().EsVacia() << endl;
 	}
+	cout << "anduvo mostrame índice" << endl;
 }
 
 
 
 void Tabla::BuscarYBorrar(const Registro crit){
+	cerr << "arranca" << endl;
 	Dicc<String, Dato> dica = crit.DameDic();								
 	typename Dicc<String,Dato>::Iterador it7 = dica.CrearIt();			
 	typename Lista<Registro>::Iterador rs = registros.CrearIt();			
@@ -454,6 +465,7 @@ void Tabla::BuscarYBorrar(const Registro crit){
 	while(rs.HaySiguiente() && !(rs.Siguiente().Obtener(c) == d)) {
 		rs.Avanzar();
 	}
+	cerr << "paso el primer ciclo" << endl;
 	if(indicesUsados.nat || indicesUsados.str){
 		if(indicesUsados.nat){
 			Lista<apuntador> ls = indiceN.regpordato.Obtener(rs.Siguiente().Obtener(indiceN.campo).ValorNat());
@@ -463,6 +475,7 @@ void Tabla::BuscarYBorrar(const Registro crit){
 			}
 			Nat m = fa.Siguiente().reg.Siguiente().Obtener(indiceN.campo).ValorNat();					//fa es el iterador al apuntador correspondiente y m es el dato del registro correspondiente
 			if(indicesUsados.str){
+				cerr << "entro al if" << endl;
 				fa.Siguiente().compadre.EliminarSiguiente();
 				String campostr = indiceS.campo;
 				String s4 = fa.Siguiente().reg.Siguiente().Obtener(indiceS.campo).ValorStr(); 
@@ -470,8 +483,9 @@ void Tabla::BuscarYBorrar(const Registro crit){
 				if(la2.Longitud() == 0){
 					indiceS.regpordato.Borrar(s4);
 				}
+			cerr << "pudo salir del if" << endl;
 			}
-			if((indiceN.regpordato.Obtener(rs.Siguiente().Obtener(indiceN.campo).ValorNat())).Longitud() == 0){
+			if((indiceN.regpordato.Obtener(rs.Siguiente().Obtener(indiceN.campo).ValorNat())).Longitud() == 1){
 				indiceN.regpordato.Borrar(m);
 			}
 			fa.Siguiente().reg.EliminarSiguiente();
