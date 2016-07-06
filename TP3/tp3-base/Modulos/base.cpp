@@ -177,8 +177,9 @@ void tablamaxima {
 	loscar.Definir("messi", ae);
 	loscar.Definir("cufa", ac);
 
-	Tabla t2("tablota", clav, carlos);
+	Tabla t3("tableta", clav, rh);
 
+	cout << b.TablaMaxima();
 
 
 }

@@ -79,6 +79,7 @@ namespace modulos{
 			ostream& mostrarTabla(ostream& os) const;
 			const String DameNombre() const; //ESTO NO ESTA EN EL TP
 			const Registro Columnas() const;
+			void MostrameIndices() const;
 		private: 
 			Nat modificaciones;
 			indiceNat indiceN;
@@ -374,9 +375,11 @@ void Tabla::Indexar(const String c){
 				indiceN.regpordato.Definir(it.Siguiente().Obtener(c).ValorNat(), L);
 			}
 			if(indicesUsados.str){
-				typename Lista<apuntador>::Iterador In = indiceN.regpordato.Obtener(it.Siguiente().Obtener(c).ValorNat()).CrearItUlt();
+				Lista<apuntador> lal = indiceN.regpordato.Obtener(it.Siguiente().Obtener(c).ValorNat());
+				typename Lista<apuntador>::Iterador In = lal.CrearItUlt();
 				In.Retroceder();
-				typename Lista<apuntador>::Iterador Is = indiceS.regpordato.Obtener(it.Siguiente().Obtener(c).ValorStr()).CrearIt();
+				Lista<apuntador> lai = indiceS.regpordato.Obtener(it.Siguiente().Obtener(c).ValorStr());
+				typename Lista<apuntador>::Iterador Is = lai.CrearIt();
 				while(Is.Siguiente().reg.Siguiente().Obtener(indiceS.campo) != it.Siguiente().Obtener(c)){
 					Is.Avanzar();
 				}
@@ -407,9 +410,11 @@ void Tabla::Indexar(const String c){
 				indiceS.regpordato.Definir(it.Siguiente().Obtener(c).ValorStr(), L);
 			}
 			if(indicesUsados.nat){
-				typename Lista<apuntador>::Iterador Is = indiceS.regpordato.Obtener(it.Siguiente().Obtener(c).ValorStr()).CrearItUlt(); 
+				Lista<apuntador> lax = indiceS.regpordato.Obtener(it.Siguiente().Obtener(c).ValorStr());
+				typename Lista<apuntador>::Iterador Is = lax.CrearItUlt(); 
 				Is.Retroceder();
-				typename Lista<apuntador>::Iterador In = indiceN.regpordato.Obtener(it.Siguiente().Obtener(c).ValorNat()).CrearIt();
+				Lista<apuntador> laz = indiceN.regpordato.Obtener(it.Siguiente().Obtener(c).ValorNat());
+				typename Lista<apuntador>::Iterador In = laz.CrearIt();
 				while(In.Siguiente().reg.Siguiente().Obtener(indiceN.campo) != it.Siguiente().Obtener(c).ValorStr()){
 					In.Avanzar();
 				}
@@ -423,13 +428,29 @@ void Tabla::Indexar(const String c){
 	}
 }
 
-/*
+void Tabla::MostrameIndices() const{
+	if(indicesUsados.nat){
+		cout << "Indice Nat:" << endl;
+		cout << indiceN.campo << endl;
+		cout << indiceN.minimo << endl;
+		cout << indiceN.maximo << endl;
+	}
+	if(indicesUsados.str){
+		cout << "Indice String" << endl;
+		cout << indiceS.campo << endl;
+		cout << indiceS.minimo << endl;
+		cout << indiceS.maximo << endl;
+	}
+}
+
+
+
 void Tabla::BuscarYBorrar(const Registro crit){
-	Dicc<String, Dato> asdf = crit.DameDic();								
-	typename Dicc<String,Dato>::Iterador asdfg = crit.DameDic().CrearIt();			
+	Dicc<String, Dato> dica = crit.DameDic();								
+	typename Dicc<String,Dato>::Iterador it7 = dica.CrearIt();			
 	typename Lista<Registro>::Iterador rs = registros.CrearIt();			
-	Dato d = asdfg.SiguienteSignificado();
-	String c = asdfg.SiguienteClave();									
+	Dato d = it7.SiguienteSignificado();
+	String c = it7.SiguienteClave();									
 	while(rs.HaySiguiente() && !(rs.Siguiente().Obtener(c) == d)) {
 		rs.Avanzar();
 	}
@@ -440,41 +461,54 @@ void Tabla::BuscarYBorrar(const Registro crit){
 			while(fa.HaySiguiente() && fa.Siguiente().reg.Siguiente().Obtener(c) != d){							//Para que esta esto? Creo que esta mal, deberia buscar por el indiceN.campo y comparar con el rs.siguiente().Obtener(indiceN.campo)
 				fa.Avanzar();
 			}
-			Nat m = fa.Siguiente().reg.Siguiente().Obtener(indiceN.campo).ValorNat();
-			fa.Siguiente().reg.EliminarSiguiente();
-			if(rs.Siguiente().Obtener(indiceN.campo).Longitud() == 0){
+			Nat m = fa.Siguiente().reg.Siguiente().Obtener(indiceN.campo).ValorNat();					//fa es el iterador al apuntador correspondiente y m es el dato del registro correspondiente
+			if(indicesUsados.str){
+				fa.Siguiente().compadre.EliminarSiguiente();
+				String campostr = indiceS.campo;
+				String s4 = fa.Siguiente().reg.Siguiente().Obtener(indiceS.campo).ValorStr(); 
+				Lista<apuntador> la2 = indiceS.regpordato.Obtener(s4);
+				if(la2.Longitud() == 0){
+					indiceS.regpordato.Borrar(s4);
+				}
+			}
+			if((indiceN.regpordato.Obtener(rs.Siguiente().Obtener(indiceN.campo).ValorNat())).Longitud() == 0){
 				indiceN.regpordato.Borrar(m);
 			}
+			fa.Siguiente().reg.EliminarSiguiente();
+			fa.EliminarSiguiente();
 			if(indiceN.maximo == m){
 				indiceN.maximo = indiceN.regpordato.Maximo();
 			}
 			if(indiceN.minimo == m){
 				indiceN.minimo = indiceN.regpordato.Minimo();
 			}
-		}
-		if(indicesUsados.str){
-			Lista<apuntador> ts = indiceS.regpordato.Obtener(rs.Siguiente().Obtener(indiceS.campo).ValorStr());
-			typename Lista<apuntador>::Iterador fu = ts.CrearIt();
-			while(fu.HaySiguiente() && fu.Siguiente().reg.Siguiente().Obtener(c) == d){
-				fu.Avanzar();
-			}
-			String n = fu.Siguiente().reg.Siguiente().Obtener(indiceS.campo).ValorStr();
-			fu.Siguiente().reg.EliminarSiguiente();
-			if(Longitud(Obtener(Obtener(rs.Siguiente(), indiceS.campo))) == 0){
-				indiceS.regpordato.Borrar(n);
-			}
-			if(indiceS.maximo == n){
-				indiceS.maximo = indiceS.regpordato.Maximo();
-			}
-			if(indiceS.minimo == n){
-				indiceS.minimo = indiceS.regpordato.Minimo();
+		}else{
+			if(indicesUsados.str){
+				Lista<apuntador> ts = indiceS.regpordato.Obtener(rs.Siguiente().Obtener(indiceS.campo).ValorStr());
+				typename Lista<apuntador>::Iterador fu = ts.CrearIt();
+				while(fu.HaySiguiente() && fu.Siguiente().reg.Siguiente().Obtener(c) == d){
+					fu.Avanzar();
+				}
+				String n = fu.Siguiente().reg.Siguiente().Obtener(indiceS.campo).ValorStr();
+				fu.Siguiente().reg.EliminarSiguiente();
+				fu.Siguiente().compadre.EliminarSiguiente();
+				fu.EliminarSiguiente();
+				if(indiceS.regpordato.Obtener(rs.Siguiente().Obtener(indiceS.campo).ValorStr()).Longitud() == 0){
+					indiceS.regpordato.Borrar(n);
+				}
+				if(indiceS.maximo == n){
+					indiceS.maximo = indiceS.regpordato.Maximo();
+				}
+				if(indiceS.minimo == n){
+					indiceS.minimo = indiceS.regpordato.Minimo();
+				}
 			}
 		}
 	}else{
 		rs.EliminarSiguiente();
 	}
 }
-*/
+
 /*
 void Tabla::BorrarRegistro(const Registro crit){
 	modificaciones++;

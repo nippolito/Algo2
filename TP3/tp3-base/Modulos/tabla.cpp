@@ -73,10 +73,36 @@ void AgregarYBorrar(){
 	//cout << t.CombinarRegistro("pipa", t3) << endl;
 	//t.BorrarRegistro(r4);
 	//debiera eliminarme los registros r2 y r3
-	cout << t.Esta(r) << endl;
+	// cout << t.Esta(carlos) << endl;
+	// t.Indexar("pipa");
+	// t.MostrameIndices();
+
+	Dato as(1);
+	Dato ad(2);
+	Dato af(3);
+	Dato ag(4);
+	Registro nico;
+	nico.Definir("pipa", as);
+	nico.Definir("messi", ad);
+	nico.Definir("cufa", af);
+	Registro cufa;
+	cufa.Definir("pipa", af);
+	cufa.Definir("messi", af);
+	cufa.Definir("cufa", af);
+
+	Tabla t5("tableta", clav, nico);
+	t5.AgregarRegistro(nico);
+	t5.AgregarRegistro(cufa);
+	t5.Indexar("pipa");
+	// t5.MostrameIndices();
+
+	Registro crit;
+	crit.Definir("pipa", as);
+	t5.BuscarYBorrar(crit);
+
 }
 
-void Index(){
+void Borra(){
 	
 }
 
