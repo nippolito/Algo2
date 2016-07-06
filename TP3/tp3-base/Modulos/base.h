@@ -79,7 +79,8 @@ Base::~Base(){}
 
 Conj<String> Base::Tablas(){
 	Conj<String> res;
-	typename DiccString<typename::Lista<Tabla>::Iterador>::const_ItStr it = TporNombre.CrearIt();
+	DiccString<typename::Lista<Tabla>::Iterador> dld = TporNombre;
+	typename DiccString<typename::Lista<Tabla>::Iterador>::const_ItStr it = dld.CrearIt();
 	while(it.HaySiguiente()){
 		res.AgregarRapido(it.SiguienteClave());
 		it.Avanzar();
@@ -94,7 +95,8 @@ Tabla  Base::DameTabla(const String t){
 
 void Base::AgregarTabla(Tabla t){
 	tablas.AgregarAtras(t);
-	typename Lista<Tabla>::Iterador i = tablas.CrearIt();
+	Lista<Tabla> ts = tablas;
+	typename Lista<Tabla>::Iterador i = ts.CrearIt();
 	while(i.HaySiguiente() && i.Siguiente().DameNombre() != t.DameNombre()){
 		i.Avanzar();
 	}
@@ -111,13 +113,15 @@ void Base::AgregarTabla(Tabla t){
 
 
 void Base::InsertarEntrada(Registro r, String t){
-	typename DiccString<typename::Lista<Tabla>::Iterador>::ItStr i = TporNombre.Buscar(t);
+	DiccString<typename::Lista<Tabla>::Iterador> dld = TporNombre;
+	typename DiccString<typename::Lista<Tabla>::Iterador>::ItStr i = dld.Buscar(t);
 	i.SiguienteSignificado().Siguiente().AgregarRegistro(r);
 	if(CantidadDeAccesosB(TporNombre.Obtener(t).Siguiente().DameNombre()) > CantidadDeAccesosB(TablaMax.Siguiente().DameNombre())){
 		TablaMax = TporNombre.Obtener(t);
 	}
 	if(joins.Definido(t)){
-		typename DiccString<Join>::ItStr it = joins.Obtener(t).CrearIt();
+		DiccString<Join> dj = joins.Obtener(t);
+		typename DiccString<Join>::ItStr it = dj.CrearIt();
 		while(it.HaySiguiente()){
 			tupla tps;
 			tps.regmod = r;
@@ -139,13 +143,15 @@ Conj<Registro> Base::Buscar(Registro criterio,String t1){			//falta buscarT
 
 
 void Base::Borrar(Registro r, String t){
-	typename DiccString<typename::Lista<Tabla>::Iterador>::ItStr i = TporNombre.Buscar(t);
+	DiccString<typename::Lista<Tabla>::Iterador> dld = TporNombre;
+	typename DiccString<typename::Lista<Tabla>::Iterador>::ItStr i = dld.Buscar(t);
 	//i.SiguienteSignificado().BorrarRegistro(r);
 	if(CantidadDeAccesosB(TporNombre.Obtener(t).Siguiente().DameNombre()) > CantidadDeAccesosB(TablaMax.Siguiente().DameNombre())){
 		TablaMax = TporNombre.Obtener(t);
 	}
 	if(joins.Definido(t)){
-		typename DiccString<Join>::ItStr it = joins.Obtener(t).CrearIt();
+		DiccString<Join> dj = joins.Obtener(t);
+		typename DiccString<Join>::ItStr it = dj.CrearIt();
 		while(it.HaySiguiente()){
 			tupla tps;
 			tps.regmod = r;
@@ -171,13 +177,15 @@ bool Base::HayJoin(const String t1, const String t2){
 
 
 void Base::BorrarJoin(const String t1, const String t2){
-	typename DiccString<Join>::ItStr j = joins.Obtener(t1).Buscar(t2);
+	DiccString<Join> dj = joins.Obtener(t1);
+	typename DiccString<Join>::ItStr j = dj.Buscar(t2);
 	j.EliminarSiguiente();
 }
 
 
 String Base::CampoJoin(const String t1,const String t2){
-	typename DiccString<Join>::ItStr j = joins.Obtener(t1).Buscar(t2);
+	DiccString<Join> dj = joins.Obtener(t1);
+	typename DiccString<Join>::ItStr j = dj.Buscar(t2);
 	return j.SiguienteSignificado().campo;
 }
 
@@ -193,8 +201,10 @@ String Base::CampoJoin(const String t1,const String t2){
 		nt.AgregarRegistro(it.Siguiente());
 	}
 	losjoins.AgregarAdelante(nt);
-	typename Lista<Tabla>::Iterador it2 = losjoins.CrearIt();
-	typename Lista<Registro>::const_Iterador res =  it2.Siguiente().Registros().CrearIt();
+	Lista<Tabla> lt = losjoins;
+	typename Lista<Tabla>::Iterador it2 = lt.CrearIt();
+	Lista<Registro> lrl = it2.Siguiente().Registros();
+	typename Lista<Registro>::const_Iterador res =  lrl.CrearIt();
 	DiccString<Join> d;
 	Join js;
 	js.campo = c;
@@ -227,7 +237,8 @@ typename Lista<Registro>::const_Iterador Base::VistaJoin(const String t1, const 
 	Registro rg3 = rg1.AgregarCampos(rg2); 
 	Tabla tab("tab", cs, rg3);
 	tab = joins.Obtener(t1).Obtener(t2).verJoin.Siguiente();
-	typename Lista<tupla>::Iterador itC = joins.Obtener(t1).Obtener(t2).cambios.CrearItUlt();
+	Lista<tupla> ltl = joins.Obtener(t1).Obtener(t2).cambios
+	typename Lista<tupla>::Iterador itC = ltl.CrearItUlt();
 	Registro crit;
 	String ca = CampoJoin(t1, t2);
 	while(itC.HayAnterior()){
@@ -237,13 +248,15 @@ typename Lista<Registro>::const_Iterador Base::VistaJoin(const String t1, const 
 		if(DameTabla(itC.Anterior().tabmod).Esta(itC.Anterior().regmod) ){
 			if(itC.Anterior().tabmod == t1){
 				if(Buscar(crit, DameTabla(t2)).EsVacio() == false ){
-					typename Conj<Registro>::Iterador itB2 = Buscar(crit, DameTabla(t2) ).CrearIt();
+					Conj<Registro> crc = Buscar(crit, DameTabla(t2) )
+					typename Conj<Registro>::Iterador itB2 = crc.CrearIt();
 					Registro reg1 = itC.Anterior().regmod.AgregarCampos(itB2.Siguiente());
 					tab.AgregarRegistro(reg1);
 				}
 			}else{
 				if(Buscar(crit, DameTabla(t1)).EsVacio() == false ){
-					typename Conj<Registro>::Iterador itB1 = Buscar(crit, DameTabla(t1) ).CrearIt();
+					Conj<Registro> crd = Buscar(crit, DameTabla(t1) )
+					typename Conj<Registro>::Iterador itB1 = crd.CrearIt();
 					Registro reg2 = itC.Anterior().regmod.AgregarCampos(itB1.Siguiente());
 					tab.AgregarRegistro(reg2);   //estaba afuera del If pero lo mandamos acá porque supusimos error previo
 				}
@@ -255,7 +268,8 @@ typename Lista<Registro>::const_Iterador Base::VistaJoin(const String t1, const 
 		}
 		itC.Retroceder();
 	}
-	typename Lista<Registro>::const_Iterador res = tab.Registros().CrearIt();
+	Lista<Registro> lrs = tab.Registros()
+	typename Lista<Registro>::const_Iterador res = lrs.CrearIt();
 	return res;
 }
 
