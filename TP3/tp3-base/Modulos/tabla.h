@@ -509,61 +509,57 @@ void Tabla::BuscarYBorrar(const Registro crit){
 	}
 }
 
-/*
 void Tabla::BorrarRegistro(const Registro crit){
 	modificaciones++;
-	typename Dicc<String,Dato>::Iterador j = crit.DameDic().CrearIt();
+	typename Dicc<String,Dato>::const_Iterador j = crit.DameDic().CrearIt();
 	String c = j.SiguienteClave();
-	Dato d = j.SiguienteSignificado();
-	if(d.EsNat() == TipoCampo(c)){
+	Nat d = j.SiguienteSignificado().ValorNat();
+	String f = j.SiguienteSignificado().ValorStr();
+	if(d == TipoCampo(c)){
 		if(indicesUsados.nat && indiceN.campo == c){
-			typename DiccLog<String,Dato>::ItLog it = indiceN.regpordato.Buscar(d);
-		}
+		typename DiccLog< Nat,Lista<apuntador> >::ItLog it = indiceN.regpordato.Buscar(d);
 		if(it.SiguienteClave() == d){
-			if(indicesUsados.str){
-				String s = obtener(indiceS.campo, (it.SiguienteSignificado()).reg.Siguiente());
-			}
 			typename Lista<apuntador>::Iterador itl = it.SiguienteSignificado().CrearIt();
-			(itl.Siguiente().reg).EliminarSiguiente();
-			if(t.indicesUsados.str){
+			itl.Siguiente().reg.EliminarSiguiente();
+			if(indicesUsados.str){
+				String s = it.SiguienteSignificado().Primero().reg.Siguiente().Obtener(indiceS.campo).ValorStr();
 				itl.Siguiente().compadre.EliminarSiguiente();
-				if(Pertenece?(claves(t), indiceS.campo) || Longitud(Obtener(indiceS.regpordato, s)) == 1){
-					Borrar(indiceS.regpordato, s);
+				if(claves.Pertenece(indiceS.campo) || indiceS.regpordato.Obtener(s).Longitud() == 1){
+					indiceS.regpordato.Borrar(s);
 				}
 			}
-			Borrar(indiceN.regpordato, d);
-			if(mt.indiceN.maximo == d){
-				mt.indiceN.maximo = Maximo(mt.indiceN.regpordato);
+			indiceN.regpordato.Borrar(d);
+			if(indiceN.maximo == d){
+				indiceN.maximo = indiceN.regpordato.Maximo();
 			}
-			if(mt.indiceN.minimo == d){
-				mt.indiceN.minimo = Minimo(mt.indiceN.regpordato);
+			if(indiceN.minimo == d){
+				indiceN.minimo = indiceN.regpordato.Minimo();
 			}
 		}
+	}
 	}else{
-		if(t.indicesUsados.str && t.indiceS.campo == c){
-			typename DiccLog<S>::ItLog it = Buscar(t.indiceN.regpordato, d);
-			if(it.SiguienteClave() == d){
-				if(t.indicesUsados.nat){
-					Nat n = Obtener(t.indiceN.campo, it.SiguienteSignificado().reg.Siguiente());
-				}
+		if(indicesUsados.str && indiceS.campo == c){
+			typename DiccString< Lista<apuntador> >::ItStr it = indiceS.regpordato.Buscar(f);
+			if(it.SiguienteClave() == f){
 				typename Lista<apuntador>::Iterador itl = it.SiguienteSignificado().CrearIt();
 				itl.Siguiente().reg.EliminarSiguiente();
-				if(t.indicesUsados.nat){
+				if(indicesUsados.nat){
+					Nat n = it.SiguienteSignificado().Primero().reg.Siguiente().Obtener(indiceN.campo).ValorNat();
 					itl.Siguiente().compadre.EliminarSiguiente();
-					if(Pertenece?(claves(t), indiceN.campo) || Longitud(Obtener(indiceN.regpordato, n)) == 1){
-						Borrar(mt.indiceN.regpordato, n);
+					if(claves.Pertenece(indiceN.campo) || indiceN.regpordato.Obtener(n).Longitud() == 1){
+						indiceN.regpordato.Borrar(n);
 					}
 				}
-				Borrar(indiceS.regpordato, d);
-				if(mt.indiceS.maximo == d){
-					mt.indiceS.maximo = Maximo(mt.indiceS.regpordato);
+				indiceS.regpordato.Borrar(f);
+				if(indiceS.maximo == f){
+					indiceS.maximo = indiceS.regpordato.Maximo();
 				}
-				if(mt.indiceS.minimo == d){
-					mt.indiceS.minimo = Minimo(mt.indiceS.regpordato);
+				if(indiceS.minimo == f){
+					indiceS.minimo = indiceS.regpordato.Minimo();
 				}
 			}
 		}else{
-			BuscarYBorrar(crit, mt);
+			BuscarYBorrar(crit);
 		}
 	}
 	}
