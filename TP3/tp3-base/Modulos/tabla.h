@@ -58,7 +58,7 @@ namespace modulos{
 			Tabla(const Tabla& otra);
 			Tabla(String s , Conj<String> clav, Registro colum);
 			~Tabla();
-			Tabla& operator=(const Tabla& otra);
+			Tabla& operator = (const Tabla& otra);
 			void AgregarRegistro(const Registro r);
 			void BorrarRegistro(const Registro crit);
 			void Indexar(const String c);
@@ -92,13 +92,13 @@ namespace modulos{
 
 };
 
-
 // ----------------------> ALGORITMOS <----------------------
 
 Tabla::Tabla(): modificaciones(0) , nombre("higuain muerto"){}
 
-Tabla::Tabla(const Tabla& otra): modificaciones (otra.modificaciones) , indiceN(otra.indiceN), indiceS(otra.indiceS) , indicesUsados(otra.indicesUsados) , nombre(otra.nombre) , claves (otra.claves) , columnas(otra.columnas), registros(otra.registros) {}	
-
+Tabla::Tabla(const Tabla& otra){//: modificaciones (otra.modificaciones) , indiceN(otra.indiceN), indiceS(otra.indiceS) , indicesUsados(otra.indicesUsados) , nombre(otra.nombre) , claves (otra.claves) , columnas(otra.columnas), registros(otra.registros) {}	
+	*this = otra;
+}
 Tabla::~Tabla(){}
 
 Tabla::Tabla(String s , Conj<String> clav, Registro colum): modificaciones(0) , nombre(s) , claves(clav) , columnas(colum) {}
@@ -108,6 +108,34 @@ const Registro Tabla::Columnas() const{
 	r = columnas;
 	return r;
 }
+
+
+Tabla& Tabla::operator = (const Tabla& otra){
+	modificaciones = 0;
+	indiceNat sobN;
+	indiceStr sobS;
+	indiceN = sobN;
+	indiceS = sobS;
+	Lista<Registro> l;
+	registros = l;
+
+	claves = otra.claves;
+	nombre =otra.nombre;
+	columnas = otra.columnas;
+	indicesUsados = otra.indicesUsados;
+	indiceN.campo = otra.indiceN.campo;
+	indiceS.campo = otra.indiceS.campo;
+
+	typename Lista<Registro>::const_Iterador it = otra.registros.CrearIt();
+	while(it.HaySiguiente()){
+		AgregarRegistro(it.Siguiente());
+		it.Avanzar();
+	}
+
+	return *this;
+}
+
+
 
 void Tabla::AgregarRegistro(const Registro r){
 	typename Lista<apuntador>::Iterador In;
@@ -128,13 +156,11 @@ void Tabla::AgregarRegistro(const Registro r){
 				indiceN.maximo = n;
 			}
 		}
+		apuntador ap;
+		ap.reg = it;
 		if(indiceN.regpordato.Definido(n)){
-			apuntador ap;
-			ap.reg = it;
 			indiceN.regpordato.Obtener(n).AgregarAtras(ap);
 		}else{
-			apuntador ap;
-			ap.reg = it;
 			Lista<apuntador> l;
 			l.AgregarAtras(ap);
 			indiceN.regpordato.Definir(n, l);
@@ -157,15 +183,12 @@ void Tabla::AgregarRegistro(const Registro r){
 				indiceS.maximo = s;
 			}
 		}
+		apuntador ap2;
+		ap2.reg = it;
 		if(indiceS.regpordato.Definido(s)){
-			apuntador ap2;
-			ap2.reg = it;
 			indiceS.regpordato.Obtener(s).AgregarAtras(ap2);
 		}else{
-			apuntador ap2;
-			ap2.reg = it;
 			Lista<apuntador> l2;
-			l2.AgregarAtras(ap2);
 			l2.AgregarAtras(ap2);
 			indiceS.regpordato.Definir(s, l2);
 		}
@@ -482,7 +505,6 @@ void Tabla::MostrameIndices() const{
 
 void Tabla::BuscarYBorrar(const Registro crit){
 	Dicc<String, Dato> dica = crit.DameDic();
-	cerr << "busc y b" << endl;								
 	typename Dicc<String,Dato>::Iterador it7 = dica.CrearIt();			
 	typename Lista<Registro>::Iterador rs = registros.CrearIt();			
 	Dato d = it7.SiguienteSignificado();
@@ -499,7 +521,6 @@ void Tabla::BuscarYBorrar(const Registro crit){
 			Nat m = fa.Siguiente().reg.Siguiente().Obtener(indiceN.campo).ValorNat();					//fa es el iterador al apuntador correspondiente y m es el dato del registro correspondiente
 			if(indicesUsados.str){
 				String s4 = fa.Siguiente().reg.Siguiente().Obtener(indiceS.campo).ValorStr(); 
-				cerr << indiceS.regpordato.Definido(s4) << endl;
 				Lista<apuntador> la2 = indiceS.regpordato.Obtener(s4);
 				if(la2.Longitud() == 1){
 					indiceS.regpordato.Borrar(s4);
@@ -550,15 +571,12 @@ void Tabla::BuscarYBorrar(const Registro crit){
 			}
 		}
 	}else{
-		cerr << "Elimino" << endl;
 		rs.EliminarSiguiente();
 	}
-	cerr << "sali busq y b" << endl;
 }
 
 void Tabla::BorrarRegistro(const Registro crit){
 	modificaciones++;
-	cerr << "entraste loco" << endl;
 	Dicc<String, Dato> ms = crit.DameDic();
 	typename Dicc<String,Dato>::const_Iterador j = ms.CrearIt();
 	String c = j.SiguienteClave();
@@ -574,7 +592,6 @@ void Tabla::BorrarRegistro(const Registro crit){
 				typename Lista<apuntador>::Iterador itl = it.SiguienteSignificado().CrearIt();
 				if(indicesUsados.str){
 					String s = it.SiguienteSignificado().Primero().reg.Siguiente().Obtener(indiceS.campo).ValorStr();
-					//String s = it.SiguienteSignificado().Primero().reg.Siguiente().Obtener(indiceS.campo).ValorStr();
 					itl.Siguiente().compadre.EliminarSiguiente();
 					if(claves.Pertenece(indiceS.campo) || indiceS.regpordato.Obtener(s).Longitud() == 0){
 						indiceS.regpordato.Borrar(s);
@@ -590,7 +607,6 @@ void Tabla::BorrarRegistro(const Registro crit){
 				}
 			}
 		}else{
-			cerr << "Buscar y Borrar" << endl;
 			BuscarYBorrar(crit);
 		}
 	}else{
@@ -598,31 +614,39 @@ void Tabla::BorrarRegistro(const Registro crit){
 			return;
 		}
 		if(indicesUsados.str && indiceS.campo == c){
+			cerr << "Entramos al indice STR" << endl;
 			typename DiccString< Lista<apuntador> >::ItStr it = indiceS.regpordato.Buscar(f);
 			if(it.SiguienteClave() == f){
 				typename Lista<apuntador>::Iterador itl = it.SiguienteSignificado().CrearIt();
 				if(indicesUsados.nat){
+					cerr << "Oooh shit" << endl;
 					Nat n = it.SiguienteSignificado().Primero().reg.Siguiente().Obtener(indiceN.campo).ValorNat();
 					itl.Siguiente().compadre.EliminarSiguiente();
 					if(claves.Pertenece(indiceN.campo) || indiceN.regpordato.Obtener(n).Longitud() == 0){
 						indiceN.regpordato.Borrar(n);
+						cerr << "Si me viste... estas jugado" << endl;
 					} 
 				}
+				cerr << "Despedite de los:  " << crit << endl;
+				cerr << "Vamos a borrar:  " <<  itl.Siguiente().reg.Siguiente() << endl;
+				cerr << registros <<endl << endl;
 				itl.Siguiente().reg.EliminarSiguiente();
+				cerr << registros << endl << endl;
+				cerr << "Quedamos apuntando a:  " << itl.Siguiente().reg.Siguiente() << endl;
 				indiceS.regpordato.Borrar(f);
+				cerr << "Borramos del indice" << endl;
 				if(indiceS.maximo == f && !(indiceS.regpordato.EsVacio())){
 					indiceS.maximo = indiceS.regpordato.Maximo();
 				}
 				if(indiceS.minimo == f && !(indiceS.regpordato.EsVacio())){
 					indiceS.minimo = indiceS.regpordato.Minimo();
 				}
+				cerr << "Ya estamos papu" << endl;
 			}
 		}else{
-			cerr << "Buscar y Borrar" << endl;
 			BuscarYBorrar(crit);
 		}
 	}
-	cerr << "saliste loco" << endl;
 }
 
 /*

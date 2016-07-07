@@ -50,7 +50,7 @@ namespace modulos{
 		private:	
 		
 			Lista<Tabla> tablas;  //igual que arriba
-			DiccString<typename::Lista<Tabla>::Iterador> TporNombre;  //En el TP es un Conjunto, lo cambiamos por Lista porque el sig de Conjunto es const
+			DiccString<typename Lista<Tabla>::Iterador> TporNombre;  //En el TP es un Conjunto, lo cambiamos por Lista porque el sig de Conjunto es const
 			Conj<String> nombres;
 			typename Lista<Tabla>::Iterador TablaMax; //igual que arriba
 			DiccString< DiccString<Join> > joins;
@@ -99,7 +99,7 @@ void Base::AgregarTabla(Tabla t){
 	while(i.HaySiguiente() && i.Siguiente().DameNombre() != t.DameNombre()){
 		i.Avanzar();
 	}
-	cerr << "sale ciclo" << endl;
+	//cerr << "sale ciclo" << endl;
 	TporNombre.Definir(t.DameNombre(), i);
 	nombres.AgregarRapido(t.DameNombre());
 	if(tablas.Longitud() == 1){
@@ -109,7 +109,7 @@ void Base::AgregarTabla(Tabla t){
 			TablaMax = i;
 		}
 	}
-	cerr << "va a terminar " << endl;
+	//cerr << "va a terminar " << endl;
 }
 
 
@@ -141,9 +141,11 @@ Conj<Registro> Base::Buscar(const Registro criterio,String t1){
 
 
 void Base::Borrar(Registro r, String t){
-	typename DiccString<typename::Lista<Tabla>::Iterador>::ItStr i = TporNombre.Buscar(t);
-	cout << i.SiguienteSignificado().Siguiente().DameNombre() << endl;
+	typename DiccString<typename Lista<Tabla>::Iterador>::ItStr i = TporNombre.Buscar(t);
+	//scout << i.SiguienteSignificado().Siguiente().DameNombre() << endl << t <<endl;
+	//cerr << i.SiguienteSignificado().Siguiente().Registros() << endl;
 	i.SiguienteSignificado().Siguiente().BorrarRegistro(r);
+	//cerr << i.SiguienteSignificado().Siguiente().Registros() << endl;
 	if(CantidadDeAccesosB(TporNombre.Obtener(t).Siguiente().DameNombre()) > CantidadDeAccesosB(TablaMax.Siguiente().DameNombre())){
 		TablaMax = TporNombre.Obtener(t);
 	}

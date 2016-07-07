@@ -198,7 +198,7 @@ int main(){
 	Dato d6(1);
 	Dato d7(9999);
 	Dato d8(666);
-
+	Dato det("messi");
 	Registro r;
 	r.Definir("aguero", d4);
 	r.Definir("pipa", d2);
@@ -217,28 +217,7 @@ int main(){
 	r3.Definir("otamendi crack", d4);
 	r3.Definir("todos muertos menos otamendi", d3);
 	r3.Definir("Jogo Bonito" , d8);
-	Conj<String> clav;
-	clav.Agregar("aguero");
-	Base b;
-	Tabla t("tablita", clav, r);
-	Tabla t1("tablota", clav, r);
-	Tabla t2("tab", clav, r);
-
-	t.AgregarRegistro(r);
-	t.AgregarRegistro(r2);
-	t.AgregarRegistro(r3);
-
-	b.AgregarTabla(t);
-	b.DameTabla(t.DameNombre());
-	b.AgregarTabla(t1);
-	b.AgregarTabla(t2);
-	// cerr << b.CantidadDeAccesosB(t.DameNombre()) << endl;
-	// cout << "Las Tablas son: " << b.Tablas() << endl;
-
-
-
 	Registro reg;
-	Dato det("messi");
 	// reg.Definir("pipa", det);
 	reg.Definir("aguero", d4);
 	//reg.Definir("nacho", d7);
@@ -248,19 +227,6 @@ int main(){
 	Registro reggae;
 	Dato dete("nicoB");
 	reggae.Definir("pipa", dete);
-
-	// b.InsertarEntrada(reg, t.DameNombre());
-
-
-
-	
-
-	//cout << b.GenerarVistaJoin(t.DameNombre(), t3.DameNombre(), "aguero" ).Siguiente().Registros() << endl;
-	//cout << b.HayJoin(t.DameNombre(), t3.DameNombre()) << endl;
-	//cout << b.CampoJoin(t.DameNombre(), t3.DameNombre()) << endl;
-	//b.BorrarJoin(t.DameNombre(), t3.DameNombre());
-	//cout << b.HayJoin(t.DameNombre(), t3.DameNombre()) << endl;
-	//cout << b.VistaJoin(t.DameNombre(), t3.DameNombre()).Siguiente().Registros() << endl;
 	Registro asdf;
 	asdf.Definir("aguero", d4);
 	asdf.Definir("nacho", d4);
@@ -271,31 +237,50 @@ int main(){
 	gg.Definir("nacho", d4);
 	gg.Definir("nico", d7);
 	gg.Definir("facu", d6);
-
+	Conj<String> clav;
+	clav.Agregar("aguero");
+	Base b;
+	Tabla t("tablita", clav, r);
+	Tabla t1("tablota", clav, r);
+	Tabla t2("tab", clav, r);
 	Tabla t3("hola", clav, asdf);
-
-	t3.Indexar("facu");
-	cout << "indexo" << endl;
+	t.AgregarRegistro(r);
+	t.AgregarRegistro(r2);
+	t.AgregarRegistro(r3);
 	t3.AgregarRegistro(asdf);
 	t3.AgregarRegistro(gg);
-	cout << "agrego regs" << endl;
+	t3.Indexar("nacho");
+	t3.Indexar("nico");
+	b.AgregarTabla(t);
+	b.DameTabla(t.DameNombre());
+	b.AgregarTabla(t1);
+	b.AgregarTabla(t2);
 	b.AgregarTabla(t3);
 
 
-	cout << "vas a borrar" << endl;
-
-	b.Borrar(reg,t3.DameNombre());
-	cout << t3.Registros() << endl;
+	// cerr << b.CantidadDeAccesosB(t.DameNombre()) << endl;
+	// cout << "Las Ta blas son: " << b.Tablas() << endl;
+	// b.InsertarEntrada(reg, t.DameNombre());
+	//cout << b.GenerarVistaJoin(t.DameNombre(), t3.DameNombre(), "aguero" ).Siguiente().Registros() << endl;
+	//cout << b.HayJoin(t.DameNombre(), t3.DameNombre()) << endl;
+	//cout << b.CampoJoin(t.DameNombre(), t3.DameNombre()) << endl;
+	//b.BorrarJoin(t.DameNombre(), t3.DameNombre());
+	//cout << b.HayJoin(t.DameNombre(), t3.DameNombre()) << endl;
 	//cout << b.VistaJoin(t.DameNombre(), t3.DameNombre()).Siguiente().Registros() << endl;
-
+	//cout << "indexo" << endl;
+	//cout << "agrego regs" << endl;
+	//cout << "vas a borrar" << endl;
+	//cout << t3.Registros() << endl;
+	cout << b.DameTabla(t3.DameNombre()).Registros() << endl;
+	b.Borrar(reg,t3.DameNombre());
+	cout << b.DameTabla(t3.DameNombre()).Registros() << endl;
+	//cout << t3.Registros() << endl;
+	//cout << b.VistaJoin(t.DameNombre(), t3.DameNombre()).Siguiente().Registros() << endl;
 	// cout << b.RegistrosB(t.DameNombre()) << endl;
-
 	// cout << b.Buscar(reg, t.DameNombre()) << endl;
 	// cout << b.Buscar(reggae, t.DameNombre()) << endl; //busco algo que no existe
 
 	Base b2(b);
-
-
 	// cout << b2.CantidadDeAccesosB(t.DameNombre()) << endl;
 	// cout << b2.TablaMaxima() << endl;
 
