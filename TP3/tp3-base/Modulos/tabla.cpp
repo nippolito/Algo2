@@ -453,16 +453,37 @@ void CombinandoRegistros(){
 	r.Definir("3",d3);
 	r.Definir("4",d4);
 	r.Definir("5",d5);
-	r.Definir("6",xx);
-	r.Definir("7",xz);
+	r.Definir("6",xc);
+	r.Definir("7",xc);
+	Registro r1;
+	r1.Definir("1",d2);
+	r1.Definir("2",d3);
+	r1.Definir("3",d4);
+	r1.Definir("4",d5);
+	r1.Definir("5",d1);
+	r1.Definir("6",xx);
+	r1.Definir("7",d1);
+	Registro r3;
+	r3.Definir("6",zx);
+	r3.Definir("7",d1);
+	r3.Definir("8",as);
+	r3.Definir("9",af);
 	Registro r2;
-	r2.Definir("6",d4);
+	r2.Definir("6",xx);
 	r2.Definir("7",xc);
 	r2.Definir("8",as);
 	r2.Definir("9",af);
-	cout << r << endl << r2 << endl << endl;
-	cout << r.AgregarCampos(r2) << endl << r2.AgregarCampos(r) << endl;
+	Conj<String> c;
+	Tabla t("cacho",c,r);
+	Tabla t2("cachito",c,r2);
+	t.AgregarRegistro(r);
+	t.AgregarRegistro(r1);
+	t2.AgregarRegistro(r2);
 
+	cout << t.Registros() << endl << t2.Registros() << endl << endl;
+	//cout << r.AgregarCampos(r2) << endl << r2.AgregarCampos(r) << endl << endl;
+	cout << t.CombinarRegistro("7",t2) << t.CombinarRegistro("6", t2) << endl << endl;
+	cout << t2.CombinarRegistro("7",t) << t2.CombinarRegistro("6", t) << endl << endl;
 }
 
 int main(){
