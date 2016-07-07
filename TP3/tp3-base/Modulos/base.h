@@ -8,7 +8,7 @@ using namespace std;
 using namespace aed2;
 
 
-namespace modulo{
+namespace modulos{
 	class Base{
 		
 		private: 
@@ -39,10 +39,10 @@ namespace modulo{
 			void AgregarTabla(Tabla t);
 			void InsertarEntrada(Registro r, String t);
 			void Borrar(Registro r, String t);
-			typename Lista<Registro>::Iterador GenerarVistaJoin(const String t, const String t2, const String c);
+			const typename Lista<Tabla>::Iterador GenerarVistaJoin(const String t, const String t2, const String c);
 			void BorrarJoin(const String t1, const String t2);
-			Conj<Registro> Buscar(Registro criterio, String t1);
-			typename Lista<Registro>::const_Iterador VistaJoin(const String t1, const String t2);
+			Conj<Registro> Buscar(const Registro criterio, String t1);
+			const typename Lista<Tabla>::Iterador VistaJoin(const String t1, const String t2);
 			Conj<Registro> RegistrosB(const String t1);
 			Nat CantidadDeAccesosB(const String t);
 			String TablaMaxima();
@@ -65,22 +65,22 @@ Base::Base(){}
 
 Base::Base(const Base& otra): tablas(otra.tablas) ,TporNombre(otra.TporNombre),  nombres(otra.nombres) , TablaMax(otra.TablaMax) , joins(otra.joins) , losjoins(otra.losjoins) {}
 
-Base& Base::operator=(const Base& otra){
-	tablas = otra.tablas;
-	TporNombre = otra.TporNombre;
-	nombres = otra.nombres;
-	TablaMax = otra.TablaMax;
-	joins = otra.joins;
-	losjoins = otra.losjoins;
-	return *this;
-}
+// Base& Base::operator=(const Base& otra){
+// 	tablas = otra.tablas;
+// 	TporNombre = otra.TporNombre;
+// 	nombres = otra.nombres;
+// 	TablaMax = otra.TablaMax;
+// 	joins = otra.joins;
+// 	losjoins = otra.losjoins;
+// 	return *this;
+// }
 
 Base::~Base(){}
 
 Conj<String> Base::Tablas(){
 	Conj<String> res;
-	DiccString<typename::Lista<Tabla>::Iterador> dld = TporNombre;
-	typename DiccString<typename::Lista<Tabla>::Iterador>::const_ItStr it = dld.CrearIt();
+	// DiccString<typename::Lista<Tabla>::Iterador> dld = TporNombre;
+	typename DiccString<typename::Lista<Tabla>::Iterador>::ItStr it = TporNombre.CrearIt();
 	while(it.HaySiguiente()){
 		res.AgregarRapido(it.SiguienteClave());
 		it.Avanzar();
@@ -88,40 +88,39 @@ Conj<String> Base::Tablas(){
 	return res;
 }
 
-Tabla  Base::DameTabla(const String t){
+Tabla Base::DameTabla(const String t){
 	return TporNombre.Obtener(t).Siguiente();
 }
 
 
 void Base::AgregarTabla(Tabla t){
 	tablas.AgregarAtras(t);
-	Lista<Tabla> ts = tablas;
-	typename Lista<Tabla>::Iterador i = ts.CrearIt();
+	typename Lista<Tabla>::Iterador i = tablas.CrearIt();
 	while(i.HaySiguiente() && i.Siguiente().DameNombre() != t.DameNombre()){
 		i.Avanzar();
 	}
+	cerr << "sale ciclo" << endl;
 	TporNombre.Definir(t.DameNombre(), i);
 	nombres.AgregarRapido(t.DameNombre());
-	if(tablas.EsVacia()){
+	if(tablas.Longitud() == 1){
 		TablaMax = i;
 	}else{
 		if( CantidadDeAccesosB(t.DameNombre()) > CantidadDeAccesosB(TablaMax.Siguiente().DameNombre())){
 			TablaMax = i;
 		}
 	}
+	cerr << "va a terminar " << endl;
 }
 
 
 void Base::InsertarEntrada(Registro r, String t){
-	DiccString<typename::Lista<Tabla>::Iterador> dld = TporNombre;
-	typename DiccString<typename::Lista<Tabla>::Iterador>::ItStr i = dld.Buscar(t);
+	typename DiccString<typename::Lista<Tabla>::Iterador>::ItStr i = TporNombre.Buscar(t);
 	i.SiguienteSignificado().Siguiente().AgregarRegistro(r);
 	if(CantidadDeAccesosB(TporNombre.Obtener(t).Siguiente().DameNombre()) > CantidadDeAccesosB(TablaMax.Siguiente().DameNombre())){
 		TablaMax = TporNombre.Obtener(t);
 	}
 	if(joins.Definido(t)){
-		DiccString<Join> dj = joins.Obtener(t);
-		typename DiccString<Join>::ItStr it = dj.CrearIt();
+		typename DiccString<Join>::ItStr it = joins.Obtener(t).CrearIt();
 		while(it.HaySiguiente()){
 			tupla tps;
 			tps.regmod = r;
@@ -136,22 +135,20 @@ void Base::InsertarEntrada(Registro r, String t){
 }
 
 
-Conj<Registro> Base::Buscar(Registro criterio,String t1){			//falta buscarT
-	Conj<Registro> r;
-	return r;
+Conj<Registro> Base::Buscar(const Registro criterio,String t1){
+	return DameTabla(t1).BuscarT(criterio);
 }
 
 
 void Base::Borrar(Registro r, String t){
-	DiccString<typename::Lista<Tabla>::Iterador> dld = TporNombre;
-	typename DiccString<typename::Lista<Tabla>::Iterador>::ItStr i = dld.Buscar(t);
-	//i.SiguienteSignificado().BorrarRegistro(r);
+	typename DiccString<typename::Lista<Tabla>::Iterador>::ItStr i = TporNombre.Buscar(t);
+	cout << i.SiguienteSignificado().Siguiente().DameNombre() << endl;
+	i.SiguienteSignificado().Siguiente().BorrarRegistro(r);
 	if(CantidadDeAccesosB(TporNombre.Obtener(t).Siguiente().DameNombre()) > CantidadDeAccesosB(TablaMax.Siguiente().DameNombre())){
 		TablaMax = TporNombre.Obtener(t);
 	}
 	if(joins.Definido(t)){
-		DiccString<Join> dj = joins.Obtener(t);
-		typename DiccString<Join>::ItStr it = dj.CrearIt();
+		typename DiccString<Join>::ItStr it = joins.Obtener(t).CrearIt();
 		while(it.HaySiguiente()){
 			tupla tps;
 			tps.regmod = r;
@@ -172,56 +169,59 @@ String Base::TablaMaxima(){
 
 
 bool Base::HayJoin(const String t1, const String t2){
-	return joins.Obtener(t1).Definido(t2);
+	if(joins.Definido(t1) == false){
+		return false;
+	}else{
+		return joins.Obtener(t1).Definido(t2);
+	}
 }
 
 
 void Base::BorrarJoin(const String t1, const String t2){
-	DiccString<Join> dj = joins.Obtener(t1);
-	typename DiccString<Join>::ItStr j = dj.Buscar(t2);
+	typename DiccString<Join>::ItStr j = joins.Obtener(t1).Buscar(t2);
 	j.EliminarSiguiente();
 }
 
 
 String Base::CampoJoin(const String t1,const String t2){
-	DiccString<Join> dj = joins.Obtener(t1);
-	typename DiccString<Join>::ItStr j = dj.Buscar(t2);
+	typename DiccString<Join>::ItStr j = joins.Obtener(t1).Buscar(t2);
 	return j.SiguienteSignificado().campo;
 }
 
 
-/*typename Lista<Registro>::Iterador Base::GenerarVistaJoin(const String t1, const String t2, const String c){
-	Conj<Registro> rs = t1.combinarRegistros(c, t2);
-	typename Registro::Iterador it = rs.CrearIt();
+const typename Lista<Tabla>::Iterador Base::GenerarVistaJoin(const String t1, const String t2, const String c){				//Gerva ahora devolvemos un ite a lista de tabla
+	Conj<Registro> rs = DameTabla(t1).CombinarRegistro(c, DameTabla(t2)); //funcional mal COMBINARREGISTRO, a los campos de t2 que no existen en t1 en vez de mergearlos con su dato les pone un dato cualquiera de t1
+	typename Conj<Registro>::Iterador it = rs.CrearIt();
 	Conj<String> cla;
 	cla.Agregar(c);
-	nt = Tabla("nuevat", cla , it.Siguiente());
+	Tabla nt = Tabla("nuevat", cla , it.Siguiente());
 	nt.Indexar(c);
 	while(it.HaySiguiente()){
 		nt.AgregarRegistro(it.Siguiente());
+		it.Avanzar();
 	}
 	losjoins.AgregarAdelante(nt);
-	Lista<Tabla> lt = losjoins;
-	typename Lista<Tabla>::Iterador it2 = lt.CrearIt();
-	Lista<Registro> lrl = it2.Siguiente().Registros();
-	typename Lista<Registro>::const_Iterador res =  lrl.CrearIt();
+	typename Lista<Tabla>::Iterador it2 = losjoins.CrearIt();
+	// Conj<Registro> lrl = it2.Siguiente().Registros();
+	// typename Conj<Registro>::Iterador res =  lrl.CrearIt();
 	DiccString<Join> d;
 	Join js;
 	js.campo = c;
-	tupla tup;
-	js.cambios = tup;
+	Lista<tupla> ltup;
+	js.cambios = ltup;
 	js.verJoin = it2;
 	if(!joins.Definido(t1)){
 		d.Definir(t2, js);
 		joins.Definir(t1, d);
 	}else{
-		joins.Obtener(t1).Definir(t2, d);
+		joins.Obtener(t1).Definir(t2, js);
 	}	
-} HASTA NO TENER COMBINA REGISTRO NO ANDA*/
+	return it2;
+}
 
-// Conj<Registro> Base::RegistrosB(const String t1){
-// 	return DameTabla(t1).Registros();
-// }
+Conj<Registro> Base::RegistrosB(const String t1){
+ 	return DameTabla(t1).Registros();
+}
 
 
 Nat Base::CantidadDeAccesosB(const String t){
@@ -229,16 +229,15 @@ Nat Base::CantidadDeAccesosB(const String t){
 }
 
 
-typename Lista<Registro>::const_Iterador Base::VistaJoin(const String t1, const String t2){   //tenemos un const iterador porque nos tiraba error pero no sabemos si es correcto
+const typename Lista<Tabla>::Iterador Base::VistaJoin(const String t1, const String t2){   //tenemos un const iterador porque nos tiraba error pero no sabemos si es correcto
 	Conj<String> cs;
 	cs.Agregar(CampoJoin(t1, t2));
-	Registro rg1 = t1.DameTabla().Columnas();
-	Registro rg2 = t2.DameTabla().Columnas();
+	Registro rg1 = DameTabla(t1).Columnas();
+	Registro rg2 = DameTabla(t2).Columnas();
 	Registro rg3 = rg1.AgregarCampos(rg2); 
 	Tabla tab("tab", cs, rg3);
-	tab = joins.Obtener(t1).Obtener(t2).verJoin.Siguiente();
-	Lista<tupla> ltl = joins.Obtener(t1).Obtener(t2).cambios
-	typename Lista<tupla>::Iterador itC = ltl.CrearItUlt();
+	//tab = joins.Obtener(t1).Obtener(t2).verJoin.Siguiente();
+	typename Lista<tupla>::Iterador itC = joins.Obtener(t1).Obtener(t2).cambios.CrearItUlt();
 	Registro crit;
 	String ca = CampoJoin(t1, t2);
 	while(itC.HayAnterior()){
@@ -247,18 +246,18 @@ typename Lista<Registro>::const_Iterador Base::VistaJoin(const String t1, const 
 		crit.Definir(ca, d);
 		if(DameTabla(itC.Anterior().tabmod).Esta(itC.Anterior().regmod) ){
 			if(itC.Anterior().tabmod == t1){
-				if(Buscar(crit, DameTabla(t2)).EsVacio() == false ){
-					Conj<Registro> crc = Buscar(crit, DameTabla(t2) )
+				if(Buscar(crit, t2).EsVacio() == false ){
+					Conj<Registro> crc = Buscar(crit, t2);
 					typename Conj<Registro>::Iterador itB2 = crc.CrearIt();
 					Registro reg1 = itC.Anterior().regmod.AgregarCampos(itB2.Siguiente());
 					tab.AgregarRegistro(reg1);
 				}
 			}else{
-				if(Buscar(crit, DameTabla(t1)).EsVacio() == false ){
-					Conj<Registro> crd = Buscar(crit, DameTabla(t1) )
+				if(Buscar(crit, t1).EsVacio() == false ){
+					Conj<Registro> crd = Buscar(crit, t1);
 					typename Conj<Registro>::Iterador itB1 = crd.CrearIt();
 					Registro reg2 = itC.Anterior().regmod.AgregarCampos(itB1.Siguiente());
-					tab.AgregarRegistro(reg2);   //estaba afuera del If pero lo mandamos acá porque supusimos error previo
+					joins.Obtener(t1).Obtener(t2).verJoin.Siguiente().AgregarRegistro(reg2);   //estaba afuera del If pero lo mandamos acá porque supusimos error previo
 				}
 			}
 		}else{
@@ -268,9 +267,10 @@ typename Lista<Registro>::const_Iterador Base::VistaJoin(const String t1, const 
 		}
 		itC.Retroceder();
 	}
-	Lista<Registro> lrs = tab.Registros()
-	typename Lista<Registro>::const_Iterador res = lrs.CrearIt();
-	return res;
+	// Conj<Registro> lrs = tab.Registros();
+	// typename Conj<Registro>::const_Iterador res = lrs.CrearIt();
+	typename Lista<Tabla>::Iterador itres = losjoins.CrearIt();
+	return itres;
 }
 
 
