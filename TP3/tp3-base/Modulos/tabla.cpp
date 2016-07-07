@@ -433,10 +433,43 @@ void tuvieja(){
 	
 }
 
+void CombinandoRegistros(){
+	Dato d1("Peron");
+	Dato d2("Evita");
+	Dato d3("Campora");
+	Dato d4("Isabel");
+	Dato d5("Nestor");	
+	Dato xz("popa");
+	Dato xx("popo");
+	Dato zx("papo");
+	Dato xc("opap");
+	Dato as(1);
+	Dato ad(2);
+	Dato af(3);
+	Dato ag(4);
+	Registro r;
+	r.Definir("1",d1);
+	r.Definir("2",d2);
+	r.Definir("3",d3);
+	r.Definir("4",d4);
+	r.Definir("5",d5);
+	r.Definir("6",xx);
+	r.Definir("7",xz);
+	Registro r2;
+	r2.Definir("6",d4);
+	r2.Definir("7",xc);
+	r2.Definir("8",as);
+	r2.Definir("9",af);
+	cout << r << endl << r2 << endl << endl;
+	cout << r.AgregarCampos(r2) << endl << r2.AgregarCampos(r) << endl;
+
+}
+
 int main(){
-	tuvieja();
+	//tuvieja();
 	//Borra();
 	//Indexar();
+	CombinandoRegistros();
 	/*Dato d1("Peron");
 	Dato d2("Evita");
 	Registro r1;

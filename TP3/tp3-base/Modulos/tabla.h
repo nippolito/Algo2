@@ -362,12 +362,20 @@ bool Tabla::Esta(const Registro r) const{
 }
 
 void Tabla::Indexar(const String c){
+	if(TipoCampo(c)){
+		indicesUsados.nat = true;
+		indiceN.campo = c;
+	}else{
+		indicesUsados.str = true;
+		indiceS.campo = c;
+	}
+	if(registros.EsVacia()){
+		return;
+	}
 	typename Lista<Registro>::Iterador it = registros.CrearIt();
 	Dato min = it.Siguiente().Obtener(c);
 	Dato max = it.Siguiente().Obtener(c);
 	if(TipoCampo(c)){
-		indicesUsados.nat = true;
-		indiceN.campo = c;
 		while(it.HaySiguiente()){
 			if(it.Siguiente().Obtener(c).MenorOIgual(min)){
 				min = it.Siguiente().Obtener(c);
@@ -399,8 +407,6 @@ void Tabla::Indexar(const String c){
 		indiceN.minimo = min;			// No actualizabamos los maximos y
 		indiceN.maximo = max;			// minimos en el TP2
 	}else{
-		indicesUsados.str = true;
-		indiceS.campo = c;
 		while(it.HaySiguiente()){
 			if(!(min.MenorOIgual(it.Siguiente().Obtener(c).ValorStr()))){
 				min = it.Siguiente().Obtener(c);
