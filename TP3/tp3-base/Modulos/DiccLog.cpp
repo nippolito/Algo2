@@ -88,17 +88,30 @@ void BuscarYAvanzar(){
 
 
 int main(){
-	CrearVacioYLlenarlo();
-	ChequeaSiEstanDefinidos();
-	DameDicc();
-	BuscarYAvanzar();
-	DiccLog<Nat,String> d;
 
+	// CrearVacioYLlenarlo();
+	// ChequeaSiEstanDefinidos();
+	// DameDicc();
+	// BuscarYAvanzar();
+	// DiccLog<Nat,String> d;
+
+	// d.Definir(3, "Tu Vieja");
+	// d.Definir(7,"Tu Hermana");
+	// d.Borrar(3);
+	// DiccLog<Nat,String> d2;
+	// d = d2;
+
+	DiccLog<Nat,String> d;
+	
 	d.Definir(3, "Tu Vieja");
-	d.Definir(7,"Tu Hermana");
-	d.Borrar(3);
-	DiccLog<Nat,String> d2;
-	d = d2;
+	typename DiccLog<Nat,String>::ItLog it1 = d.CrearIt();
+	 d.Definir(7,"Tu Hermana");
+	 d.Definir(0, "Tu Puta Vieja");
+	 d.Definir(9, "Tu Puta Vieja");
+	 d.Definir(6, "Tu Puta Vieja");
+	 d.Definir(11, "Tu Puta Vieja");
+	 
+	it1.EliminarSiguiente();
 
 
 	return 0;

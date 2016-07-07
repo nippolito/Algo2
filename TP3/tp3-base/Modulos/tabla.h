@@ -481,7 +481,8 @@ void Tabla::MostrameIndices() const{
 
 
 void Tabla::BuscarYBorrar(const Registro crit){
-	Dicc<String, Dato> dica = crit.DameDic();								
+	Dicc<String, Dato> dica = crit.DameDic();
+	cerr << "busc y b" << endl;								
 	typename Dicc<String,Dato>::Iterador it7 = dica.CrearIt();			
 	typename Lista<Registro>::Iterador rs = registros.CrearIt();			
 	Dato d = it7.SiguienteSignificado();
@@ -549,12 +550,15 @@ void Tabla::BuscarYBorrar(const Registro crit){
 			}
 		}
 	}else{
+		cerr << "Elimino" << endl;
 		rs.EliminarSiguiente();
 	}
+	cerr << "sali busq y b" << endl;
 }
 
 void Tabla::BorrarRegistro(const Registro crit){
 	modificaciones++;
+	cerr << "entraste loco" << endl;
 	Dicc<String, Dato> ms = crit.DameDic();
 	typename Dicc<String,Dato>::const_Iterador j = ms.CrearIt();
 	String c = j.SiguienteClave();
@@ -586,6 +590,7 @@ void Tabla::BorrarRegistro(const Registro crit){
 				}
 			}
 		}else{
+			cerr << "Buscar y Borrar" << endl;
 			BuscarYBorrar(crit);
 		}
 	}else{
@@ -613,9 +618,11 @@ void Tabla::BorrarRegistro(const Registro crit){
 				}
 			}
 		}else{
+			cerr << "Buscar y Borrar" << endl;
 			BuscarYBorrar(crit);
 		}
 	}
+	cerr << "saliste loco" << endl;
 }
 
 /*
