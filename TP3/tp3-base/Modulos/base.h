@@ -99,7 +99,6 @@ void Base::AgregarTabla(Tabla t){
 	while(i.HaySiguiente() && i.Siguiente().DameNombre() != t.DameNombre()){
 		i.Avanzar();
 	}
-	//cerr << "sale ciclo" << endl;
 	TporNombre.Definir(t.DameNombre(), i);
 	nombres.AgregarRapido(t.DameNombre());
 	if(tablas.Longitud() == 1){
@@ -109,7 +108,6 @@ void Base::AgregarTabla(Tabla t){
 			TablaMax = i;
 		}
 	}
-	//cerr << "va a terminar " << endl;
 }
 
 
@@ -142,10 +140,7 @@ Conj<Registro> Base::Buscar(const Registro criterio,String t1){
 
 void Base::Borrar(Registro r, String t){
 	typename DiccString<typename Lista<Tabla>::Iterador>::ItStr i = TporNombre.Buscar(t);
-	//scout << i.SiguienteSignificado().Siguiente().DameNombre() << endl << t <<endl;
-	//cerr << i.SiguienteSignificado().Siguiente().Registros() << endl;
 	i.SiguienteSignificado().Siguiente().BorrarRegistro(r);
-	//cerr << i.SiguienteSignificado().Siguiente().Registros() << endl;
 	if(CantidadDeAccesosB(TporNombre.Obtener(t).Siguiente().DameNombre()) > CantidadDeAccesosB(TablaMax.Siguiente().DameNombre())){
 		TablaMax = TporNombre.Obtener(t);
 	}
@@ -215,9 +210,16 @@ const typename Lista<Tabla>::Iterador Base::GenerarVistaJoin(const String t1, co
 	if(!joins.Definido(t1)){
 		d.Definir(t2, js);
 		joins.Definir(t1, d);
+
 	}else{
 		joins.Obtener(t1).Definir(t2, js);
-	}	
+	}
+	if(!joins.Definido(t2)){
+		d.Definir(t1, js);
+		joins.Definir(t2, d);
+	}else{
+		joins.Obtener(t2).Definir(t1, js);
+	}
 	return it2;
 }
 
@@ -232,27 +234,21 @@ Nat Base::CantidadDeAccesosB(const String t){
 
 
 const typename Lista<Tabla>::Iterador Base::VistaJoin(const String t1, const String t2){   //tenemos un const iterador porque nos tiraba error pero no sabemos si es correcto
-	Conj<String> cs;
-	cs.Agregar(CampoJoin(t1, t2));
-	Registro rg1 = DameTabla(t1).Columnas();
-	Registro rg2 = DameTabla(t2).Columnas();
-	Registro rg3 = rg1.AgregarCampos(rg2); 
-	Tabla tab("tab", cs, rg3);
-	//tab = joins.Obtener(t1).Obtener(t2).verJoin.Siguiente();
+	typename Lista<Tabla>::Iterador itab = joins.Obtener(t1).Obtener(t2).verJoin;
 	typename Lista<tupla>::Iterador itC = joins.Obtener(t1).Obtener(t2).cambios.CrearItUlt();
 	Registro crit;
 	String ca = CampoJoin(t1, t2);
 	while(itC.HayAnterior()){
 		Dato d;
 		d = itC.Anterior().regmod.Obtener(ca);
-		crit.Definir(ca, d);
+		crit.DefinirLento(ca, d);
 		if(DameTabla(itC.Anterior().tabmod).Esta(itC.Anterior().regmod) ){
 			if(itC.Anterior().tabmod == t1){
 				if(Buscar(crit, t2).EsVacio() == false ){
 					Conj<Registro> crc = Buscar(crit, t2);
 					typename Conj<Registro>::Iterador itB2 = crc.CrearIt();
 					Registro reg1 = itC.Anterior().regmod.AgregarCampos(itB2.Siguiente());
-					tab.AgregarRegistro(reg1);
+					itab.Siguiente().AgregarRegistro(reg1);
 				}
 			}else{
 				if(Buscar(crit, t1).EsVacio() == false ){
@@ -263,16 +259,13 @@ const typename Lista<Tabla>::Iterador Base::VistaJoin(const String t1, const Str
 				}
 			}
 		}else{
-			// if(!EsVacio(tab.BuscarT(crit)) ){   //el buscarT toma parámetro const pero acá no funcionaría ya que tab no es const. Igual es lógico que busquemos algo para ver si lo podemos eliminar o no
-			// 	tab.Borrar(crit);
-			// }
+			if(!itab.Siguiente().BuscarT(crit).EsVacio() ){   //el buscarT toma parámetro const pero acá no funcionaría ya que tab no es const. Igual es lógico que busquemos algo para ver si lo podemos eliminar o no
+				itab.Siguiente().BorrarRegistro(crit);
+			}
 		}
 		itC.Retroceder();
 	}
-	// Conj<Registro> lrs = tab.Registros();
-	// typename Conj<Registro>::const_Iterador res = lrs.CrearIt();
-	typename Lista<Tabla>::Iterador itres = losjoins.CrearIt();
-	return itres;
+	return itab;
 }
 
 

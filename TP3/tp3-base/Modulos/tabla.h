@@ -298,6 +298,7 @@ Conj<Registro> Tabla::BuscarT(const Registro crit) const{
 		if(indicesUsados.nat == true && cs.Pertenece(indiceN.campo)){
 			Nat n = crit.Obtener(indiceN.campo).ValorNat();
 			typename DiccLog< Nat, Lista<apuntador> >::const_ItLog ir2 = indiceN.regpordato.Buscar(n);
+			if(!ir2.HaySiguiente()){return res;}
 			typename Lista<apuntador>::const_Iterador i = ir2.SiguienteSignificado().CrearIt(); 
 			while(i.HaySiguiente()){
 				if(crit.CoincidenTodos(cs, i.Siguiente().reg.Siguiente())){
@@ -309,6 +310,7 @@ Conj<Registro> Tabla::BuscarT(const Registro crit) const{
 			if(indicesUsados.str == true && cs.Pertenece(indiceS.campo)){
 				String s = crit.Obtener(indiceS.campo).ValorStr();
 				typename DiccString< Lista<apuntador> >::const_ItStr ir = indiceS.regpordato.Buscar(s);
+				cerr << ir.SiguienteClave() << endl;
 				typename Lista<apuntador>::const_Iterador i = ir.SiguienteSignificado().CrearIt(); 
 				while(i.HaySiguiente()){
 					if(crit.CoincidenTodos(cs, i.Siguiente().reg.Siguiente())){

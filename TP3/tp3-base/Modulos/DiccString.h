@@ -24,10 +24,6 @@ class DiccString{
         nodoStr(S* s) : padre(NULL), significado(s){for(int j = 0 ; j < 256 ; j++){
         caracteres[j]=NULL;}
         };
-      /*friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
-        return os << n.clave << ":" << n.significado;
-      }*/
-
       };
 
     struct data { 
@@ -35,11 +31,9 @@ class DiccString{
       String clav;
 
       data(nodoStr* s, String c) : sig(s), clav(c) {}
-      /*friend ostream& operator<<(ostream& os, const DiccString<S>::nodoStr& n) {
-        return os << n.clave << ":" << n.significado;
-      }*/
+    };
 
-      };
+
 	public:
 
   	class ItStr;
@@ -168,7 +162,9 @@ ostream& operator << (ostream &os, const DiccString<S>& d);
 template<class S>
 bool operator == (const DiccString<S>& d1, const DiccString<S>& d2);
 
-//  ------------>> FUNCIONES DEL ITSTR <<---------------
+
+//  ----------------------------------->> FUNCIONES DEL ITSTR <<--------------------------------------------------
+
 
 template<class S>
 DiccString<S>::ItStr::ItStr(): siguiente(NULL), anterior(NULL), clave (""),busca(false), diccionario(NULL){}
@@ -319,10 +315,6 @@ void DiccString<S>::ItStr::EliminarSiguiente(){
       anterior = siguiente;
       siguiente = NULL;
     }else{
-      /*siguiente = recorrido.Tope().sig;
-      clave = recorrido.Tope().clav;
-      anterior = siguiente->padre;
-      recorrido.Desapilar();*/
       Avanzar();
     }
   }
@@ -386,116 +378,9 @@ void DiccString<S>::ItStr::AgregarComoSiguiente(const String c,const S& s){   //
 
 
 
-
-
-
-
-
-
-
-/*
-template<class S>
-void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el diseño falto contemplar el caso de definir la raíz
-  S* p = &s;
-  if (anterior==NULL){
-    nodoStr* n = new nodoStr(p);
-    for (int i=0;i<256;i++){
-      n->caracteres[i] = NULL;
-    }
-    diccionario->raiz = n;
-  }else{
-    if(c == clave && siguiente!=NULL){        // En el diseño faltó chequear si el nodo existía ya o había que crearlo
-      siguiente->significado = p;
-    }else{
-      int j = clave.length();
-      nodoStr n = new nodoStr(NULL);
-      for (int i=0;i<256;i++){
-        n.caracteres[i] = NULL;
-      }
-      n.padre = anterior;
-      int i = c[j];
-      (anterior->caracteres)[i] = n;
-      siguiente = n;
-      j++;
-      while(j < c.length()){
-        nodoStr n = new nodoStr(NULL);
-        for (int i=0;i<256;i++){
-          n.caracteres[i] = NULL;
-        }
-        n.padre = anterior;
-        int i=c[j];
-        (anterior->caracteres)[i] = n;
-        anterior = siguiente;
-        siguiente = n;
-        j++;
-      }
-      clave = c;
-      siguiente->significado = p;
-    }
-  }
-}*/
-
-/*template<class S>
-void DiccString<S>::ItStr::AgregarComoSiguiente(String c, S s){   // En el diseño falto contemplar el caso de definir la raíz
-S* p = &s;
-  if (anterior==NULL){
-    nodoStr* n = new nodoStr(NULL);
-    diccionario->raiz = n;
-    siguiente = n;
-    if(c == ""){
-      n->significado=p;
-      return;
-    }else{
-      anterior = siguiente;
-      siguiente = NULL;
-    }
-  }
-
-  if(c == clave && siguiente!=NULL){        // En el diseño faltó chequear si el nodo existía ya o había que crearlo
-    siguiente->significado = p;
-  }else{
-    int j = clave.length();
-    nodoStr* n = new nodoStr(NULL);
-    int i = c[j];
-    (anterior->caracteres)[i] = n;
-    n->padre = anterior;
-    siguiente = n;
-    j++;
-    while(j < c.length()){
-      nodoStr* n = new nodoStr(NULL);
-      n->padre = anterior;
-      int i=c[j];
-      (anterior->caracteres)[i] = n;
-      anterior = siguiente;
-      siguiente = n;
-      j++;
-    }
-    clave = c;
-    siguiente->significado = p;
-  }
-}*/
-
-
-
-
-
 //-------------------------------------- Funciones del const_ItStr ---------------------------------------
 
-/*const_ItStr();
 
-          const_ItStr(const typename DiccString<S>::ItStr& otro);
-          const_ItStr(nodoStr* s, nodoStr* a, String c, bool b);
-
-          const_ItStr(const typename DiccString<S>::const_ItStr& otro);
-
-          const_ItStr& operator = (const typename DiccString<S>::const_ItStr& otro);
-
-          bool operator==(const typename DiccString<S>::const_ItStr& otro) const;
-
-          bool HaySiguiente() const;
-          const String& SiguienteClave() const;
-          const S& SiguienteSignificado() const;
-          void Avanzar(); */
 
 template<class S>
 DiccString<S>::const_ItStr::const_ItStr(): siguiente(NULL), anterior(NULL), clave (""),busca(false), diccionario(NULL){}
@@ -636,10 +521,6 @@ template<class S>
 DiccString<S>::DiccString(const DiccString<S>& otro){
   typename DiccString<S>::const_ItStr it = otro.CrearIt();
   raiz = new nodoStr(NULL);
-  if(it.HaySiguiente() && !otro.Definido("")){
-    it.Avanzar();
-    
-  }
   while(it.HaySiguiente()){
     Definir(it.SiguienteClave(),it.SiguienteSignificado()); 
     it.Avanzar();
@@ -686,10 +567,6 @@ void DiccString<S>::destructorrecursivo(nodoStr* n){
 template<class S>
 DiccString<S>::~DiccString(){
   destructorrecursivo(raiz);
-    /*typename DiccString<S>::ItStr it = CrearIt();
-  while(it.HaySiguiente()){
-    it.EliminarSiguiente();
-  }*/
 }
 
 template<class S>
@@ -697,10 +574,6 @@ DiccString<S>& DiccString<S>::operator=(const DiccString<S>& otro){
   destructorrecursivo(raiz); //limpio
   typename DiccString<S>::const_ItStr it = otro.CrearIt();
   raiz = new nodoStr(NULL);
-  if(it.HaySiguiente() && !otro.Definido("")){
-    it.Avanzar();
-    
-  }
   while(it.HaySiguiente()){
     Definir(it.SiguienteClave(),it.SiguienteSignificado()); 
     it.Avanzar();
@@ -711,19 +584,18 @@ DiccString<S>& DiccString<S>::operator=(const DiccString<S>& otro){
 template<class S>
 typename DiccString<S>::const_ItStr DiccString<S>::CrearIt() const{
   typename DiccString<S>::const_ItStr res(raiz,NULL,"",false, this);
-  // if(!Definido("")){
-  //   res.Avanzar();
-  // }
+  if(res.HaySiguiente() && !Definido("")){
+    res.Avanzar();
+  }
   return res;
 }
 
 template<class S>
 typename DiccString<S>::ItStr DiccString<S>::CrearIt(){
   typename DiccString<S>::ItStr res(raiz,NULL,"",false, this);
-  // if(!Definido("")){
-  //   res.Avanzar();
-  // }  
-  // cerr << res.SiguienteSignificado().Longitud() << endl;
+  if(res.HaySiguiente() && !Definido("")){
+    res.Avanzar();
+  }  
   return res;
 }
 
@@ -734,7 +606,6 @@ typename DiccString<S>::const_ItStr DiccString<S>::Buscar(const String& s) const
   nodoStr* padre = NULL;
   String clave = "";
   int j = 0;
-  //int n = s.length();
   while (clave != s && rec != NULL){
     int i = s[j];
     padre = rec;
@@ -743,7 +614,6 @@ typename DiccString<S>::const_ItStr DiccString<S>::Buscar(const String& s) const
     j++;
   }
   typename DiccString<S>::const_ItStr res(rec,padre,clave,true,this);
-  //typename DiccString<S>::const_ItStr res = CrearIt();
   return res;
 }
 
@@ -752,8 +622,7 @@ typename DiccString<S>::ItStr DiccString<S>::Buscar(const String& s){
   nodoStr* rec = raiz;
   nodoStr* padre = NULL;
   String clave = "";
-  int j = 0;
-  //int n = s.length();
+  int j = 0; 
   while (clave != s && rec != NULL){
     int i = s[j];
     padre = rec;
@@ -801,35 +670,9 @@ void DiccString<S>::Borrar(const String& clave){
 template<class S>
 const String DiccString<S>::Minimo() const {
   DiccString<S>::const_ItStr i = CrearIt();
-  if (i.siguiente->significado != NULL){
-    return "";
-  }else{
-      i.Avanzar();
-      return i.clave;
-  }
+  return i.clave;
 }
 
-/*
-template<class S>
-const String DiccString<S>::Minimo() const {
-  nodoStr* a = raiz;
-  String res = "";
-  cerr << "Por Entrar al While" << endl;
-  int j = 0;
-  while(a != NULL){
-    j=0;
-    while(j < 255 && (a->caracteres)[j] == NULL){
-      j++;
-    }
-    cerr << "Encontre la siguiente letra" << endl;
-    char i = j;
-    res.push_back(i);
-    a = (a->caracteres)[j];
-    cerr << "Avanzo de nodo" << endl;
-  }
-  cerr << "Sali del While" << endl;
-  return res;
-}*/
 
 
 template<class S>
