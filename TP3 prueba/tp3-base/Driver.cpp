@@ -5,12 +5,13 @@ bool aed2::operator == (const aed2::Columna& c1, const aed2::Columna& c2)
   return c1.nombre == c2.nombre and c1.tipo == c2.tipo;
 }
 
+
 using namespace aed2;
 using namespace modulos;
 
 
   ////////////////////////////////////////////////////////////////////////////////
- //                              Tu Vieja                                      //
+ //                             Conversor                                      //
 ////////////////////////////////////////////////////////////////////////////////
 
 modulos::Dato DSDN(const Driver::Dato& d){
@@ -115,6 +116,7 @@ bool Driver::Dato::operator != (const Dato& otro) const
 
 Driver::Driver()
 {
+  
   //assert(false);
 }
 
@@ -327,7 +329,3 @@ aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const 
   //assert(false);
 }
 */
-
-int main(){
-  return 0;
-}

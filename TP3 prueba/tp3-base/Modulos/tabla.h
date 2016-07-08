@@ -79,7 +79,7 @@ namespace modulos{
 			ostream& mostrarTabla(ostream& os) const;
 			const String DameNombre() const; //ESTO NO ESTA EN EL TP
 			const Registro Columnas() const;
-			void MostrameIndices() const;
+			//void MostrameIndices() const;
 		private: 
 			Nat modificaciones;
 			indiceNat indiceN;

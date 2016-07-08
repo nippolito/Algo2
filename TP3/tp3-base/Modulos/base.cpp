@@ -373,7 +373,7 @@ int main(){
 	
 	Registro crit2;
 	crit2.Definir("ID Pj", i5);
-
+	t1.Indexar("ID Pj");
 
 	// ACA EMPIEZAN LOS TESTS 
 

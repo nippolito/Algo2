@@ -31,7 +31,7 @@ class Dato {
 			 bool operator==(const Dato&) const;
 			 bool operator!=(const Dato&) const;
 			 
-			 
+	friend ostream& operator<<(ostream& os , const Dato d);		 
 		private:
 			bool tipo;
 			modulos::Nat nat;

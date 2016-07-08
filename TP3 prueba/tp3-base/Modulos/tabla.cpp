@@ -11,7 +11,7 @@ Tabla::Tabla(const Tabla& otra){//: modificaciones (otra.modificaciones) , indic
 }
 Tabla::~Tabla(){}
 
-Tabla::Tabla(String s , Conj<String> clav, Registro colum): modificaciones(0) , nombre(s) , claves(clav) , columnas(colum) {}
+Tabla::Tabla(String s ,Conj<String> clav, Registro colum):  nombre(s) , claves(clav) , columnas(colum) {}
 
 const Registro Tabla::Columnas() const{
 	Registro r;
@@ -220,7 +220,6 @@ Conj<Registro> Tabla::BuscarT(const Registro crit) const{
 			if(indicesUsados.str == true && cs.Pertenece(indiceS.campo)){
 				String s = crit.Obtener(indiceS.campo).ValorStr();
 				typename DiccString< Lista<apuntador> >::const_ItStr ir = indiceS.regpordato.Buscar(s);
-				cerr << ir.SiguienteClave() << endl;
 				typename Lista<apuntador>::const_Iterador i = ir.SiguienteSignificado().CrearIt(); 
 				while(i.HaySiguiente()){
 					if(crit.CoincidenTodos(cs, i.Siguiente().reg.Siguiente())){
@@ -374,13 +373,13 @@ void Tabla::Indexar(const String c){
 		indiceS.maximo = max;
 	}
 }
-
+/*
 void Tabla::MostrameIndices() const{
 	if(indicesUsados.nat){
 		cout << "Indice Nat:" << endl;
-		/*cout << indiceN.campo << endl;
+		cout << indiceN.campo << endl;
 		cout << indiceN.minimo << endl;
-		cout << indiceN.maximo << endl;*/
+		cout << indiceN.maximo << endl;
 		typename DiccLog<Nat, Lista<apuntador> >::const_ItLog in = indiceN.regpordato.CrearIt();
 		while(in.HaySiguiente()){
 			cerr << in.SiguienteClave() << ":  "<< endl;
@@ -395,9 +394,9 @@ void Tabla::MostrameIndices() const{
 	}
 	if(indicesUsados.str){
 		cout << "Indice String" << endl;
-		/*cout << indiceS.campo << endl;
+		cout << indiceS.campo << endl;
 		cout << indiceS.minimo << endl;
-		cout << indiceS.maximo << endl;*/
+		cout << indiceS.maximo << endl;
 		typename DiccString<Lista<apuntador> >::const_ItStr is = indiceS.regpordato.CrearIt();
 		is.Avanzar();
 		while(is.HaySiguiente()){
@@ -412,7 +411,7 @@ void Tabla::MostrameIndices() const{
 		}
 	}
 }
-
+*/
 
 
 void Tabla::BuscarYBorrar(const Registro crit){
@@ -526,34 +525,24 @@ void Tabla::BorrarRegistro(const Registro crit){
 			return;
 		}
 		if(indicesUsados.str && indiceS.campo == c){
-			cerr << "Entramos al indice STR" << endl;
 			typename DiccString< Lista<apuntador> >::ItStr it = indiceS.regpordato.Buscar(f);
 			if(it.SiguienteClave() == f){
 				typename Lista<apuntador>::Iterador itl = it.SiguienteSignificado().CrearIt();
 				if(indicesUsados.nat){
-					cerr << "Oooh shit" << endl;
 					Nat n = it.SiguienteSignificado().Primero().reg.Siguiente().Obtener(indiceN.campo).ValorNat();
 					itl.Siguiente().compadre.EliminarSiguiente();
 					if(claves.Pertenece(indiceN.campo) || indiceN.regpordato.Obtener(n).Longitud() == 0){
 						indiceN.regpordato.Borrar(n);
-						cerr << "Si me viste... estas jugado" << endl;
 					} 
 				}
-				cerr << "Despedite de los:  " << crit << endl;
-				cerr << "Vamos a borrar:  " <<  itl.Siguiente().reg.Siguiente() << endl;
-				cerr << registros <<endl << endl;
 				itl.Siguiente().reg.EliminarSiguiente();
-				cerr << registros << endl << endl;
-				cerr << "Quedamos apuntando a:  " << itl.Siguiente().reg.Siguiente() << endl;
 				indiceS.regpordato.Borrar(f);
-				cerr << "Borramos del indice" << endl;
 				if(indiceS.maximo == f && !(indiceS.regpordato.EsVacio())){
 					indiceS.maximo = indiceS.regpordato.Maximo();
 				}
 				if(indiceS.minimo == f && !(indiceS.regpordato.EsVacio())){
 					indiceS.minimo = indiceS.regpordato.Minimo();
 				}
-				cerr << "Ya estamos papu" << endl;
 			}
 		}else{
 			BuscarYBorrar(crit);
