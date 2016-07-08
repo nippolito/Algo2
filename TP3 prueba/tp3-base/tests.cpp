@@ -7,7 +7,7 @@
 #include <string>
 #include <iostream>
 
-using namespace modulos;
+
 
 // Algunos datos de prueba que voy a usar reiteradamente.
 

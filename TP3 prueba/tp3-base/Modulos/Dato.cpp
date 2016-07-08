@@ -120,7 +120,7 @@ using namespace aed2;
 	 }
 
 
-	 ostream& operator<<(ostream& os, const Dato& d){
+	ostream& operator<<(ostream& os, const Dato& d){
 		return d.mostrarDato(os);
 	}
 /*

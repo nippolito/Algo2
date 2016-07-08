@@ -110,6 +110,21 @@ bool Driver::Dato::operator != (const Dato& otro) const
   return not (*this == otro);
 }
 
+ostream& Dato::mostrarSuDato(ostream& os) const
+  {
+    if (esNat()) {
+      os << nat_;
+    } else{
+      os << str_;
+    }
+
+  return os;
+  }
+
+ostream& operator<<(ostream& os, const Dato& d){
+    return d.mostrarSuDato(os);
+  }
+
 ////////////////////////////////////////////////////////////////////////////////
 // Base de datos
 ////////////////////////////////////////////////////////////////////////////////
@@ -210,13 +225,13 @@ aed2::Nat Driver::cantidadDeAccesosDeTabla(const NombreTabla& tabla) const
 
 Driver::Dato Driver::minimo(const NombreTabla& tabla, const NombreCampo& columna) const
 {
-  return DNDS(b.DameTabla(tabla).Minimo(columna.nombre));
+  return DNDS(b.DameTabla(tabla).Minimo(columna));
   //assert(false);
 }
 
 Driver::Dato Driver::maximo(const NombreTabla& tabla, const NombreCampo& columna) const
 {
-  return DNDS(b.DameTabla(tabla).Maximo(columna.nombre));
+  return DNDS(b.DameTabla(tabla).Maximo(columna));
   //assert(false);
 }
 
@@ -328,7 +343,7 @@ const NombreCampo& Driver::campoJoin(const NombreTabla& tabla1, const NombreTabl
 
 void Driver::generarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2, const NombreCampo& campo)
 {
-  b.generarVistaJoin(tabla1,tabla2,campo);
+  b.GenerarVistaJoin(tabla1,tabla2,campo);
   //assert(false);
 }
 
@@ -340,6 +355,7 @@ void Driver::borrarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla
 
 aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2)
 {
+  Conj<Driver::Registro> res;
   Conj<modulos::Registro> cr = b.VistaJoin(tabla1,tabla2).Siguiente().Registros();
   typename Conj<modulos::Registro>::Iterador itr = cr.CrearIt();
   while(itr.HaySiguiente()){

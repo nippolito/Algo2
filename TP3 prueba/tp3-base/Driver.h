@@ -33,7 +33,9 @@ class Driver
 
         bool operator == (const Dato& otro) const;
         bool operator != (const Dato& otro) const;
-
+        ostream& mostrarSuDato(ostream&) const;
+        
+        friend ostream& operator<<(ostream& os , const Dato d);
       private:
 
         TipoCampo tipo_;
@@ -238,7 +240,7 @@ class Driver
      * 
      * PRE: existe un Join entre las tablas 'tabla1' y 'tabla2'.
      */
-    aed2::Conj<Registro> vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const;
+    aed2::Conj<Registro> vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2);
 
 
 
@@ -253,11 +255,11 @@ class Driver
 
 }; // class Driver
 
-    modulos::Dato DSDN(const Driver::Dato& d);
+   /* modulos::Dato DSDN(const Driver::Dato& d);
     Driver::Dato DNDS(const modulos::Dato& d);
     modulos::Registro RSRN(const Driver::Registro& r);
     Driver::Registro RNRS(const modulos::Registro& r);
-
+ */
 
 
 }; // namespace aed2
