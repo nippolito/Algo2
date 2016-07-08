@@ -56,7 +56,7 @@ namespace modulos{
 		public:
 			Tabla();
 			Tabla(const Tabla& otra);
-			Tabla(const String& s,const Conj<String>& clav, const Registro& colum);
+			Tabla(const String& s,const Conj<String>& clav, const Registro& colum); //Rompo todo si pongo const a registros??
 			~Tabla();
 			Tabla& operator = (const Tabla& otra);
 			void AgregarRegistro(const Registro r);
