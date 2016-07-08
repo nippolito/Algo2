@@ -32,9 +32,9 @@ class Registro {		// Algunas funciones con "?" cambiaron de nombre
 		// Registro CombinarTodos(const String c, const Conj<Registro>) const;
 		Conj<String> DiferenciaSimetrica(const Registro r2) const;
 		Dicc<String,Dato> DameDic() const;
-		ostream& mostrarRegistro(ostream& os) const;
+		//ostream& mostrarRegistro(ostream& os) const;
 		
-	
+	//friend ostream& operator<<(ostream& os, const Registro& r);
 	private:
 		Dicc<String,Dato> dic;
 };

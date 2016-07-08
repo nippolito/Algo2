@@ -27,11 +27,11 @@ class Dato {
 			 Dato MaxDato(const Conj<Dato> cd);
 			 Dato MinDato(const Conj<Dato> cd);
 			 bool MenorOIgual(const Dato otro) const;
-			 ostream& mostrarDato(ostream&) const;
+			// ostream& mostrarDato(ostream&) const;
 			 bool operator==(const Dato&) const;
 			 bool operator!=(const Dato&) const;
 			 
-	friend ostream& operator<<(ostream& os , const Dato d);		 
+	//friend ostream& operator<<(ostream& os , const Dato& d);		 
 		private:
 			bool tipo;
 			modulos::Nat nat;

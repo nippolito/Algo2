@@ -85,7 +85,7 @@ using namespace aed2;
 	}
 
 
-	ostream& Dato::mostrarDato(ostream& os) const
+	/*ostream& Dato::mostrarDato(ostream& os) const
 	{
 		if (tipo) {
 			os << nat;
@@ -94,7 +94,7 @@ using namespace aed2;
 		}
 
 	return os;
-	}
+	}*/
 
 
 	 bool Dato::operator==(const Dato& otro) const
@@ -120,9 +120,9 @@ using namespace aed2;
 	 }
 
 
-	ostream& operator<<(ostream& os, const Dato& d){
+	/*ostream& operator<<(ostream& os, const Dato& d){
 		return d.mostrarDato(os);
-	}
+	}*/
 /*
 int main(){
 

@@ -35,7 +35,7 @@ class Driver
         bool operator != (const Dato& otro) const;
         ostream& mostrarSuDato(ostream&) const;
         
-        friend ostream& operator<<(ostream& os , const Dato d);
+        friend ostream& operator<<(ostream& os , const Dato& d);
       private:
 
         TipoCampo tipo_;

@@ -127,10 +127,8 @@ void insertar_una_tabla_vacia()
     // TODO el ASSERT_EQ deberia usar el ==
     assert(bd.tablas() == nombres_tablas);
   }
-
   // TODO el ASSERT_EQ deberia usar el ==
   assert( bd.columnasDeTabla(NOMBRE_TABLA_PERSONAS) == columnas_personas );
-
   // TODO el ASSERT_EQ deberia usar el ==
   assert( bd.columnasClaveDeTabla(NOMBRE_TABLA_PERSONAS) ==  columnas_clave_personas );
 }
@@ -138,11 +136,9 @@ void insertar_una_tabla_vacia()
 void insertar_registros_en_una_tabla()
 {
   aed2::Driver bd;
-
   CREAR_TABLA_PERSONAS( bd );
   bd.insertarRegistro(NOMBRE_TABLA_PERSONAS, persona_1);
   bd.insertarRegistro(NOMBRE_TABLA_PERSONAS, persona_2);
-
   {
     aed2::Conj<aed2::Driver::Registro> registros;
     registros.Agregar( persona_1 );
@@ -160,7 +156,6 @@ void borrar_un_campo_clave_en_una_tabla()
   CREAR_TABLA_PERSONAS( bd );
   bd.insertarRegistro(NOMBRE_TABLA_PERSONAS, persona_1);
   bd.insertarRegistro(NOMBRE_TABLA_PERSONAS, persona_2);
-
   bd.borrarRegistro(NOMBRE_TABLA_PERSONAS, "DNI", aed2::Driver::Dato(1));
 
   {
@@ -170,13 +165,11 @@ void borrar_un_campo_clave_en_una_tabla()
     aed2::Conj<aed2::Driver::Registro> registros2;
     registros2.Agregar( persona_2 );
     registros2.Agregar( persona_1 );
-    
+
     // TODO el ASSERT_EQ deberia usar el ==
     assert( bd.registrosDeTabla(NOMBRE_TABLA_PERSONAS) == registros );
-
     bd.insertarRegistro(NOMBRE_TABLA_PERSONAS, persona_1);
     assert( bd.registrosDeTabla(NOMBRE_TABLA_PERSONAS) == registros2 );
-
     bd.borrarRegistro(NOMBRE_TABLA_PERSONAS, "DNI", aed2::Driver::Dato(1));
     assert( bd.registrosDeTabla(NOMBRE_TABLA_PERSONAS) == registros );
   }
@@ -365,14 +358,10 @@ void buscar_registro_no_perteneciente_a_tabla()
 void hacer_un_join()
 {
   aed2::Driver bd;
-
   CREAR_TABLA_PERSONAS( bd );
   CREAR_TABLA_TRABAJOS( bd );
-
   ASSERT( not bd.hayJoin(NOMBRE_TABLA_PERSONAS, NOMBRE_TABLA_TRABAJOS) );
-
   bd.generarVistaJoin(NOMBRE_TABLA_PERSONAS, NOMBRE_TABLA_TRABAJOS, "DNI");
-
   ASSERT( bd.hayJoin(NOMBRE_TABLA_PERSONAS, NOMBRE_TABLA_TRABAJOS) );
   ASSERT( bd.campoJoin(NOMBRE_TABLA_PERSONAS, NOMBRE_TABLA_TRABAJOS)== "DNI" );
 }
@@ -573,7 +562,7 @@ int main(int argc, char **argv)
   RUN_TEST( insertar_una_tabla_vacia );
   RUN_TEST( insertar_registros_en_una_tabla );
   RUN_TEST( borrar_un_campo_clave_en_una_tabla );
-  // RUN_TEST( borrar_un_campo_no_clave_en_una_tabla );
+                // RUN_TEST( borrar_un_campo_no_clave_en_una_tabla ); // no va
   RUN_TEST( contar_cantidad_de_accesos );
   RUN_TEST(tabla_maxima);
   RUN_TEST(indice_sobre_campo_clave_nat);
@@ -588,10 +577,10 @@ int main(int argc, char **argv)
   // BD
   //////////////////////////////////////////////////////////////////////////////
 
-  RUN_TEST( hacer_un_join );
-  RUN_TEST( actualizar_join_despues_de_insertar );
-  RUN_TEST( actualizar_join_despues_de_borrar );
-  RUN_TEST( joins_no_son_simetricos );
+    RUN_TEST( hacer_un_join );
+    RUN_TEST( actualizar_join_despues_de_insertar );
+    RUN_TEST( actualizar_join_despues_de_borrar );
+    RUN_TEST( joins_no_son_simetricos );
 
   return 0;
 }

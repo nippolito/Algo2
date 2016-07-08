@@ -40,6 +40,7 @@ modulos::Registro RSRN(const Driver::Registro& r){                      // Regis
   modulos::Registro res;
   while(it.HaySiguiente()){
     modulos::Dato d = DSDN(it.SiguienteSignificado());
+    cerr << "se rompe en el definir?" << endl;
     res.Definir( it.SiguienteClave(), d);
   }
   return res;
@@ -110,7 +111,7 @@ bool Driver::Dato::operator != (const Dato& otro) const
   return not (*this == otro);
 }
 
-ostream& Dato::mostrarSuDato(ostream& os) const
+ostream& Driver::Dato::mostrarSuDato(ostream& os) const
   {
     if (esNat()) {
       os << nat_;
@@ -121,7 +122,7 @@ ostream& Dato::mostrarSuDato(ostream& os) const
   return os;
   }
 
-ostream& operator<<(ostream& os, const Dato& d){
+ostream& operator<<(ostream& os, const Driver::Dato& d){
     return d.mostrarSuDato(os);
   }
 
@@ -184,14 +185,14 @@ aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabla) const
   modulos::Registro r = b.DameTabla(tabla).Columnas();
   typename Dicc<String,modulos::Dato>::Iterador it = r.DameDic().CrearIt();
   while(it.HaySiguiente()){
-    Columna c;
+    Columna c;   
     c.nombre = it.SiguienteClave();
     if (it.SiguienteSignificado().EsNat()){
       c.tipo = NAT;
     }else{
       c.tipo = STR;
     }
-    res.Agregar(c);
+    res.AgregarRapido(c);
     it.Avanzar();
   }
   return res;
@@ -343,6 +344,7 @@ const NombreCampo& Driver::campoJoin(const NombreTabla& tabla1, const NombreTabl
 
 void Driver::generarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2, const NombreCampo& campo)
 {
+    cerr << "entra" << endl;
   b.GenerarVistaJoin(tabla1,tabla2,campo);
   //assert(false);
 }

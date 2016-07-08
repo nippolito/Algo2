@@ -117,19 +117,19 @@ Dicc<String,Dato> Registro::DameDic() const {
 	return dic;
 }
 
-ostream& Registro::mostrarRegistro(ostream& os) const{
+/*ostream& Registro::mostrarRegistro(ostream& os) const{
 	os << dic;
 	return os;
-}
+}*/
 
 
 bool Registro::operator==(const Registro& r) const{
 	return r.CoincidenTodos(Campos(), *this) && CoincidenTodos(r.Campos(), r);
 }
 
-ostream& operator<<(ostream& os, const Registro& r){
+/*ostream& operator<<(ostream& os, const Registro& r){
 	return r.mostrarRegistro(os);
-}
+}*/
 
 
 // int main(){
