@@ -23,10 +23,10 @@ Base::Base(const Base& otra): tablas(otra.tablas) ,TporNombre(otra.TporNombre), 
 
 Base::~Base(){}
 
-Conj<String> Base::Tablas(){
+Conj<String> Base::Tablas() const{
 	Conj<String> res;
 	// DiccString<typename::Lista<Tabla>::Iterador> dld = TporNombre;
-	typename DiccString<typename::Lista<Tabla>::Iterador>::ItStr it = TporNombre.CrearIt();
+	typename DiccString<typename::Lista<Tabla>::Iterador>::const_ItStr it = TporNombre.CrearIt();
 	while(it.HaySiguiente()){
 		res.AgregarRapido(it.SiguienteClave());
 		it.Avanzar();
@@ -34,7 +34,7 @@ Conj<String> Base::Tablas(){
 	return res;
 }
 
-Tabla Base::DameTabla(const String t){
+Tabla Base::DameTabla(const String t) const {
 	return TporNombre.Obtener(t).Siguiente();
 }
 
@@ -106,12 +106,12 @@ void Base::Borrar(Registro r, String t){
 }
 
 
-String Base::TablaMaxima(){
+String Base::TablaMaxima() const{
 	return TablaMax.Siguiente().DameNombre();
 }
 
 
-bool Base::HayJoin(const String t1, const String t2){
+bool Base::HayJoin(const String t1, const String t2) const{
 	if(joins.Definido(t1) == false){
 		return false;
 	}else{
@@ -126,8 +126,8 @@ void Base::BorrarJoin(const String t1, const String t2){
 }
 
 
-String Base::CampoJoin(const String t1,const String t2){
-	typename DiccString<Join>::ItStr j = joins.Obtener(t1).Buscar(t2);
+String Base::CampoJoin(const String t1,const String t2) const{ 
+	typename DiccString<Join>::const_ItStr j = joins.Obtener(t1).Buscar(t2);
 	return j.SiguienteSignificado().campo;
 }
 
@@ -176,7 +176,7 @@ Conj<Registro> Base::RegistrosB(const String t1){
 }
 
 
-Nat Base::CantidadDeAccesosB(const String t){
+Nat Base::CantidadDeAccesosB(const String t) const{
 	return DameTabla(t).CantidadDeAccesos();
 }
 

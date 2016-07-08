@@ -46,7 +46,7 @@ modulos::Registro RSRN(const Driver::Registro& r){                      // Regis
 }
 
 
-Driver::Registro RSRN(const modulos::Registro& r){                      // Registro Nuestro a Registro Suyo
+Driver::Registro RNRS(const modulos::Registro& r){                      // Registro Nuestro a Registro Suyo
   typename Dicc<String,modulos::Dato>::const_Iterador it = r.DameDic().CrearIt();
   Driver::Registro res;
   while(it.HaySiguiente()){
@@ -167,7 +167,7 @@ aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabla) const
 {
   Conj<Columna> res;
   modulos::Registro r = b.DameTabla(tabla).Columnas();
-  typename Dicc<String,Dato>::Iterador it = r.DameDic().CrearIt();
+  typename Dicc<String,modulos::Dato>::Iterador it = r.DameDic().CrearIt();
   while(it.HaySiguiente()){
     Columna c;
     c.nombre = it.SiguienteClave();
@@ -222,7 +222,9 @@ Driver::Dato Driver::maximo(const NombreTabla& tabla, const NombreCampo& columna
 
 aed2::Conj<Driver::Registro> Driver::buscar(const NombreTabla& tabla, const Registro& criterio) const
 {
-  Conj<modulos::Registro> cr = b.DameTabla(tabla).BuscarT(criterio);
+  Conj<Driver::Registro> res;
+  modulos::Registro crit = RSRN(criterio);
+  Conj<modulos::Registro> cr = b.DameTabla(tabla).BuscarT(crit);
   typename Conj<modulos::Registro>::Iterador itr = cr.CrearIt();
   while(itr.HaySiguiente()){
     res.Agregar(RNRS(itr.Siguiente()));

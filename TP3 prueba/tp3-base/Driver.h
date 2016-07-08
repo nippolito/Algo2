@@ -240,10 +240,7 @@ class Driver
      */
     aed2::Conj<Registro> vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2) const;
 
-    modulos::Dato DSDN(const Driver::Dato& d);
-    Driver::Dato DNDS(const modulos::Dato& d);
-    modulos::Registro RSRN(const Driver::Registro& r);
-    Driver::Registro RSRN(const modulos::Registro& r);
+
 
   private:
 
@@ -255,6 +252,13 @@ class Driver
      ************************************************************************/
 
 }; // class Driver
+
+    modulos::Dato DSDN(const Driver::Dato& d);
+    Driver::Dato DNDS(const modulos::Dato& d);
+    modulos::Registro RSRN(const Driver::Registro& r);
+    Driver::Registro RNRS(const modulos::Registro& r);
+
+
 
 }; // namespace aed2
 
