@@ -14,7 +14,7 @@ using namespace modulos;
  //                             Conversor                                      //
 ////////////////////////////////////////////////////////////////////////////////
 
-modulos::Dato DSDN(const Driver::Dato& d){
+modulos::Dato DSDN(const Driver::Dato& d){        // Dato Suyo a Dato Nuestro
   if ( d.esNat() ) {
     modulos::Dato res(d.dameNat());
     return res;
@@ -24,7 +24,7 @@ modulos::Dato DSDN(const Driver::Dato& d){
   }
 }
 
-Driver::Dato DNDS(const modulos::Dato& d){
+Driver::Dato DNDS(const modulos::Dato& d){      // Dato Nuestro a Dato Suyo
   if ( d.EsNat() ) {
     Driver::Dato res(d.ValorNat());
     return res;
@@ -35,7 +35,7 @@ Driver::Dato DNDS(const modulos::Dato& d){
 }
 
 
-modulos::Registro RSRN(const Driver::Registro& r){
+modulos::Registro RSRN(const Driver::Registro& r){                      // Registro Suyo a Registro Nuestro
   typename Dicc<String,Driver::Dato>::const_Iterador it = r.CrearIt();
   modulos::Registro res;
   while(it.HaySiguiente()){
@@ -46,7 +46,7 @@ modulos::Registro RSRN(const Driver::Registro& r){
 }
 
 
-Driver::Registro RSRN(const modulos::Registro& r){
+Driver::Registro RSRN(const modulos::Registro& r){                      // Registro Nuestro a Registro Suyo
   typename Dicc<String,modulos::Dato>::const_Iterador it = r.DameDic().CrearIt();
   Driver::Registro res;
   while(it.HaySiguiente()){
@@ -150,7 +150,7 @@ void Driver::crearTabla(const NombreTabla& nombre, const aed2::Conj<Columna>& co
 
 void Driver::insertarRegistro(const NombreTabla& tabla, const Registro& registro)
 {
-   modulos::Registro r =RSRN(registro);
+   modulos::Registro r = RSRN(registro);
    b.InsertarEntrada(r,tabla);
    //assert(false);
 }
@@ -166,7 +166,7 @@ void Driver::borrarRegistro(const NombreTabla& tabla, const NombreCampo& columna
 aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabla) const
 {
   Conj<Columna> res;
-  Registro r = b.DameTabla(tabla).Columnas();
+  modulos::Registro r = b.DameTabla(tabla).Columnas();
   typename Dicc<String,Dato>::Iterador it = r.DameDic().CrearIt();
   while(it.HaySiguiente()){
     Columna c;
@@ -185,13 +185,20 @@ aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabla) const
 
 aed2::Conj<NombreCampo> Driver::columnasClaveDeTabla(const NombreTabla& tabla) const
 {
-  return b.DameTabla(tabla).Claves();
+  return b.DameTabla(tabla).Claves();     // NombreCampo es String
   //assert(false);
 }
 
 aed2::Conj<Driver::Registro> Driver::registrosDeTabla(const NombreTabla& tabla) const
 {
-  b.DameTabla(tabla).Registros();
+  Conj<Driver::Registro> res;
+  Conj<modulos::Registro> cr = b.DameTabla(tabla).Registros();
+  typename Conj<modulos::Registro>::Iterador itr = cr.CrearIt();
+  while(itr.HaySiguiente()){
+    res.Agregar(RNRS(itr.Siguiente()));
+    itr.Avanzar();
+  }
+  return res;
   //assert(false);
 }
 
@@ -203,19 +210,25 @@ aed2::Nat Driver::cantidadDeAccesosDeTabla(const NombreTabla& tabla) const
 
 Driver::Dato Driver::minimo(const NombreTabla& tabla, const NombreCampo& columna) const
 {
-  return b.DameTabla(tabla).Minimo(columna.nombre);
+  return DNDS(b.DameTabla(tabla).Minimo(columna.nombre));
   //assert(false);
 }
 
 Driver::Dato Driver::maximo(const NombreTabla& tabla, const NombreCampo& columna) const
 {
-  return b.DameTabla(tabla).Maximo(columna.nombre);
+  return DNDS(b.DameTabla(tabla).Maximo(columna.nombre));
   //assert(false);
 }
 
 aed2::Conj<Driver::Registro> Driver::buscar(const NombreTabla& tabla, const Registro& criterio) const
 {
-  return b.DameTabla(tabla).BuscarT(criterio);
+  Conj<modulos::Registro> cr = b.DameTabla(tabla).BuscarT(criterio);
+  typename Conj<modulos::Registro>::Iterador itr = cr.CrearIt();
+  while(itr.HaySiguiente()){
+    res.Agregar(RNRS(itr.Siguiente()));
+    itr.Avanzar();
+  }
+  return res;
   //assert(false);
 }
 
@@ -325,7 +338,12 @@ void Driver::borrarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla
 
 aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2)
 {
-  return b.VistaJoin(tabla1,tabla2).Siguiente().Registros();
+  Conj<modulos::Registro> cr = b.VistaJoin(tabla1,tabla2).Siguiente().Registros();
+  typename Conj<modulos::Registro>::Iterador itr = cr.CrearIt();
+  while(itr.HaySiguiente()){
+    res.Agregar(RNRS(itr.Siguiente()));
+    itr.Avanzar();
+  }
+  return res;
   //assert(false);
 }
-
