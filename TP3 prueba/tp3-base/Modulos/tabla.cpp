@@ -11,7 +11,7 @@ Tabla::Tabla(const Tabla& otra){//: modificaciones (otra.modificaciones) , indic
 }
 Tabla::~Tabla(){}
 
-Tabla::Tabla(String s ,Conj<String> clav, Registro colum):  nombre(s) , claves(clav) , columnas(colum) {}
+Tabla::Tabla(const String &s ,const Conj<String> &clav, const Registro &colum):  nombre(s) , claves(clav) , columnas(colum) {}
 
 const Registro Tabla::Columnas() const{
 	Registro r;

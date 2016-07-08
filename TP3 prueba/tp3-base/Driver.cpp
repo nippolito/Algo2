@@ -148,21 +148,21 @@ void Driver::crearTabla(const NombreTabla& nombre, const aed2::Conj<Columna>& co
   //assert(false);
 }
 
-// void Driver::insertarRegistro(const NombreTabla& tabla, const Registro& registro)
-// {
-//   modulos::Registro r =RSRN(registro);
-//   b.InsertarEntrada(r,tabla);
-//   //assert(false);
-// }
+void Driver::insertarRegistro(const NombreTabla& tabla, const Registro& registro)
+{
+   modulos::Registro r =RSRN(registro);
+   b.InsertarEntrada(r,tabla);
+   //assert(false);
+}
 
-// void Driver::borrarRegistro(const NombreTabla& tabla, const NombreCampo& columna, const Dato& valor)
-// {
-//   modulos::Registro crit;
-//   crit.Definir(columna,DSDN(valor));
-//   b.Borrar(crit,tabla);
-//   //assert(false);
-// }
-/*
+void Driver::borrarRegistro(const NombreTabla& tabla, const NombreCampo& columna, const Dato& valor)
+{
+   modulos::Registro crit;
+   crit.Definir(columna,DSDN(valor));
+   b.Borrar(crit,tabla);
+   //assert(false);
+}
+
 aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabla) const
 {
   Conj<Columna> res;
@@ -328,4 +328,4 @@ aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const 
   return b.VistaJoin(tabla1,tabla2).Siguiente().Registros();
   //assert(false);
 }
-*/
+

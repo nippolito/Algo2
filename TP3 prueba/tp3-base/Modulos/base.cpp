@@ -137,7 +137,9 @@ const typename Lista<Tabla>::Iterador Base::GenerarVistaJoin(const String t1, co
 	typename Conj<Registro>::Iterador it = rs.CrearIt();
 	Conj<String> cla;
 	cla.Agregar(c);
-	Tabla nt = Tabla("nuevat", cla , it.Siguiente());
+	const Conj<String> clacopia = cla;
+	const String ss = "nuevat";
+	Tabla nt = Tabla( ss, clacopia , it.Siguiente());
 	nt.Indexar(c);
 	while(it.HaySiguiente()){
 		nt.AgregarRegistro(it.Siguiente());
