@@ -34,8 +34,9 @@ Conj<String> Base::Tablas() const{
 	return res;
 }
 
-Tabla Base::DameTabla(const String t) const {
-	return TporNombre.Obtener(t).Siguiente();
+Tabla& Base::DameTabla(const String t) const {
+	typename Lista<Tabla>::Iterador i = TporNombre.Obtener(t);
+	return i.Siguiente();
 }
 
 
@@ -76,6 +77,7 @@ void Base::InsertarEntrada(Registro r, String t){
 			it.Avanzar();
 		}
 	}
+
 }
 
 
@@ -106,7 +108,7 @@ void Base::Borrar(Registro r, String t){
 }
 
 
-String Base::TablaMaxima() const{
+const String Base::TablaMaxima() const{
 	return TablaMax.Siguiente().DameNombre();
 }
 
@@ -126,20 +128,21 @@ void Base::BorrarJoin(const String t1, const String t2){
 }
 
 
-String Base::CampoJoin(const String t1,const String t2) const{ 
+const String& Base::CampoJoin(const String& t1,const String& t2) const{ 
 	typename DiccString<Join>::const_ItStr j = joins.Obtener(t1).Buscar(t2);
 	return j.SiguienteSignificado().campo;
 }
 
 
 const typename Lista<Tabla>::Iterador Base::GenerarVistaJoin(const String t1, const String t2, const String c){				//Gerva ahora devolvemos un ite a lista de tabla
-	Conj<Registro> rs = DameTabla(t1).CombinarRegistro(c, DameTabla(t2)); //funcional mal COMBINARREGISTRO, a los campos de t2 que no existen en t1 en vez de mergearlos con su dato les pone un dato cualquiera de t1
+	Conj<Registro> rs = DameTabla(t1).CombinarRegistro(c, DameTabla(t2)); 
+	Registro c1 = DameTabla(t1).Columnas().AgregarCampos(DameTabla(t2).Columnas());
 	typename Conj<Registro>::Iterador it = rs.CrearIt();
 	Conj<String> cla;
 	cla.Agregar(c);
 	//const Conj<String> clacopia = cla;
 	//const String ss = "nuevat";
-	Tabla nt = Tabla( "nuevat", cla , it.Siguiente());
+	Tabla nt = Tabla( "nuevat", cla , c1);
 	nt.Indexar(c);
 	while(it.HaySiguiente()){
 		nt.AgregarRegistro(it.Siguiente());
@@ -162,12 +165,12 @@ const typename Lista<Tabla>::Iterador Base::GenerarVistaJoin(const String t1, co
 	}else{
 		joins.Obtener(t1).Definir(t2, js);
 	}
-	if(!joins.Definido(t2)){
+	/*if(!joins.Definido(t2)){
 		d.Definir(t1, js);
 		joins.Definir(t2, d);
 	}else{
 		joins.Obtener(t2).Definir(t1, js);
-	}
+	}*/
 	return it2;
 }
 
@@ -207,7 +210,7 @@ const typename Lista<Tabla>::Iterador Base::VistaJoin(const String t1, const Str
 				}
 			}
 		}else{
-			if(!itab.Siguiente().BuscarT(crit).EsVacio() ){   //el buscarT toma parámetro const pero acá no funcionaría ya que tab no es const. Igual es lógico que busquemos algo para ver si lo podemos eliminar o no
+			if(!itab.Siguiente().BuscarT(crit).EsVacio() ){   //el buscarT toma parámetro const pero acá no funcionaría ya que tab no es const. Igual es lógico que busquemos algo para ver si lo podemos eliminar o n
 				itab.Siguiente().BorrarRegistro(crit);
 			}
 		}

@@ -34,9 +34,9 @@ namespace modulos{
 			~Base();
 			Base& operator=(const Base& otra);
 			Conj<String> Tablas() const; 
-			Tabla DameTabla(const String t) const;
+			Tabla& DameTabla(const String t) const;
 			bool HayJoin(const String t1, const String t2) const;
-			String CampoJoin(const String t1,const String t2) const;
+			const String& CampoJoin(const String& t1,const String& t2) const;
 			void AgregarTabla(Tabla t);
 			void InsertarEntrada(Registro r, String t);
 			void Borrar(Registro r, String t);
@@ -46,7 +46,7 @@ namespace modulos{
 			const typename Lista<Tabla>::Iterador VistaJoin(const String t1, const String t2);
 			Conj<Registro> RegistrosB(const String t1);
 			Nat CantidadDeAccesosB(const String t) const;
-			String TablaMaxima() const;
+			const String TablaMaxima() const;
 
 		private:	
 		

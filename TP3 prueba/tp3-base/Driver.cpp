@@ -40,19 +40,21 @@ modulos::Registro RSRN(const Driver::Registro& r){                      // Regis
   modulos::Registro res;
   while(it.HaySiguiente()){
     modulos::Dato d = DSDN(it.SiguienteSignificado());
-    cerr << "se rompe en el definir?" << endl;
     res.Definir( it.SiguienteClave(), d);
+    it.Avanzar();
   }
   return res;
 }
 
 
 Driver::Registro RNRS(const modulos::Registro& r){                      // Registro Nuestro a Registro Suyo
-  typename Dicc<String,modulos::Dato>::const_Iterador it = r.DameDic().CrearIt();
+  const Dicc<String,modulos::Dato> dc = r.DameDic();
+  typename Dicc<String,modulos::Dato>::const_Iterador it = dc.CrearIt();
   Driver::Registro res;
   while(it.HaySiguiente()){
     Driver::Dato d = DNDS( it.SiguienteSignificado() );
     res.Definir( it.SiguienteClave(), d);
+    it.Avanzar();
   }
   return res;
 }
@@ -154,7 +156,7 @@ void Driver::crearTabla(const NombreTabla& nombre, const aed2::Conj<Columna>& co
       modulos::Dato d(4);
       r.Definir(it.Siguiente().nombre, d);
     }else{
-      modulos::Dato d("puto el que lee");
+      modulos::Dato d("brownie");
       r.Definir(it.Siguiente().nombre, d);
     }
     it.Avanzar();
@@ -183,11 +185,13 @@ aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabla) const
 {
   Conj<Columna> res;
   modulos::Registro r = b.DameTabla(tabla).Columnas();
-  typename Dicc<String,modulos::Dato>::Iterador it = r.DameDic().CrearIt();
+  Conj<String> c = b.DameTabla(tabla).Columnas().Campos();
+  //typename Dicc<String,modulos::Dato>::const_Iterador it = r.DameDic().CrearIt();
+  typename Conj<String>::Iterador it = c.CrearIt();
   while(it.HaySiguiente()){
     Columna c;   
-    c.nombre = it.SiguienteClave();
-    if (it.SiguienteSignificado().EsNat()){
+    c.nombre = it.Siguiente();
+    if (r.Obtener(it.Siguiente()).EsNat()){
       c.tipo = NAT;
     }else{
       c.tipo = STR;
@@ -266,9 +270,9 @@ const NombreTabla Driver::tablaMaxima() const
 
 bool Driver::tieneIndiceNat(const NombreTabla& tabla) const
 {
-  Conj<String> indices = b.DameTabla(tabla).Indices();
-  typename Conj<String>::Iterador it = indices.CrearIt();
-  bool res= false;
+  const Conj<String> indices = b.DameTabla(tabla).Indices();
+  typename Conj<String>::const_Iterador it = indices.CrearIt();
+  bool res = false;
   while(it.HaySiguiente() && !res){
     res = b.DameTabla(tabla).TipoCampo(it.Siguiente());
     it.Avanzar();
@@ -279,8 +283,8 @@ bool Driver::tieneIndiceNat(const NombreTabla& tabla) const
 
 bool Driver::tieneIndiceString(const NombreTabla& tabla) const
 {
-  Conj<String> indices = b.DameTabla(tabla).Indices();
-  typename Conj<String>::Iterador it = indices.CrearIt();
+   const Conj<String> indices = b.DameTabla(tabla).Indices();
+  typename Conj<String>::const_Iterador it = indices.CrearIt();
   bool res= false;
   while(it.HaySiguiente() && !res){
     res = !(b.DameTabla(tabla).TipoCampo(it.Siguiente()));
@@ -292,9 +296,9 @@ bool Driver::tieneIndiceString(const NombreTabla& tabla) const
 
 const NombreCampo& Driver::campoIndiceNat(const NombreTabla& tabla) const
 {
-  Conj<String> indices = b.DameTabla(tabla).Indices();
-  typename Conj<String>::Iterador it = indices.CrearIt();
-  bool flag= false;
+  const Conj<String> indices = b.DameTabla(tabla).Indices();
+  typename Conj<String>::const_Iterador it = indices.CrearIt();
+  bool flag=  b.DameTabla(tabla).TipoCampo(it.Siguiente());
   while(it.HaySiguiente() && !flag){
     flag = b.DameTabla(tabla).TipoCampo(it.Siguiente());
     it.Avanzar();
@@ -305,9 +309,9 @@ const NombreCampo& Driver::campoIndiceNat(const NombreTabla& tabla) const
 
 const NombreCampo& Driver::campoIndiceString(const NombreTabla& tabla) const
 {
-  Conj<String> indices = b.DameTabla(tabla).Indices();
-  typename Conj<String>::Iterador it = indices.CrearIt();
-  bool flag= false;
+  const Conj<String> indices = b.DameTabla(tabla).Indices();
+  typename Conj<String>::const_Iterador it = indices.CrearIt();
+  bool flag=  !b.DameTabla(tabla).TipoCampo(it.Siguiente());
   while(it.HaySiguiente() && !flag){
     flag = !(b.DameTabla(tabla).TipoCampo(it.Siguiente()));
     it.Avanzar();
@@ -344,7 +348,6 @@ const NombreCampo& Driver::campoJoin(const NombreTabla& tabla1, const NombreTabl
 
 void Driver::generarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2, const NombreCampo& campo)
 {
-    cerr << "entra" << endl;
   b.GenerarVistaJoin(tabla1,tabla2,campo);
   //assert(false);
 }

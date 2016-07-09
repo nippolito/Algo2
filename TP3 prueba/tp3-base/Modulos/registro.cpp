@@ -99,6 +99,7 @@ Registro CombinarTodos(const String c, const Conj<Registro>) const{}
 		
 */
 
+
 Conj<String> Registro::DiferenciaSimetrica(const Registro r2) const{
 	Conj<String> res;
 	Conj<String> c2(r2.Campos());

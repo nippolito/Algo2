@@ -41,7 +41,7 @@ Tabla& Tabla::operator = (const Tabla& otra){
 		AgregarRegistro(it.Siguiente());
 		it.Avanzar();
 	}
-
+	//modificaciones = otra.modificaciones;
 	return *this;
 }
 
@@ -211,8 +211,8 @@ Conj<Registro> Tabla::BuscarT(const Registro crit) const{
 			if(!ir2.HaySiguiente()){return res;}
 			typename Lista<apuntador>::const_Iterador i = ir2.SiguienteSignificado().CrearIt(); 
 			while(i.HaySiguiente()){
-				if(crit.CoincidenTodos(cs, i.Siguiente().reg.Siguiente())){
-					res.AgregarRapido(i.Siguiente().reg.Siguiente());
+				if(crit.CoincidenTodos(cs, i.Siguiente().reg.Siguiente())){		
+					res.Agregar(i.Siguiente().reg.Siguiente());		
 				}
 				i.Avanzar();
 			}
@@ -220,10 +220,11 @@ Conj<Registro> Tabla::BuscarT(const Registro crit) const{
 			if(indicesUsados.str == true && cs.Pertenece(indiceS.campo)){
 				String s = crit.Obtener(indiceS.campo).ValorStr();
 				typename DiccString< Lista<apuntador> >::const_ItStr ir = indiceS.regpordato.Buscar(s);
+				if(!ir.HaySiguiente()){return res;}
 				typename Lista<apuntador>::const_Iterador i = ir.SiguienteSignificado().CrearIt(); 
 				while(i.HaySiguiente()){
 					if(crit.CoincidenTodos(cs, i.Siguiente().reg.Siguiente())){
-						res.AgregarRapido(i.Siguiente().reg.Siguiente());
+						res.Agregar(i.Siguiente().reg.Siguiente());
 					}
 					i.Avanzar();
 				}
