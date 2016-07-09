@@ -438,7 +438,6 @@ void actualizar_join_despues_de_borrar()
   bd.insertarRegistro(NOMBRE_TABLA_TRABAJOS, trabajo_3);
 
   aed2::Conj<aed2::Driver::Registro> join = bd.vistaJoin(NOMBRE_TABLA_PERSONAS, NOMBRE_TABLA_TRABAJOS);
-  cerr << " falla el vistaJOIn?" << endl;
   /**
    * Hasta acá BD:
    * 
@@ -493,7 +492,7 @@ void actualizar_join_despues_de_borrar()
     it2.Avanzar();
   }
 
-  bd.borrarRegistro( NOMBRE_TABLA_TRABAJOS, "DNI", aed2::Driver::Dato(3));
+  bd.borrarRegistro( NOMBRE_TABLA_TRABAJOS, "DNI", aed2::Driver::Dato(3));  
   aed2::Conj<aed2::Driver::Registro> join3 = bd.vistaJoin(NOMBRE_TABLA_PERSONAS, NOMBRE_TABLA_TRABAJOS);
 
   /**
@@ -577,7 +576,7 @@ int main(int argc, char **argv)
 
     RUN_TEST( hacer_un_join );
     RUN_TEST( actualizar_join_despues_de_insertar );
- //   RUN_TEST( actualizar_join_despues_de_borrar ); se rompe despues de borrar
+    RUN_TEST( actualizar_join_despues_de_borrar ); 
     RUN_TEST( joins_no_son_simetricos );
 
   return 0;

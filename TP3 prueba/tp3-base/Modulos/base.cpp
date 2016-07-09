@@ -92,18 +92,22 @@ void Base::Borrar(Registro r, String t){
 	if(CantidadDeAccesosB(TporNombre.Obtener(t).Siguiente().DameNombre()) > CantidadDeAccesosB(TablaMax.Siguiente().DameNombre())){
 		TablaMax = TporNombre.Obtener(t);
 	}
+	tupla tps;
+	tps.regmod = r;
+	tps.tabmod = t;
 	if(joins.Definido(t)){
 		typename DiccString<Join>::ItStr it = joins.Obtener(t).CrearIt();
 		while(it.HaySiguiente()){
-			tupla tps;
-			tps.regmod = r;
-			tps.tabmod = t;
 			it.SiguienteSignificado().cambios.AgregarAdelante(tps);
-			if(HayJoin(it.SiguienteClave(), t)){
-				joins.Obtener(it.SiguienteClave()).Obtener(t).cambios.AgregarAdelante(tps);
-			}
 			it.Avanzar();
 		}
+	}
+	typename Lista<Tabla>::Iterador j = tablas.CrearIt();
+	while(j.HaySiguiente()){
+		if(HayJoin(j.Siguiente().DameNombre(), t)){
+			joins.Obtener(j.Siguiente().DameNombre()).Obtener(t).cambios.AgregarAdelante(tps);
+		}
+		j.Avanzar();
 	}
 }
 
@@ -210,11 +214,12 @@ const typename Lista<Tabla>::Iterador Base::VistaJoin(const String t1, const Str
 				}
 			}
 		}else{
-			if(!itab.Siguiente().BuscarT(crit).EsVacio() ){   //el buscarT toma parámetro const pero acá no funcionaría ya que tab no es const. Igual es lógico que busquemos algo para ver si lo podemos eliminar o n
+			if(!itab.Siguiente().BuscarT(crit).EsVacio()){  
 				itab.Siguiente().BorrarRegistro(crit);
 			}
 		}
-		itC.Retroceder();
+		itC.EliminarAnterior();
+		//itC.Retroceder();
 	}
 	return itab;
 }
