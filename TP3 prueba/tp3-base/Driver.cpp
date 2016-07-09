@@ -296,20 +296,23 @@ bool Driver::tieneIndiceString(const NombreTabla& tabla) const
 
 const NombreCampo& Driver::campoIndiceNat(const NombreTabla& tabla) const
 {
-  const Conj<String> indices = b.DameTabla(tabla).Indices();
+  /*const Conj<String> indices = b.DameTabla(tabla).Indices();
   typename Conj<String>::const_Iterador it = indices.CrearIt();
-  bool flag=  b.DameTabla(tabla).TipoCampo(it.Siguiente());
+  bool flag = b.DameTabla(tabla).TipoCampo(it.Siguiente());
   while(it.HaySiguiente() && !flag){
     flag = b.DameTabla(tabla).TipoCampo(it.Siguiente());
     it.Avanzar();
   }
-  return it.Siguiente();
+  const NombreCampo& ss = it.Siguiente();
+  return ss;*/
   //assert(false);
+  return b.DameTabla(tabla).DameIndiceNat();
+
 }
 
 const NombreCampo& Driver::campoIndiceString(const NombreTabla& tabla) const
 {
-  const Conj<String> indices = b.DameTabla(tabla).Indices();
+  /*const Conj<String> indices = b.DameTabla(tabla).Indices();
   typename Conj<String>::const_Iterador it = indices.CrearIt();
   bool flag=  !b.DameTabla(tabla).TipoCampo(it.Siguiente());
   while(it.HaySiguiente() && !flag){
@@ -317,7 +320,8 @@ const NombreCampo& Driver::campoIndiceString(const NombreTabla& tabla) const
     it.Avanzar();
   }
   return it.Siguiente();
-  //assert(false);
+  //assert(false);*/
+  return b.DameTabla(tabla).DameIndiceStr();
 }
 
 void Driver::crearIndiceNat(const NombreTabla& tabla, const NombreCampo& campo)

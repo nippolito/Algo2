@@ -79,6 +79,8 @@ namespace modulos{
 			ostream& mostrarTabla(ostream& os) const;
 			const String DameNombre() const; //ESTO NO ESTA EN EL TP
 			const Registro Columnas() const;
+			const String& DameIndiceNat() const;
+			const String& DameIndiceStr() const; //Nuevas operaciones para devolver los indices por referencia . PRE : debe haber indices correspondientes
 			//void MostrameIndices() const;
 		private: 
 			Nat modificaciones;

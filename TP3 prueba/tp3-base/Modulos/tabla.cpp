@@ -168,6 +168,16 @@ const Conj<String> Tabla::Indices() const{
  	return res;
  }
 
+const String& Tabla::DameIndiceNat() const{ 
+	return indiceN.campo;
+}
+
+const String& Tabla::DameIndiceStr() const{
+	return indiceS.campo;
+}
+
+
+
 bool Tabla::Compatible(const Registro r) const{
 	return (r.Campos() == columnas.Campos() && MismosTipos(r));
 }
