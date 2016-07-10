@@ -5,8 +5,8 @@
 #include <string>
 #include <cassert>
 
-#include "../Aed2.h"
-#include "../Tipos.h"
+#include "Aed2.h"
+#include "Tipos.h"
 using namespace aed2;
 
 namespace modulos {
