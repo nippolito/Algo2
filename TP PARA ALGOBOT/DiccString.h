@@ -1,16 +1,21 @@
 #ifndef DICCSTRING_H_
 #define DICCSTRING_H_
 
-#include "registro.h"
+//#include "registro.h"
 #include <iostream>
 #include <string>
 #include <ostream>
 #include "pila.h"
+#include "aed2/TiposBasicos.h"
+#include "aed2/Lista.h"
+#include "aed2/Dicc.h"
+#include "aed2/Conj.h"
+
 
 using namespace aed2;
 using namespace std;
 
-//namespace modulos{
+namespace modulos{
 
 template<class S>
 class DiccString{
@@ -693,7 +698,7 @@ const String DiccString<S>::Maximo() const {
 }
 
 
-//};	
+};	
 
 
   #endif

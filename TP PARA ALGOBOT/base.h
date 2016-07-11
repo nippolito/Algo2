@@ -1,7 +1,8 @@
-#ifndef BASE_H_
-#define BASE_H_
+#ifndef MODULOS_BASE_H_INCLUDED
+#define MODULOS_BASE_H_INCLUDED
 
 #include "tabla.h"
+//#include "tabla.cpp"
 
 
 

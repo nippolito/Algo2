@@ -1,19 +1,17 @@
-#ifndef DATO_H_   //dato es parte de la carpeta modulos
-#define DATO_H_
+#ifndef MODULOS_DATO_H_INCLUDED   //dato es parte de la carpeta modulos
+#define MODULOS_DATO_H_INCLUDED
 
 #include <iostream>
 #include <ostream>
 #include <string>
 #include <cassert>
-#include "aed2/TiposBasicos.h"
-#include "aed2/Conj.h"
-#include "aed2/Lista.h"
-#include "aed2/Dicc.h"
+#include "todo.h"
+
 
 using namespace aed2;
 using namespace std;
 
-//namespace modulos {
+namespace modulos {
 
 class Dato {
 		public:
@@ -42,6 +40,6 @@ class Dato {
 };
 	
 
-//};
+};
 
 #endif

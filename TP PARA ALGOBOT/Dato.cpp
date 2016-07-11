@@ -1,6 +1,6 @@
 #include "Dato.h"
 
-//using namespace modulos;
+using namespace modulos;
 using namespace std;
 using namespace aed2;
 
@@ -60,7 +60,7 @@ using namespace aed2;
 	}
 
 
- 	Dato MaxDato(const Conj<Dato> cd){
+ 	Dato Dato::MaxDato(const Conj<Dato> cd){
  		typename Conj<Dato>::const_Iterador i = cd.CrearIt();
 		Dato res = i.Siguiente();
 		while(i.HaySiguiente()){
@@ -72,7 +72,7 @@ using namespace aed2;
  	return res;
 	}
 
-	Dato MinDato(const Conj<Dato> cd){
+	Dato Dato::MinDato(const Conj<Dato> cd){
  		typename Conj<Dato>::const_Iterador i = cd.CrearIt();
 		Dato res = i.Siguiente();
 		while(i.HaySiguiente()){
@@ -119,10 +119,15 @@ using namespace aed2;
 	 	return !(operator==(otro));
 	 }
 
-
 	/*ostream& operator<<(ostream& os, const Dato& d){
 		return d.mostrarDato(os);
 	}*/
+
+
+// int main(){
+// 	return 0;
+// }
+
 /*
 int main(){
 

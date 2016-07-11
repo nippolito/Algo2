@@ -1,5 +1,5 @@
-#ifndef TABLA_H_
-#define TABLA_H_
+#ifndef MODULOS_TABLA_H_INCLUDED
+#define MODULOS_TABLA_H_INCLUDED
 
 //#include "ModulosBasicos.h"
 #include <iostream>
@@ -7,6 +7,7 @@
 #include <ostream>
 #include "pila.h"
 #include "registro.h"
+//#include "registro.cpp"
 #include "DiccString.h"
 #include "DiccLog.h"
 
@@ -14,7 +15,7 @@ using namespace std;
 using namespace aed2;
 
 
-//namespace modulos{
+namespace modulos{
 	class Tabla {
 		private:
 
@@ -79,7 +80,7 @@ using namespace aed2;
 			ostream& mostrarTabla(ostream& os) const;
 			const String DameNombre() const; //ESTO NO ESTA EN EL TP
 			const Registro Columnas() const;
-			const String& DameIndiceNat() const;
+			const String& DameIndiceNat() const; 
 			const String& DameIndiceStr() const; //Nuevas operaciones para devolver los indices por referencia . PRE : debe haber indices correspondientes
 			//void MostrameIndices() const;
 		private: 
@@ -95,7 +96,7 @@ using namespace aed2;
 };
 
 
-//};
+};
 
 
 

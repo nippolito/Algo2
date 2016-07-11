@@ -9,7 +9,7 @@
 using namespace aed2;
 using namespace std;
 
-//namespace modulos{
+namespace modulos{
 	template <typename T>
 	class Pila{
 
@@ -62,6 +62,6 @@ T& Pila<T>::Tope(){
 	return list.Primero();
 }
 
-//};
+};
 
 #endif

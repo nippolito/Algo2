@@ -1,7 +1,7 @@
 #include "tabla.h"
 using namespace std;
 using namespace aed2;
-//using namespace modulos;
+using namespace modulos;
 
 
 Tabla::Tabla(): modificaciones(0) , nombre("higuain muerto"){}
@@ -560,3 +560,4 @@ void Tabla::BorrarRegistro(const Registro crit){
 		}
 	}
 }
+

@@ -3,9 +3,9 @@
 
 #include "Tipos.h"
 #include "aed2/Conj.h"
-//#include "aed2/TiposBasicos.h"
+#include "aed2/TiposBasicos.h"
 #include "base.h"
-
+//#include "base.cpp"
 
 namespace aed2
 {
@@ -246,7 +246,7 @@ class Driver
 
   private:
 
-    Base b;
+    modulos::Base b;
     /************************************************************************
      * TODO: Va a ser necesario instanciar privadamente el Modulo principal *
      * con el cuál interactuar. Además, pueden declarar todas las           *

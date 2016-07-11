@@ -1,15 +1,17 @@
-#ifndef REGISTRO_H_  //registro es parte de la carpeta modulos
-#define REGISTRO_H_
+#ifndef MODULOS_REGISTRO_H_INCLUDED  //registro es parte de la carpeta modulos
+#define MODULOS_REGISTRO_H_INCLUDED
 
 #include <iostream>
 #include <string>
 #include <cassert>
 //#include "ModulosBasicos.h"
 #include "Dato.h"
+//#include "Dato.cpp"
 
+using namespace std;
 using namespace aed2;
 
-//namespace modulos {
+namespace modulos {
 	
 class Registro {		// Algunas funciones con "?" cambiaron de nombre
 	public:
@@ -40,6 +42,6 @@ class Registro {		// Algunas funciones con "?" cambiaron de nombre
 };
 
 
-//};
+};
 
 #endif

@@ -7,24 +7,24 @@ bool aed2::operator == (const aed2::Columna& c1, const aed2::Columna& c2)
 
 
 using namespace aed2;
-//using namespace modulos;
+using namespace modulos;
 
 
   ////////////////////////////////////////////////////////////////////////////////
  //                             Conversor                                      //
 ////////////////////////////////////////////////////////////////////////////////
 
- Dato DSDN(const Driver::Dato& d){        // Dato Suyo a Dato Nuestro
+ modulos::Dato DSDN(const Driver::Dato& d){        // Dato Suyo a Dato Nuestro
   if ( d.esNat() ) {
-    Dato res(d.dameNat());
+    modulos::Dato res(d.dameNat());
     return res;
   }else{
-    Dato res(d.dameString());
+    modulos:: Dato res(d.dameString());
     return res;
   }
 }
 
-Driver::Dato DNDS(const Dato& d){      // Dato Nuestro a Dato Suyo
+Driver::Dato DNDS(const modulos::Dato& d){      // Dato Nuestro a Dato Suyo
   if ( d.EsNat() ) {
     Driver::Dato res(d.ValorNat());
     return res;
@@ -35,11 +35,11 @@ Driver::Dato DNDS(const Dato& d){      // Dato Nuestro a Dato Suyo
 }
 
 
-Registro RSRN(const Driver::Registro& r){                      // Registro Suyo a Registro Nuestro
+modulos::Registro RSRN(const Driver::Registro& r){                      // Registro Suyo a Registro Nuestro
   typename Dicc<String,Driver::Dato>::const_Iterador it = r.CrearIt();
-  Registro res;
+  modulos::Registro res;
   while(it.HaySiguiente()){
-    Dato d = DSDN(it.SiguienteSignificado());
+    modulos::Dato d = DSDN(it.SiguienteSignificado());
     res.Definir( it.SiguienteClave(), d);
     it.Avanzar();
   }
@@ -47,9 +47,9 @@ Registro RSRN(const Driver::Registro& r){                      // Registro Suyo 
 }
 
 
-Driver::Registro RNRS(const Registro& r){                      // Registro Nuestro a Registro Suyo
-  const Dicc<String,Dato> dc = r.DameDic();
-  typename Dicc<String,Dato>::const_Iterador it = dc.CrearIt();
+Driver::Registro RNRS(const modulos::Registro& r){                      // Registro Nuestro a Registro Suyo
+  const Dicc<String,modulos::Dato> dc = r.DameDic();
+  typename Dicc<String,modulos::Dato>::const_Iterador it = dc.CrearIt();
   Driver::Registro res;
   while(it.HaySiguiente()){
     Driver::Dato d = DNDS( it.SiguienteSignificado() );
@@ -148,34 +148,34 @@ Driver::~Driver()
 
 void Driver::crearTabla(const NombreTabla& nombre, const aed2::Conj<Columna>& columnas, const aed2::Conj<NombreCampo>& claves)
 {
-  Registro r;
+  modulos::Registro r;
   Conj<Columna> c = columnas;
   typename Conj<Columna>::Iterador it = c.CrearIt();
   while(it.HaySiguiente()){
     if(it.Siguiente().tipo == NAT){
-      Dato d(4);
+      modulos::Dato d(4);
       r.Definir(it.Siguiente().nombre, d);
     }else{
-      Dato d("brownie");
+      modulos::Dato d("brownie");
       r.Definir(it.Siguiente().nombre, d);
     }
     it.Avanzar();
   }
-  Tabla t(nombre, claves, r);
+  modulos::Tabla t(nombre, claves, r);
   b.AgregarTabla(t);
   //assert(false);
 }
 
-void Driver::insertarRegistro(const NombreTabla& tabla, const Registro& registro)
+void Driver::insertarRegistro(const NombreTabla& tabla, const aed2::Driver::Registro& registro)
 {
-   Registro r = RSRN(registro);
+   modulos::Registro r = RSRN(registro);
    b.InsertarEntrada(r,tabla);
    //assert(false);
 }
 
-void Driver::borrarRegistro(const NombreTabla& tabla, const NombreCampo& columna, const Dato& valor)
+void Driver::borrarRegistro(const NombreTabla& tabla, const NombreCampo& columna, const aed2::Driver::Dato& valor)
 {
-   Registro crit;
+   modulos::Registro crit;
    crit.Definir(columna,DSDN(valor));
    b.Borrar(crit,tabla);
    //assert(false);
@@ -184,7 +184,7 @@ void Driver::borrarRegistro(const NombreTabla& tabla, const NombreCampo& columna
 aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabla) const
 {
   Conj<Columna> res;
-  Registro r = b.DameTabla(tabla).Columnas();
+  modulos::Registro r = b.DameTabla(tabla).Columnas();
   Conj<String> c = b.DameTabla(tabla).Columnas().Campos();
   //typename Dicc<String,Dato>::const_Iterador it = r.DameDic().CrearIt();
   typename Conj<String>::Iterador it = c.CrearIt();
@@ -212,8 +212,8 @@ aed2::Conj<NombreCampo> Driver::columnasClaveDeTabla(const NombreTabla& tabla) c
 aed2::Conj<Driver::Registro> Driver::registrosDeTabla(const NombreTabla& tabla) const
 {
   Conj<Driver::Registro> res;
-  Conj<Registro> cr = b.DameTabla(tabla).Registros();
-  typename Conj<Registro>::Iterador itr = cr.CrearIt();
+  Conj<modulos::Registro> cr = b.DameTabla(tabla).Registros();
+  typename Conj<modulos::Registro>::Iterador itr = cr.CrearIt();
   while(itr.HaySiguiente()){
     res.Agregar(RNRS(itr.Siguiente()));
     itr.Avanzar();
@@ -240,12 +240,12 @@ Driver::Dato Driver::maximo(const NombreTabla& tabla, const NombreCampo& columna
   //assert(false);
 }
 
-aed2::Conj<Driver::Registro> Driver::buscar(const NombreTabla& tabla, const Registro& criterio) const
+aed2::Conj<Driver::Registro> Driver::buscar(const NombreTabla& tabla, const aed2::Driver::Registro& criterio) const
 {
   Conj<Driver::Registro> res;
-  Registro crit = RSRN(criterio);
-  Conj<Registro> cr = b.DameTabla(tabla).BuscarT(crit);
-  typename Conj<Registro>::Iterador itr = cr.CrearIt();
+  modulos::Registro crit = RSRN(criterio);
+  Conj<modulos::Registro> cr = b.DameTabla(tabla).BuscarT(crit);
+  typename Conj<modulos::Registro>::Iterador itr = cr.CrearIt();
   while(itr.HaySiguiente()){
     res.Agregar(RNRS(itr.Siguiente()));
     itr.Avanzar();
@@ -365,8 +365,8 @@ void Driver::borrarVistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla
 aed2::Conj<Driver::Registro> Driver::vistaJoin(const NombreTabla& tabla1, const NombreTabla& tabla2)
 {
   Conj<Driver::Registro> res;
-  Conj<Registro> cr = b.VistaJoin(tabla1,tabla2).Siguiente().Registros();
-  typename Conj<Registro>::Iterador itr = cr.CrearIt();
+  Conj<modulos::Registro> cr = b.VistaJoin(tabla1,tabla2).Siguiente().Registros();
+  typename Conj<modulos::Registro>::Iterador itr = cr.CrearIt();
   while(itr.HaySiguiente()){
     res.Agregar(RNRS(itr.Siguiente()));
     itr.Avanzar();
