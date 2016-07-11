@@ -25,7 +25,7 @@ namespace modulos{
 					String campo;
 					Lista<tupla> cambios;
 					typename Lista<Tabla>::Iterador verJoin;
-					Join(){} //CHEQUEAR QUE LO CREE VACIO
+					Join(){}
 				};
 
 		public:

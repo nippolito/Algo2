@@ -1,7 +1,7 @@
 #ifndef DICCSTRING_H_
 #define DICCSTRING_H_
 
-//#include "registro.h"
+
 #include <iostream>
 #include <string>
 #include <ostream>

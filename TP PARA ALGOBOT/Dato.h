@@ -1,4 +1,4 @@
-#ifndef MODULOS_DATO_H_INCLUDED   //dato es parte de la carpeta modulos
+#ifndef MODULOS_DATO_H_INCLUDED 
 #define MODULOS_DATO_H_INCLUDED
 
 #include <iostream>
@@ -28,11 +28,9 @@ class Dato {
 			 Dato MaxDato(const Conj<Dato> cd);
 			 Dato MinDato(const Conj<Dato> cd);
 			 bool MenorOIgual(const Dato otro) const;
-			// ostream& mostrarDato(ostream&) const;
 			 bool operator==(const Dato&) const;
 			 bool operator!=(const Dato&) const;
-			 
-	//friend ostream& operator<<(ostream& os , const Dato& d);		 
+			 	 
 		private:
 			bool tipo;
 			Nat nat;

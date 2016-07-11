@@ -11,21 +11,10 @@ Base::Base(){}
 
 Base::Base(const Base& otra): tablas(otra.tablas) ,TporNombre(otra.TporNombre),  nombres(otra.nombres) , TablaMax(otra.TablaMax) , joins(otra.joins) , losjoins(otra.losjoins) {}
 
-// Base& Base::operator=(const Base& otra){
-// 	tablas = otra.tablas;
-// 	TporNombre = otra.TporNombre;
-// 	nombres = otra.nombres;
-// 	TablaMax = otra.TablaMax;
-// 	joins = otra.joins;
-// 	losjoins = otra.losjoins;
-// 	return *this;
-// }
-
 Base::~Base(){}
 
 Conj<String> Base::Tablas() const{
 	Conj<String> res;
-	// DiccString<typename::Lista<Tabla>::Iterador> dld = TporNombre;
 	typename DiccString<typename::Lista<Tabla>::Iterador>::const_ItStr it = TporNombre.CrearIt();
 	while(it.HaySiguiente()){
 		res.AgregarRapido(it.SiguienteClave());
@@ -144,8 +133,6 @@ const typename Lista<Tabla>::Iterador Base::GenerarVistaJoin(const String t1, co
 	typename Conj<Registro>::Iterador it = rs.CrearIt();
 	Conj<String> cla;
 	cla.Agregar(c);
-	//const Conj<String> clacopia = cla;
-	//const String ss = "nuevat";
 	Tabla nt = Tabla( "nuevat", cla , c1);
 	nt.Indexar(c);
 	while(it.HaySiguiente()){
@@ -154,8 +141,6 @@ const typename Lista<Tabla>::Iterador Base::GenerarVistaJoin(const String t1, co
 	}
 	losjoins.AgregarAdelante(nt);
 	typename Lista<Tabla>::Iterador it2 = losjoins.CrearIt();
-	// Conj<Registro> lrl = it2.Siguiente().Registros();
-	// typename Conj<Registro>::Iterador res =  lrl.CrearIt();
 	DiccString<Join> d;
 	Join js;
 	js.campo = c;
@@ -169,12 +154,6 @@ const typename Lista<Tabla>::Iterador Base::GenerarVistaJoin(const String t1, co
 	}else{
 		joins.Obtener(t1).Definir(t2, js);
 	}
-	/*if(!joins.Definido(t2)){
-		d.Definir(t1, js);
-		joins.Definir(t2, d);
-	}else{
-		joins.Obtener(t2).Definir(t1, js);
-	}*/
 	return it2;
 }
 
@@ -188,7 +167,7 @@ Nat Base::CantidadDeAccesosB(const String t) const{
 }
 
 
-const typename Lista<Tabla>::Iterador Base::VistaJoin(const String t1, const String t2){   //tenemos un const iterador porque nos tiraba error pero no sabemos si es correcto
+const typename Lista<Tabla>::Iterador Base::VistaJoin(const String t1, const String t2){
 	typename Lista<Tabla>::Iterador itab = joins.Obtener(t1).Obtener(t2).verJoin;
 	typename Lista<tupla>::Iterador itC = joins.Obtener(t1).Obtener(t2).cambios.CrearItUlt();
 	Registro crit;
@@ -219,7 +198,6 @@ const typename Lista<Tabla>::Iterador Base::VistaJoin(const String t1, const Str
 			}
 		}
 		itC.EliminarAnterior();
-		//itC.Retroceder();
 	}
 	return itab;
 }

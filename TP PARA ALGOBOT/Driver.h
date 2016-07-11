@@ -5,7 +5,6 @@
 #include "aed2/Conj.h"
 #include "aed2/TiposBasicos.h"
 #include "base.h"
-//#include "base.cpp"
 
 namespace aed2
 {
@@ -253,15 +252,11 @@ class Driver
      * funciones auxiliares que les hagan falta.                            *
      ************************************************************************/
 
-}; // class Driver
-
-   /* modulos::Dato DSDN(const Driver::Dato& d);
-    Driver::Dato DNDS(const modulos::Dato& d);
-    modulos::Registro RSRN(const Driver::Registro& r);
-    Driver::Registro RNRS(const modulos::Registro& r);
- */
+};
 
 
-}; // namespace aed2
+
+
+};
 
 #endif // DRIVER_H_

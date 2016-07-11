@@ -140,7 +140,6 @@ Driver::Driver()
 
 Driver::~Driver()
 {
-  // TODO ...
   //assert(false);
 }
 
@@ -186,7 +185,6 @@ aed2::Conj<Columna> Driver::columnasDeTabla(const NombreTabla& tabla) const
   Conj<Columna> res;
   modulos::Registro r = b.DameTabla(tabla).Columnas();
   Conj<String> c = b.DameTabla(tabla).Columnas().Campos();
-  //typename Dicc<String,Dato>::const_Iterador it = r.DameDic().CrearIt();
   typename Conj<String>::Iterador it = c.CrearIt();
   while(it.HaySiguiente()){
     Columna c;   
@@ -296,15 +294,6 @@ bool Driver::tieneIndiceString(const NombreTabla& tabla) const
 
 const NombreCampo& Driver::campoIndiceNat(const NombreTabla& tabla) const
 {
-  /*const Conj<String> indices = b.DameTabla(tabla).Indices();
-  typename Conj<String>::const_Iterador it = indices.CrearIt();
-  bool flag = b.DameTabla(tabla).TipoCampo(it.Siguiente());
-  while(it.HaySiguiente() && !flag){
-    flag = b.DameTabla(tabla).TipoCampo(it.Siguiente());
-    it.Avanzar();
-  }
-  const NombreCampo& ss = it.Siguiente();
-  return ss;*/
   //assert(false);
   return b.DameTabla(tabla).DameIndiceNat();
 
@@ -312,14 +301,6 @@ const NombreCampo& Driver::campoIndiceNat(const NombreTabla& tabla) const
 
 const NombreCampo& Driver::campoIndiceString(const NombreTabla& tabla) const
 {
-  /*const Conj<String> indices = b.DameTabla(tabla).Indices();
-  typename Conj<String>::const_Iterador it = indices.CrearIt();
-  bool flag=  !b.DameTabla(tabla).TipoCampo(it.Siguiente());
-  while(it.HaySiguiente() && !flag){
-    flag = !(b.DameTabla(tabla).TipoCampo(it.Siguiente()));
-    it.Avanzar();
-  }
-  return it.Siguiente();
   //assert(false);*/
   return b.DameTabla(tabla).DameIndiceStr();
 }

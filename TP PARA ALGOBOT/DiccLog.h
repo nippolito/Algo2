@@ -1,7 +1,6 @@
 #ifndef DICCLOG_H_
 #define DICCLOG_H_
 
-//#include "registro.h"
 #include <iostream>
 #include <string>
 #include <ostream>
@@ -80,7 +79,7 @@ class DiccLog{
         void Avanzar();
         void EliminarSiguiente();
 
-        // FUNCIONES PRIVADAS, ¿QUE HACEMOS?
+
         void EliminarHoja();
         void EliminarRaiz();
         void EliminarConUnHijo();
@@ -269,21 +268,13 @@ void DiccLog<K,S>::ItLog::EliminarSiguiente(){
         while(rec->izq != NULL){
           rec = rec->izq;
         }
-        //nodoAB* antrec = rec->padre;
         typename DiccLog<K,S>::ItLog it = diccionario->Buscar(rec->clave);
         temp->clave = rec->clave;
         temp->significado = rec->significado;
         if(rec->der == NULL){
           it.EliminarHoja();
-          /*rec->padre->izq = NULL;
-          delete rec;*/
         }else{
           it.EliminarConUnHijo();
-          /*nodoAB* temp2 = siguiente;
-          antrec->izq = temp2->der;
-          temp2 = antrec->der;
-          delete rec;
-          rec=temp2;*/
         }
       } 
     }else{
@@ -323,22 +314,13 @@ void DiccLog<K,S>::ItLog::EliminarRaiz(){                               // Le ag
     while(rec->izq != NULL){
       rec = rec->izq;
     }
-    //nodoAB* antrec = rec->padre;
     typename DiccLog<K,S>::ItLog it = diccionario->Buscar(rec->clave);
     temp->clave = rec->clave;
     temp->significado = rec->significado;
     if(rec->der == NULL){
      it.EliminarHoja();
-      /*rec->padre->izq = NULL;
-      delete rec;
-      rec = NULL;*/
     }else{
      it.EliminarConUnHijo();
-      /*nodoAB* temp2 = siguiente;
-      antrec->izq = temp2->der;
-      temp2 = antrec->der;
-      delete rec;
-      rec=temp2;*/
     }
   }else{
     if(siguiente->der != NULL){
@@ -516,13 +498,11 @@ void DiccLog<K,S>::Definir(const K& clave, const S& sig){
 
 template<class K ,class S>
 typename DiccLog<K,S>::ItLog DiccLog<K,S>::CrearIt(){
-  //typename DiccLog<K,S>::ItLog res = ItLog(this);
   return ItLog(this);
 }
 
 template<class K ,class S>
 typename DiccLog<K,S>::const_ItLog DiccLog<K,S>::CrearIt() const{
-  //typename DiccLog<K,S>::const_ItLog res = ItLog(this);
   return const_ItLog(this);
 }
 
@@ -604,7 +584,6 @@ const S& DiccLog<K,S>::Obtener(const K& clave) const{
 
 template<class K ,class S>
 void DiccLog<K,S>::Borrar(const K& clave){
-  //assert(Definido(clave));
   Buscar(clave).EliminarSiguiente();
 }
 

@@ -1,12 +1,10 @@
-#ifndef MODULOS_REGISTRO_H_INCLUDED  //registro es parte de la carpeta modulos
+#ifndef MODULOS_REGISTRO_H_INCLUDED 
 #define MODULOS_REGISTRO_H_INCLUDED
 
 #include <iostream>
 #include <string>
 #include <cassert>
-//#include "ModulosBasicos.h"
 #include "Dato.h"
-//#include "Dato.cpp"
 
 using namespace std;
 using namespace aed2;
@@ -30,13 +28,9 @@ class Registro {		// Algunas funciones con "?" cambiaron de nombre
 		bool CoincideAlguno(const Conj<String> cc, const Registro r2) const;
 		bool CoincidenTodos(const Conj<String> cc, const Registro r2) const;
 		bool operator==(const Registro& r) const;
-		// bool EnTodos(const String c, const Conj<Registro>);
-		// Registro CombinarTodos(const String c, const Conj<Registro>) const;
 		Conj<String> DiferenciaSimetrica(const Registro r2) const;
 		Dicc<String,Dato> DameDic() const;
-		//ostream& mostrarRegistro(ostream& os) const;
 		
-	//friend ostream& operator<<(ostream& os, const Registro& r);
 	private:
 		Dicc<String,Dato> dic;
 };
